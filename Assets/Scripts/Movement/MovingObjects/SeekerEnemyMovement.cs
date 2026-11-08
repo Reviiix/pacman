@@ -12,7 +12,6 @@ namespace Movement.MovingObjects
         {
             MovementManager.Direction.Up, MovementManager.Direction.Left, MovementManager.Direction.Down, MovementManager.Direction.Right
         };
-        [SerializeField] private Pathfinder pathFinder;
         public GridItem Target { get; private set; }
         public SeekerType type;
         private readonly MovementManager.Direction[] randomDirections = MovementManager.Directions;
@@ -92,17 +91,14 @@ namespace Movement.MovingObjects
         }
 
         /// <summary>
-        /// If path towards player is greater than X spaces away, seek the player out.
-        /// if the path towards the player is less than X spaces away then retreat to the opposite side of the board.
+        /// Targets the player when further than X tiles away in a straight line, otherwise retreats to the opposite side of the board.
         /// </summary>
         private GridItem GetScaredTarget()
         {
             const int distanceBeforeRetreat = 9;
             var player = MovementManager.Instance.GetPlayersNextPosition();
-            var pathToPlayer = pathFinder.FindPath(current, player);
-            var noRouteToPlayer = pathToPlayer == null;
-            if (noRouteToPlayer) return player;
-            return pathToPlayer.Count <= distanceBeforeRetreat ? MovementManager.Instance.GetInversePlayerTransform() : player;
+            var tooClose = SquaredDistance(current, player) <= distanceBeforeRetreat * distanceBeforeRetreat;
+            return tooClose ? MovementManager.Instance.GetInversePlayerTransform() : player;
         }
         
         /// <summary>
