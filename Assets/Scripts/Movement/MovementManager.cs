@@ -159,21 +159,6 @@ namespace Movement
             };
         }
 
-        /// <summary>
-        /// Returns the direction from an item to its adjacent neighbor, with rows indexed top to bottom so Up is Value - 1.
-        /// </summary>
-        public static Direction GetDirectionOfNeighbor(GridItem original, GridItem neighbor)
-        {
-            var deltaX = neighbor.Indices.Key - original.Indices.Key;
-            var deltaY = neighbor.Indices.Value - original.Indices.Value;
-            if (deltaX < 0) return Direction.Left;
-            if (deltaX > 0) return Direction.Right;
-            if (deltaY < 0) return Direction.Up;
-            if (deltaY > 0) return Direction.Down;
-            Debug.LogWarning($"{nameof(GetDirectionOfNeighbor)} was given the same grid item twice ({original.Indices.Key},{original.Indices.Value}).");
-            return Direction.Left;
-        }
-
         public enum Direction
         {
             Up, Down, Left, Right

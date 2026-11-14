@@ -1077,7 +1077,6 @@ GameObject:
   m_Component:
   - component: {fileID: 591483890}
   - component: {fileID: 591483891}
-  - component: {fileID: 591483892}
   m_Layer: 0
   m_Name: MovementManager
   m_TagString: Untagged
@@ -1126,7 +1125,6 @@ MonoBehaviour:
     next: {fileID: 1743687923}
     currentMovementDirection: 2
     targetDebug: {fileID: 723949006}
-    pathFinder: {fileID: 591483892}
     type: 0
   - transform: {fileID: 1949173121}
     speed: 100
@@ -1134,7 +1132,6 @@ MonoBehaviour:
     next: {fileID: 1743687923}
     currentMovementDirection: 2
     targetDebug: {fileID: 248248936}
-    pathFinder: {fileID: 591483892}
     type: 2
   - transform: {fileID: 520834999}
     speed: 100
@@ -1142,7 +1139,6 @@ MonoBehaviour:
     next: {fileID: 1743687923}
     currentMovementDirection: 2
     targetDebug: {fileID: 1657686969}
-    pathFinder: {fileID: 591483892}
     type: 1
   - transform: {fileID: 13034586}
     speed: 100
@@ -1150,20 +1146,7 @@ MonoBehaviour:
     next: {fileID: 1743687923}
     currentMovementDirection: 2
     targetDebug: {fileID: 743793159}
-    pathFinder: {fileID: 591483892}
     type: 3
---- !u!114 &591483892
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 591483889}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c52965a4feff4d19bc70e561382bfb7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &598387281 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 301892909596178007, guid: 146dc9647e512479a9aa39ff26af0e8b, type: 3}

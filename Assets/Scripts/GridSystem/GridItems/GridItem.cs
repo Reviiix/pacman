@@ -13,12 +13,6 @@ namespace GridSystem.GridItems
     {
         public KeyValuePair<int, int> Indices { get; private set; } //Key = X, Value = Y
         protected Image Display;
-        public GridItem previous;
-        #region Pathfinding
-        public int gCost;
-        public int fCost;
-        private int hCost;
-        #endregion
         public GridItem[] Neighbors { get; private set; }
         #if UNITY_EDITOR
         [SerializeField] protected GameObject pelletPrefab; //These references are only needed while building the Grid, no point in storing them in builds
@@ -86,46 +80,6 @@ namespace GridSystem.GridItems
         private GridItem GetRightNeighbor()
         {
             return Neighbors.FirstOrDefault(x => x.Indices.Key == Indices.Key + 1);
-        }
-        
-        /// <summary>
-        /// Records a cheaper route to this item via the given item, along with the estimated cost to the target.
-        /// </summary>
-        public void CalculateGAndHCost(GridItem current, int costFromStart, int estimatedCostToTarget)
-        {
-            previous = current;
-            gCost = costFromStart;
-            hCost = estimatedCostToTarget;
-            CalculateFCost();
-        }
-
-        /// <summary>
-        /// Marks this item as unvisited, setting fCost directly so it cannot overflow.
-        /// </summary>
-        public void InitialisePathfindingValues()
-        {
-            gCost = int.MaxValue;
-            hCost = 0;
-            fCost = int.MaxValue;
-            previous = null;
-        }
-
-        /// <summary>
-        /// Marks this item as the start of a path search.
-        /// </summary>
-        public void SetPathFindingStartPosition(int estimatedCostToTarget)
-        {
-            gCost = 0;
-            hCost = estimatedCostToTarget;
-            CalculateFCost();
-        }
-
-        /// <summary>
-        /// Sums the cost so far and the estimated cost to the target.
-        /// </summary>
-        private void CalculateFCost()
-        {
-            fCost = gCost + hCost;
         }
         
         public bool MultiplePathWaysAvailable()

@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using GridSystem.GridItems;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -10,8 +8,10 @@ namespace Movement.MovingObjects
     [Serializable]
     public class SeekerEnemyMovement : MovingObject
     {
-        [SerializeField] private Pathfinder pathFinder;
-        private Queue<GridItem> path = new ();
+        private static readonly MovementManager.Direction[] SteeringPriority =
+        {
+            MovementManager.Direction.Up, MovementManager.Direction.Left, MovementManager.Direction.Down, MovementManager.Direction.Right
+        };
         public GridItem Target { get; private set; }
         public SeekerType type;
         private readonly MovementManager.Direction[] randomDirections = MovementManager.Directions;
@@ -52,11 +52,8 @@ namespace Movement.MovingObjects
                 case SeekerType.Chase:
                 case SeekerType.CutOff:
                 case SeekerType.Scared:
-                    UpdatePath();
-                    if (PathComplete(path)) return;
-                    path.Dequeue(); //Current position
-                    next = path.Dequeue();
-                    currentMovementDirection = MovementManager.GetDirectionOfNeighbor(current, next);
+                    UpdateTarget();
+                    SteerTowardsTarget();
                     break;
                 case SeekerType.Random:
                     if (ShouldChangeDirection())
@@ -94,17 +91,14 @@ namespace Movement.MovingObjects
         }
 
         /// <summary>
-        /// If path towards player is greater than X spaces away, seek the player out.
-        /// if the path towards the player is less than X spaces away then retreat to the opposite side of the board.
+        /// Targets the player when further than X tiles away in a straight line, otherwise retreats to the opposite side of the board.
         /// </summary>
         private GridItem GetScaredTarget()
         {
             const int distanceBeforeRetreat = 9;
             var player = MovementManager.Instance.GetPlayersNextPosition();
-            var pathToPlayer = pathFinder.FindPath(current, player);
-            var noRouteToPlayer = pathToPlayer == null;
-            if (noRouteToPlayer) return player;
-            return pathToPlayer.Count <= distanceBeforeRetreat ? MovementManager.Instance.GetInversePlayerTransform() : player;
+            var tooClose = SquaredDistance(current, player) <= distanceBeforeRetreat * distanceBeforeRetreat;
+            return tooClose ? MovementManager.Instance.GetInversePlayerTransform() : player;
         }
         
         /// <summary>
@@ -153,9 +147,9 @@ namespace Movement.MovingObjects
         }
 
         /// <summary>
-        /// Only setting a new path on path junctions helps reduce the amount of calculations done and makes the seeker enemy less relentless.
+        /// Picks the target tile for this seeker type and moves the target debug marker to it.
         /// </summary>
-        private void UpdatePath()
+        private void UpdateTarget()
         {
             switch (type)
             {
@@ -170,17 +164,47 @@ namespace Movement.MovingObjects
                     break;
             }
             
-            path  = pathFinder.FindPath(current, Target);
-            
             if (ProjectSettings.DebugSettings.DebugEnemyTargets && targetDebug != null && Target != null)
             {
                 targetDebug.position = Target.transform.position;
             }
         }
 
-        private bool PathComplete(ICollection p)
+        /// <summary>
+        /// Steps to the open neighbor closest in a straight line to the target, never reversing unless at a dead end, with ties broken Up, Left, Down, Right.
+        /// </summary>
+        private void SteerTowardsTarget()
         {
-            return p is not { Count: > 1 };
+            if (Target == null) return;
+
+            var reverseDirection = MovementManager.GetOppositeDirection(currentMovementDirection);
+            var bestDirection = reverseDirection;
+            var bestDistance = int.MaxValue;
+            foreach (var direction in SteeringPriority)
+            {
+                if (direction == reverseDirection) continue;
+                var candidate = current.GetAdjacentItem(direction);
+                if (candidate == null || candidate is Wall) continue;
+                var distance = SquaredDistance(candidate, Target);
+                if (distance >= bestDistance) continue;
+                bestDistance = distance;
+                bestDirection = direction;
+            }
+
+            var nextItem = current.GetAdjacentItem(bestDirection);
+            if (nextItem == null || nextItem is Wall) return;
+            currentMovementDirection = bestDirection;
+            next = nextItem;
+        }
+
+        /// <summary>
+        /// Returns the squared straight-line distance between two grid items, measured in tiles.
+        /// </summary>
+        private static int SquaredDistance(GridItem a, GridItem b)
+        {
+            var deltaX = a.Indices.Key - b.Indices.Key;
+            var deltaY = a.Indices.Value - b.Indices.Value;
+            return deltaX * deltaX + deltaY * deltaY;
         }
     }
 }
