@@ -1,5 +1,5 @@
 # pacman
-A recreation of the original pac-man arcade game made with Unity.
+A recreation of the original pacman arcade game made with Unity.
 
 Grid System
 The grid system generates works in the editor to generate a grid layout for you to create levels with. Grid items can either be blank or walls.
