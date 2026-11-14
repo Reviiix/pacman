@@ -13,11 +13,6 @@ namespace GridSystem.GridItems
     {
         public KeyValuePair<int, int> Indices { get; private set; } //Key = X, Value = Y
         protected Image Display;
-        public GridItem previous;
-        #region Pathfinding
-        public int gCost;
-        public int fCost;
-        #endregion
         public GridItem[] Neighbors { get; private set; }
         #if UNITY_EDITOR
         [SerializeField] protected GameObject pelletPrefab; //These references are only needed while building the Grid, no point in storing them in builds
@@ -85,36 +80,6 @@ namespace GridSystem.GridItems
         private GridItem GetRightNeighbor()
         {
             return Neighbors.FirstOrDefault(x => x.Indices.Key == Indices.Key + 1);
-        }
-        
-        public void CalculateGAndHCost(GridItem current, int gCosts)
-        {
-            previous = current;
-            SetGCost(gCosts);
-            CalculateFCost();
-        }
-        
-        public void InitialisePathfindingValues()
-        {
-            gCost = int.MaxValue;
-            CalculateFCost();
-            previous = null;
-        }
-        
-        public void SetPathFindingStartPosition()
-        {
-            gCost = 0;
-            CalculateFCost();
-        }
-        
-        private void CalculateFCost()
-        {
-            fCost = gCost + fCost;
-        }
-        
-        private void SetGCost(int cost)
-        {
-            gCost = cost;
         }
         
         public bool MultiplePathWaysAvailable()
