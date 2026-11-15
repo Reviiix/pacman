@@ -17,6 +17,18 @@ namespace Movement
         private bool canMove;
         private readonly Dictionary<GridItem, GridItem> mirroredWalkableItems = new();
 
+        /// <summary>
+        /// The player followed by every enemy.
+        /// </summary>
+        public IEnumerable<MovingObject> MovingObjects
+        {
+            get
+            {
+                yield return player;
+                foreach (var seeker in seekerEnemy) yield return seeker;
+            }
+        }
+
         public void Initialise()
         {
             CacheMirroredWalkableItems();
