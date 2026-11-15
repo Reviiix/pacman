@@ -19,6 +19,7 @@ namespace Core
         [SerializeField] private GameCompleteDialog gameCompleteDialog;
         [SerializeField] private PauseController pauseController;
         [SerializeField] private SoundEffects soundEffects;
+        [SerializeField] private MuteButton muteButton;
 
         /// <summary>
         /// Initialises the game systems in dependency order (laying out the grid before characters snap onto it), then starts the presentation layer.
@@ -36,6 +37,7 @@ namespace Core
             if (pelletTwinkle != null) pelletTwinkle.Initialise(pellets);
             if (gameCompleteDialog != null) gameCompleteDialog.Initialise();
             if (pauseController != null) pauseController.Initialise();
+            if (muteButton != null) muteButton.Initialise();
             ConnectSoundEffects();
             ScoreManager.OnGameWon += EndGame;
         }
