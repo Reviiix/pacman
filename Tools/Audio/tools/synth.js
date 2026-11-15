@@ -82,17 +82,24 @@ function renderVoice(voice, seed) {
   return out;
 }
 
+/** Filters in place with a 12 dB-per-octave Butterworth low-pass (RBJ biquad), which is 3 dB down at the cut-off. */
+function lowpass(buf, cutoff) {
+  const w0 = 2 * Math.PI * Math.min(cutoff, rate * 0.49) / rate, alpha = Math.sin(w0) / (2 * Math.SQRT1_2), cos = Math.cos(w0);
+  const a0 = 1 + alpha, b0 = (1 - cos) / 2 / a0, b1 = (1 - cos) / a0, b2 = b0, a1 = -2 * cos / a0, a2 = (1 - alpha) / a0;
+  let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+  for (let i = 0; i < buf.length; i++) {
+    const x = buf[i], y = b0 * x + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2;
+    x2 = x1; x1 = x; y2 = y1; y1 = y; buf[i] = y;
+  }
+}
+
 /** Mixes a sound's voices, low-passes, normalises to its peak, adds edge fades and trims silence. */
 function renderSound(sound) {
   const voices = sound.voices.map((v, i) => ({ buf: renderVoice(v, 0x9e3779b9 ^ (i + 1)), vol: v.vol !== undefined ? v.vol : 1 }));
   const length = Math.max(...voices.map(v => v.buf.length));
   const mix = new Float32Array(length);
   for (const v of voices) for (let i = 0; i < v.buf.length; i++) mix[i] += v.buf[i] * v.vol;
-  if (sound.lowpass) {
-    const k = 1 - Math.exp(-2 * Math.PI * sound.lowpass / rate);
-    let y = 0;
-    for (let i = 0; i < length; i++) { y += k * (mix[i] - y); mix[i] = y; }
-  }
+  if (sound.lowpass) lowpass(mix, sound.lowpass);
   let mean = 0;
   for (let i = 0; i < length; i++) mean += mix[i];
   mean /= length || 1;
