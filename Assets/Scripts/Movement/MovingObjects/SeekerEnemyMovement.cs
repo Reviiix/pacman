@@ -5,6 +5,9 @@ using Random = UnityEngine.Random;
 
 namespace Movement.MovingObjects
 {
+    /// <summary>
+    /// An enemy that steers towards a target tile chosen by its type, or wanders at random.
+    /// </summary>
     [Serializable]
     public class SeekerEnemyMovement : MovingObject
     {
@@ -44,6 +47,9 @@ namespace Movement.MovingObjects
             UpdateNext();
         }
         
+        /// <summary>
+        /// Chooses the next direction: steers towards this type's target tile, or wanders for the Random type.
+        /// </summary>
         private void UpdateNext()
         {
 
@@ -58,7 +64,7 @@ namespace Movement.MovingObjects
                 case SeekerType.Random:
                     if (ShouldChangeDirection())
                     {
-                        ChangeDirection(GetValidRandomDirection(currentMovementDirection));   
+                        ChangeDirection(GetValidRandomDirection(CurrentMovementDirection));   
                     }
                     break;
                 default:
@@ -66,9 +72,12 @@ namespace Movement.MovingObjects
             }
         }
         
+        /// <summary>
+        /// Whether a wall ahead, or an occasional random choice at a junction, calls for a turn.
+        /// </summary>
         private bool ShouldChangeDirection()
         {
-            return current.GetAdjacentItem(currentMovementDirection) is Wall || ShouldTakeAlternativeRoute();
+            return current.GetAdjacentItem(CurrentMovementDirection) is Wall || ShouldTakeAlternativeRoute();
         }
         
         private bool ShouldTakeAlternativeRoute()
@@ -177,7 +186,7 @@ namespace Movement.MovingObjects
         {
             if (Target == null) return;
 
-            var reverseDirection = MovementManager.GetOppositeDirection(currentMovementDirection);
+            var reverseDirection = MovementManager.GetOppositeDirection(CurrentMovementDirection);
             var bestDirection = reverseDirection;
             var bestDistance = int.MaxValue;
             foreach (var direction in SteeringPriority)
@@ -193,7 +202,7 @@ namespace Movement.MovingObjects
 
             var nextItem = current.GetAdjacentItem(bestDirection);
             if (nextItem == null || nextItem is Wall) return;
-            currentMovementDirection = bestDirection;
+            SetMovementDirection(bestDirection);
             next = nextItem;
         }
 

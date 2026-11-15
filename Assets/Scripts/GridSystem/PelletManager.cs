@@ -1,37 +1,22 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Abstractions;
 using GridSystem.GridItems;
-using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace GridSystem
 {
-    [ExecuteInEditMode]
+    /// <summary>
+    /// Holds the level's pellet count for the win check.
+    /// </summary>
     public class PelletManager : Singleton<PelletManager>
     {
-        [SerializeField] private List<Blank> allActivePellets = new List<Blank>();
         public int numberOfPellets { get; private set; }
 
         /// <summary>
-        /// Counts only tiles that still hold a pellet, so stale list entries and bonus-item tiles are ignored.
+        /// Takes the level's pellet count from the pellets themselves, wherever they sit in the hierarchy.
         /// </summary>
-        public void Initialise()
+        public void Initialise(IReadOnlyCollection<Pellet> pellets)
         {
-            numberOfPellets = allActivePellets.Count(tile => tile != null && tile.GetComponentInChildren<Pellet>() != null);
-        }
-
-        public void AddPelletToList(Blank gridItem)
-        {
-            if (allActivePellets.Contains(gridItem)) return;
-            allActivePellets.Add(gridItem);
-        }
-
-        public void RemovePelletFromList(Blank gridItem)
-        {
-            if (!allActivePellets.Contains(gridItem)) return;
-            allActivePellets.Remove(gridItem);
+            numberOfPellets = pellets.Count;
         }
     }
 }

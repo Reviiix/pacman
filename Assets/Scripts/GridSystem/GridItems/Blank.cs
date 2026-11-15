@@ -3,12 +3,13 @@ using UnityEngine;
 
 namespace GridSystem.GridItems
 {
+    /// <summary>
+    /// A walkable tile whose edit-mode tools add or remove a pellet or bonus pickup.
+    /// </summary>
     public class Blank : GridItem
     {
         #if UNITY_EDITOR
-        private bool hasPellet;
         [CanBeNull] private GameObject pellet;
-        private bool hasBonusItem;
         [CanBeNull] private GameObject bonusItem;
 
         public void InitialiseBlank(GameObject newPelletPrefab, GameObject newBonusItemPrefab)
@@ -20,103 +21,142 @@ namespace GridSystem.GridItems
             UnityEditorInternal.ComponentUtility.MoveComponentUp(GetComponent<Blank>());
         }
 
+        /// <summary>
+        /// Greys the level tools out in Play mode, where the pickups have moved to the pickup layer and edits are lost on exit.
+        /// </summary>
+        [ContextMenu(nameof(AddPellet), true)]
+        [ContextMenu(nameof(RemovePellet), true)]
+        [ContextMenu(nameof(AddBonusItem), true)]
+        [ContextMenu(nameof(RemoveBonusItem), true)]
+        [ContextMenu(nameof(ChangeToWall), true)]
+        private bool CanUseLevelTools() => !Application.isPlaying;
+
         #region Pellet
+        /// <summary>
+        /// Adds a linked pellet to this tile unless it already holds one.
+        /// </summary>
         [ContextMenu(nameof(AddPellet))]
         private void AddPellet()
         {
-            if (hasPellet)
+            if (GetComponentInChildren<Pellet>(true) != null)
             {
-                Debug.LogWarning($"Attempting to add a duplicate {nameof(pelletPrefab)} to {nameof(GridItem)}: {Indices.Key},{Indices.Value}. Skipped creation to avoid duplicate.");
+                Debug.LogWarning($"{name} already has a pellet; skipped adding a duplicate.", this);
                 return;
             }
-            hasPellet = true;
-            var parent = transform;
-            pellet = Instantiate(pelletPrefab, parent.position, Quaternion.identity, parent);
-            pellet.GetComponent<Pellet>().Initialise(this);
-            PelletManager.Instance.AddPelletToList(this);
+            pellet = AddPickup(pelletPrefab);
+        }
+
+        /// <summary>
+        /// Adds a linked prefab instance centred on this tile, so later prefab edits reach it.
+        /// </summary>
+        private GameObject AddPickup(GameObject prefab)
+        {
+            var instance = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(prefab, transform);
+            instance.transform.position = transform.position;
+            UnityEditor.Undo.RegisterCreatedObjectUndo(instance, nameof(AddPickup));
+            return instance;
         }
         
+        /// <summary>
+        /// Removes this tile's pellet.
+        /// </summary>
         [ContextMenu(nameof(RemovePellet))]
         private void RemovePellet()
         {
-            // if (!hasPellet) return;
-            hasPellet = false;
             DestroyPelletObject();
-            PelletManager.Instance.RemovePelletFromList(this);
         }
 
+        /// <summary>
+        /// Destroys this tile's pellet, finding it by component if it was not added in this session.
+        /// </summary>
         private void DestroyPelletObject()
         {
             if (pellet == null)
             {
-                pellet = transform.GetChild(0).gameObject;
-                if (pellet == null) return;
-            }
-            if (Application.isPlaying)
-            {
-                Destroy(pellet);
-            }
-            else
-            {
-                UnityEditor.EditorApplication.delayCall+=()=>
+                var found = GetComponentInChildren<Pellet>(true);
+                if (found == null)
                 {
-                    DestroyImmediate(pellet);
-                };
+                    Debug.LogWarning($"No pellet under {name}.", this);
+                    return;
+                }
+                pellet = found.gameObject;
             }
+            UnityEditor.EditorApplication.delayCall+=()=>
+            {
+                DestroyImmediate(pellet);
+            };
         }
         #endregion Pellet
 
         #region BonusItem
+        /// <summary>
+        /// Adds a linked bonus pickup to this tile unless it already holds one.
+        /// </summary>
         [ContextMenu(nameof(AddBonusItem))]
         private void AddBonusItem()
         {
-            if (hasBonusItem)
+            if (GetComponentInChildren<BonusItem>(true) != null)
             {
-                Debug.LogWarning($"Attempting to add a duplicate {nameof(bonusItemPrefab)} to {nameof(GridItem)}: {Indices.Key},{Indices.Value}. Skipped creation to avoid duplicate.");
+                Debug.LogWarning($"{name} already has a bonus pickup; skipped adding a duplicate.", this);
                 return;
             }
-            hasBonusItem = true;
-            var parent = transform;
-            bonusItem = Instantiate(bonusItemPrefab, parent.position, Quaternion.identity, parent);
-            bonusItem.GetComponent<BonusItem>().Initialise(this);
+            bonusItem = AddPickup(bonusItemPrefab);
         }
         
+        /// <summary>
+        /// Removes this tile's bonus pickup.
+        /// </summary>
         [ContextMenu(nameof(RemoveBonusItem))]
         private void RemoveBonusItem()
         {
-            //if (!hasBonusItem) return;
-            hasBonusItem = false;
             DestroyBonusItemObject();
-            //PelletManager.Instance.RemovePelletFromList(this);
         }
 
+        /// <summary>
+        /// Destroys this tile's bonus pickup, finding it by component if it was not added in this session.
+        /// </summary>
         private void DestroyBonusItemObject()
         {
             if (bonusItem == null)
             {
-                bonusItem = transform.GetChild(0).gameObject;
-                if (bonusItem == null) return;
-            }
-            if (Application.isPlaying)
-            {
-                Destroy(bonusItem);
-            }
-            else
-            {
-                UnityEditor.EditorApplication.delayCall+=()=>
+                var found = GetComponentInChildren<BonusItem>(true);
+                if (found == null)
                 {
-                    DestroyImmediate(bonusItem);
-                };
+                    Debug.LogWarning($"No bonus pickup under {name}.", this);
+                    return;
+                }
+                bonusItem = found.gameObject;
             }
+            UnityEditor.EditorApplication.delayCall+=()=>
+            {
+                DestroyImmediate(bonusItem);
+            };
         }
         #endregion BonusItem
 
+        /// <summary>
+        /// Turns this tile into a wall, handing its debug label to the new Wall component and removing any pellet or bonus pickup it holds.
+        /// </summary>
         [ContextMenu(nameof(ChangeToWall))]
         private void ChangeToWall()
         {
-            gameObject.AddComponent<Wall>().InitialiseWall(pelletPrefab, bonusItemPrefab);
-            RemovePellet();
+            var wall = gameObject.AddComponent<Wall>();
+            HandOverDebugLabel(wall);
+            wall.InitialiseWall(pelletPrefab, bonusItemPrefab);
+            pellet = FindChildPickup<Pellet>();
+            if (pellet != null) RemovePellet();
+            bonusItem = FindChildPickup<BonusItem>();
+            if (bonusItem != null) RemoveBonusItem();
             RemoveSelf();
+        }
+
+        /// <summary>
+        /// Finds the GameObject of this tile's pickup of the given type, or null when it has none.
+        /// </summary>
+        private GameObject FindChildPickup<T>() where T : Component
+        {
+            var pickup = GetComponentInChildren<T>(true);
+            return pickup != null ? pickup.gameObject : null;
         }
         #endif
     }

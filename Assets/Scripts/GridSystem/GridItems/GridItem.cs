@@ -8,6 +8,9 @@ using UnityEngine.UI;
 
 namespace GridSystem.GridItems
 {
+    /// <summary>
+    /// One maze tile: knows its grid position and neighbours and shows its wall or corridor look.
+    /// </summary>
     [RequireComponent(typeof(Image))]
     public abstract class GridItem : MonoBehaviour
     {
@@ -20,20 +23,34 @@ namespace GridSystem.GridItems
         #endif
         [SerializeField] private TMP_Text debugIndices;
 
+        /// <summary>
+        /// Stores the tile's grid position and Image, then shows its debug label or, in Play mode, removes it; a tile without a label skips that step.
+        /// </summary>
         public void Initialise(KeyValuePair<int, int> indices)
         {
             Display = GetComponent<Image>();
             Indices = indices;
 
+            if (debugIndices == null) return;
             if (ProjectSettings.DebugSettings.DebugGridIndices)
             {
                 debugIndices.text = $"{Indices.Key},{Indices.Value}";
             }
-            else
+            else if (Application.isPlaying)
             {
                 Destroy(debugIndices.gameObject);
             }
         }
+
+        #if UNITY_EDITOR
+        /// <summary>
+        /// Gives the component replacing this tile its debug label, which a component added by script starts without.
+        /// </summary>
+        protected void HandOverDebugLabel(GridItem replacement)
+        {
+            replacement.debugIndices = debugIndices;
+        }
+        #endif
 
         public void SetNeighbors()
         {
@@ -81,18 +98,32 @@ namespace GridSystem.GridItems
         {
             return Neighbors.FirstOrDefault(x => x.Indices.Key == Indices.Key + 1);
         }
-        
+
         public bool MultiplePathWaysAvailable()
         {
             return Neighbors.Count(x => x is Blank) > 2;
         }
 
+        /// <summary>
+        /// Sets the tile's sprite and colour, finding the Image itself when the item has not been initialised (edit mode).
+        /// </summary>
+        public void SetAppearance(Sprite sprite, Color color)
+        {
+            if (Display == null) Display = GetComponent<Image>();
+            Display.sprite = sprite;
+            Display.color = color;
+        }
+
+        /// <summary>
+        /// Removes this tile component, deferring the removal in edit mode.
+        /// </summary>
         protected void RemoveSelf()
         {
             if (Application.isPlaying)
             {
                 Destroy(this);
             }
+            #if UNITY_EDITOR
             else
             {
                 UnityEditor.EditorApplication.delayCall+=()=>
@@ -100,6 +131,7 @@ namespace GridSystem.GridItems
                     DestroyImmediate(this);
                 };
             }
+            #endif
         }
     }
 }

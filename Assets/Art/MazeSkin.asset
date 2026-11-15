@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76c64b10cd875434aa7eba4d5efdd467, type: 3}
+  m_Name: MazeSkin
+  m_EditorClassIdentifier: Assembly-CSharp::Visuals.MazeSkin
+  layout: 0
+  wallTiles:
+  - {fileID: -1931364193, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -1411407533, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 1658945179, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -1914614416, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -1330908218, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 2081901504, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -1448823870, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -1576601755, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -934675339, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 1842980119, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -973221294, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -1518878082, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -554791986, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -1617413144, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -1735967041, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 803379242, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 605651532, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 1908195112, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 758013002, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -1409418581, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 1848900614, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -1422160688, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 1695767622, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 763919735, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -747020854, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 996571440, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 1878717445, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 1057638334, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -208642619, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 1328153247, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -223186903, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 2018346608, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -686982567, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 1872190770, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 1042468641, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -405859603, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -534507016, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -1698542282, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -21274839, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 1967163083, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -256793257, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -1760329057, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 1732108575, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 1531373679, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: 1081055054, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -1246630070, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  - {fileID: -1658404362, guid: 9060716b497654909893c521f38d6f22, type: 3}
+  wallTint: {r: 1, g: 1, b: 1, a: 1}
+  corridorColor: {r: 0, g: 0, b: 0, a: 0}
+  treatOutsideAsWall: 1
+  wallSheet: {fileID: 2800000, guid: 9060716b497654909893c521f38d6f22, type: 3}
