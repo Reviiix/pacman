@@ -17,6 +17,7 @@ namespace Visuals
         [SerializeField] private Sprite[] downFrames;
         [SerializeField] [Min(0.01f)] private float secondsPerFrame = 0.15f;
         [SerializeField] private bool animateOnlyWhileMoving;
+        [SerializeField] private bool mirrorWhenFacingLeft = true;
         private Image image;
         private Sprite[] currentFrames;
         private int frameIndex;
@@ -35,7 +36,7 @@ namespace Visuals
         }
 
         /// <summary>
-        /// Switches to the frames for the given direction, mirroring the side frames when facing left.
+        /// Switches to the frames for the given direction, mirroring the side frames when facing left unless that is turned off for symmetric, top-left-lit art.
         /// </summary>
         private void Face(MovementManager.Direction direction)
         {
@@ -46,7 +47,7 @@ namespace Visuals
                 _ => sideFrames,
             };
             var scale = transform.localScale;
-            scale.x = Mathf.Abs(scale.x) * (direction == MovementManager.Direction.Left ? -1f : 1f);
+            scale.x = Mathf.Abs(scale.x) * (mirrorWhenFacingLeft && direction == MovementManager.Direction.Left ? -1f : 1f);
             transform.localScale = scale;
             ShowFrame();
         }

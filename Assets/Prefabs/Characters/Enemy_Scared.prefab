@@ -97,6 +97,10 @@ PrefabInstance:
       value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 4966227169226426425, guid: 529946086027549e9be95e34d446e224, type: 3}
+      propertyPath: mirrorWhenFacingLeft
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4966227169226426425, guid: 529946086027549e9be95e34d446e224, type: 3}
       propertyPath: sideFrames.Array.size
       value: 2
       objectReference: {fileID: 0}
