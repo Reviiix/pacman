@@ -1,3 +1,4 @@
+using System;
 using Movement;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,6 +12,7 @@ namespace UserInterface
     {
         [SerializeField] private GameObject overlay;
         [SerializeField] private Button resumeButton;
+        public event Action<bool> PausedChanged;
         private bool paused;
         private bool locked = true;
 
@@ -61,6 +63,7 @@ namespace UserInterface
             Time.timeScale = 0f;
             MovementManager.Instance.StopMoving();
             overlay.SetActive(true);
+            PausedChanged?.Invoke(true);
         }
 
         /// <summary>
@@ -72,6 +75,7 @@ namespace UserInterface
             Time.timeScale = 1f;
             MovementManager.Instance.ResumeMoving();
             overlay.SetActive(false);
+            PausedChanged?.Invoke(false);
         }
 
         /// <summary>
