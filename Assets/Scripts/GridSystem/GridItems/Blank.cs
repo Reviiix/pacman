@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace GridSystem.GridItems
 {
+    /// <summary>
+    /// A walkable tile whose edit-mode tools add or remove a pellet or bonus pickup.
+    /// </summary>
     public class Blank : GridItem
     {
         #if UNITY_EDITOR
@@ -111,12 +114,29 @@ namespace GridSystem.GridItems
         }
         #endregion BonusItem
 
+        /// <summary>
+        /// Turns this tile into a wall, handing its debug label to the new Wall component and removing any pellet or bonus pickup it holds.
+        /// </summary>
         [ContextMenu(nameof(ChangeToWall))]
         private void ChangeToWall()
         {
-            gameObject.AddComponent<Wall>().InitialiseWall(pelletPrefab, bonusItemPrefab);
-            RemovePellet();
+            var wall = gameObject.AddComponent<Wall>();
+            HandOverDebugLabel(wall);
+            wall.InitialiseWall(pelletPrefab, bonusItemPrefab);
+            pellet = FindChildPickup<Pellet>();
+            if (pellet != null) RemovePellet();
+            bonusItem = FindChildPickup<BonusItem>();
+            if (bonusItem != null) RemoveBonusItem();
             RemoveSelf();
+        }
+
+        /// <summary>
+        /// Finds the GameObject of this tile's pickup of the given type, or null when it has none.
+        /// </summary>
+        private GameObject FindChildPickup<T>() where T : Component
+        {
+            var pickup = GetComponentInChildren<T>(true);
+            return pickup != null ? pickup.gameObject : null;
         }
         #endif
     }
