@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace Visuals
 {
     /// <summary>
-    /// Darkens the corners of its rect with a soft radial gradient generated at runtime, so no point-filtered asset bands it.
+    /// Darkens the corners of its rect with a soft radial gradient generated at runtime, so no point-filtered asset bands it (save its RawImage transparent; it turns itself on).
     /// </summary>
     [RequireComponent(typeof(RawImage))]
     public class VignetteOverlay : MonoBehaviour
@@ -24,6 +24,7 @@ namespace Visuals
             rawImage.raycastTarget = false;
             if (vignetteTexture == null) vignetteTexture = BuildTexture();
             rawImage.texture = vignetteTexture;
+            rawImage.color = Color.white;
         }
 
         /// <summary>

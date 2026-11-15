@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace Visuals
 {
     /// <summary>
-    /// Darkens the bottom screen row of every art pixel to fake a CRT scanline, using a tiny texture rebuilt when the canvas scale changes.
+    /// Darkens the bottom screen row of every art pixel to fake a CRT scanline, using a tiny texture rebuilt when the canvas scale changes (save its RawImage transparent; it turns itself on).
     /// </summary>
     [RequireComponent(typeof(RawImage))]
     public class ScanlineOverlay : MonoBehaviour
@@ -78,6 +78,7 @@ namespace Visuals
             scanlineTexture.SetPixels32(pixels);
             scanlineTexture.Apply(false, true);
             rawImage.texture = scanlineTexture;
+            rawImage.color = Color.white;
             textureScale = scale;
         }
     }
