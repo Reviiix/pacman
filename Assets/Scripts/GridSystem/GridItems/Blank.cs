@@ -30,9 +30,20 @@ namespace GridSystem.GridItems
                 return;
             }
             hasPellet = true;
-            var parent = transform;
-            pellet = Instantiate(pelletPrefab, parent.position, Quaternion.identity, parent);
+            pellet = AddPickup(pelletPrefab);
             PelletManager.Instance.AddPelletToList(this);
+        }
+
+        /// <summary>
+        /// Adds a pickup centred on this tile: a linked prefab instance in edit mode (so prefab edits reach it), a plain copy in Play mode.
+        /// </summary>
+        private GameObject AddPickup(GameObject prefab)
+        {
+            if (Application.isPlaying) return Instantiate(prefab, transform.position, Quaternion.identity, transform);
+            var instance = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(prefab, transform);
+            instance.transform.position = transform.position;
+            UnityEditor.Undo.RegisterCreatedObjectUndo(instance, nameof(AddPickup));
+            return instance;
         }
         
         [ContextMenu(nameof(RemovePellet))]
@@ -75,8 +86,7 @@ namespace GridSystem.GridItems
                 return;
             }
             hasBonusItem = true;
-            var parent = transform;
-            bonusItem = Instantiate(bonusItemPrefab, parent.position, Quaternion.identity, parent);
+            bonusItem = AddPickup(bonusItemPrefab);
         }
         
         [ContextMenu(nameof(RemoveBonusItem))]
