@@ -20,19 +20,20 @@ namespace EditorTools
         {
             if (!assetPath.StartsWith(PixelArtFolder)) return;
             var importer = (TextureImporter)assetImporter;
-            if (importer.importSettingsMissing) ApplyPixelArtSettings(importer);
             importer.GetSourceTextureWidthAndHeight(out var width, out var height);
+            if (importer.importSettingsMissing) ApplyPixelArtSettings(importer, Mathf.Max(width, height));
             var isStrip = height > 0 && width > height && width % height == 0;
             importer.spriteImportMode = isStrip ? SpriteImportMode.Multiple : SpriteImportMode.Single;
             if (isStrip) SliceStrip(importer, width / height, height);
         }
 
         /// <summary>
-        /// Point filtering, no mipmaps, no compression and a 16 pixels-per-unit sprite, so art scales by whole pixels without blur.
+        /// Point filtering, no mipmaps, no compression, a 16 pixels-per-unit sprite and the smallest max size that keeps every pixel.
         /// </summary>
-        private static void ApplyPixelArtSettings(TextureImporter importer)
+        private static void ApplyPixelArtSettings(TextureImporter importer, int largestSide)
         {
             importer.textureType = TextureImporterType.Sprite;
+            importer.maxTextureSize = Mathf.Clamp(Mathf.NextPowerOfTwo(largestSide), 32, 8192);
             importer.spritePixelsPerUnit = PixelsPerUnit;
             importer.filterMode = FilterMode.Point;
             importer.mipmapEnabled = false;
