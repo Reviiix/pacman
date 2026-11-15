@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Abstractions;
 using GridSystem.GridItems;
 using UnityEngine;
-using UnityEngine.Serialization;
+using Visuals;
 
 namespace GridSystem
 {
+    /// <summary>
+    /// Owns the level grid: indexes its tiles for lookups, links neighbours and skins the maze.
+    /// </summary>
     [ExecuteInEditMode]
     public class GridManager : Singleton<GridManager>
     {
@@ -16,6 +18,7 @@ namespace GridSystem
         private const int MaximumColumns = 99;
         private const string GridTag = "Grid";
         public readonly List<GridItem> gridItems = new ();
+        private GridItem[,] itemLookup;
         private bool generatingGrid;
         private GameObject gridObject;
         [SerializeField] private Transform gridArea;
@@ -24,19 +27,56 @@ namespace GridSystem
         [SerializeField] private GameObject gridItemPrefabPrefab;
         [SerializeField] [Range(MinimumItems, MaximumRows)] public int amountOfRows = MaximumRows / 2;
         [SerializeField] [Range(MinimumItems, MaximumColumns)] public int amountOfColumns = MaximumColumns / 2;
+        [SerializeField] private MazeSkin mazeSkin;
 
+        /// <summary>
+        /// Collects and initialises the tiles, links their neighbours and applies the maze skin.
+        /// </summary>
         [ContextMenu(nameof(Initialise))]
         public void Initialise()
         {
             SetGridItems();
             SetNeighbors();
+            ApplyMazeSkin();
+        }
+
+        /// <summary>
+        /// Gives every wall its autotiled sprite and every corridor its colour; also runnable from the context menu in edit mode.
+        /// </summary>
+        [ContextMenu(nameof(ApplyMazeSkin))]
+        private void ApplyMazeSkin()
+        {
+            if (mazeSkin == null) return;
+            if (!Application.isPlaying)
+            {
+                SetGridItems(false);
+                #if UNITY_EDITOR
+                var images = new List<UnityEngine.Object>();
+                foreach (var gridItem in gridItems) images.Add(gridItem.GetComponent<UnityEngine.UI.Image>());
+                UnityEditor.Undo.RecordObjects(images.ToArray(), nameof(ApplyMazeSkin));
+                #endif
+            }
+            mazeSkin.Apply(itemLookup);
         }
         
+        /// <summary>
+        /// Returns the grid item at the given column (Key) and row (Value), or null when outside the grid.
+        /// </summary>
         public GridItem GetItem(KeyValuePair<int, int> indices)
         {
-            var x = indices.Key; //Cache for LINQs hidden multiple access.
+            var x = indices.Key;
             var y = indices.Value;
-            return gridItems.Where(gridItem => gridItem.Indices.Key == x).FirstOrDefault(gridItem => gridItem.Indices.Value == y);
+            if (itemLookup == null || x < 0 || y < 0 || x >= itemLookup.GetLength(0) || y >= itemLookup.GetLength(1)) return null;
+            return itemLookup[x, y];
+        }
+
+        /// <summary>
+        /// Records a grid item in the column/row lookup used by GetItem.
+        /// </summary>
+        private void RegisterItem(GridItem gridItem, int column, int row)
+        {
+            gridItems.Add(gridItem);
+            itemLookup[column, row] = gridItem;
         }
 
         #region Generate Grid
@@ -70,9 +110,13 @@ namespace GridSystem
             }));
         }
 
+        /// <summary>
+        /// Generates a fresh grid of rows and tiles from the prefabs and indexes it.
+        /// </summary>
         private void CreateGrid(Action completeCallback = null)
         {
             gridObject = Instantiate(gridPrefab, gridArea);
+            itemLookup = new GridItem[amountOfColumns, amountOfRows];
             for (var i = 0; i < amountOfRows; i++)
             {
                 var row = Instantiate(rowPrefab, gridObject.transform).transform;
@@ -82,7 +126,7 @@ namespace GridSystem
                     {
                         var gridItem = Instantiate(gridItemPrefabPrefab, row).GetComponent<GridItem>();
                         gridItem.Initialise(new KeyValuePair<int, int>(j, i));
-                        gridItems.Add(gridItem);
+                        RegisterItem(gridItem, j, i);
                     }
                     else
                     {
@@ -102,21 +146,28 @@ namespace GridSystem
             }
         }
         
-        private void SetGridItems()
+        /// <summary>
+        /// Collects the grid items from the level hierarchy (rows of columns), indexes them for constant-time lookups and optionally initialises them.
+        /// </summary>
+        private void SetGridItems(bool initialiseItems = true)
         {
             gridItems.Clear();
+            itemLookup = new GridItem[amountOfColumns, amountOfRows];
             gridObject = GameObject.FindWithTag(GridTag); //FindWithTag because caches can be reset in and out of play mode.
             for (var i = 0; i < amountOfRows; i++)
             {
                 for (var j = 0; j < amountOfColumns; j++)
                 {
                     var gridItem = gridObject.transform.GetChild(i).transform.GetChild(j).GetComponent<GridItem>();
-                    gridItems.Add(gridItem);
-                    gridItem.Initialise(new KeyValuePair<int, int>(j, i));
+                    RegisterItem(gridItem, j, i);
+                    if (initialiseItems) gridItem.Initialise(new KeyValuePair<int, int>(j, i));
                 }
             }
         }
 
+        /// <summary>
+        /// Destroys the generated grid, then calls back.
+        /// </summary>
         private void ResetGrid(Action completeCallback = null)
         {
             gridObject = GameObject.FindWithTag(GridTag);
@@ -130,6 +181,7 @@ namespace GridSystem
                 Destroy(gridObject);
                 completeCallback?.Invoke();
             }
+            #if UNITY_EDITOR
             else
             {
                 UnityEditor.EditorApplication.delayCall+=()=>
@@ -138,6 +190,7 @@ namespace GridSystem
                     completeCallback?.Invoke();
                 };
             }
+            #endif
         }
         #endregion Generate Grid
     }

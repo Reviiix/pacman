@@ -27,6 +27,12 @@ namespace GridSystem.GridItems
             blank.InitialiseBlank(pelletPrefab, bonusItemPrefab);
             RemoveSelf();
         }
+
+        /// <summary>
+        /// Greys the conversion tool out in Play mode, as Blank's tools are, since the grid is already built and edits are lost on exit.
+        /// </summary>
+        [ContextMenu(nameof(ChangeToBlank), true)]
+        private bool CanUseLevelTools() => !Application.isPlaying;
         #endif
     }
 }
