@@ -46,7 +46,7 @@ namespace Visuals
         }
 
         /// <summary>
-        /// Tiles the scanline texture once per art pixel, hiding the overlay at 1x where there is no room for a scanline.
+        /// Tiles the scanline texture once per art pixel, phased to the centre-anchored art grid, hiding the overlay at 1x where there is no room for a scanline.
         /// </summary>
         private void Refresh()
         {
@@ -54,8 +54,8 @@ namespace Visuals
             rawImage.enabled = scale > 1 && darkness > 0f;
             if (!rawImage.enabled) return;
             if (scale != textureScale) BuildTexture(scale);
-            var size = rectTransform.rect.size;
-            rawImage.uvRect = new Rect(0f, 0f, size.x, size.y);
+            var rect = rectTransform.rect;
+            rawImage.uvRect = new Rect(0f, Mathf.Repeat(rect.yMin, 1f), rect.width, rect.height);
         }
 
         /// <summary>
