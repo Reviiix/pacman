@@ -16,3 +16,10 @@ Handles the order of game initialisation. Allows for better debugging of race co
 # Abstractions
 Singleton
 A type singleton abstract class. Inheritors will follow the singleton pattern.
+# Web build
+The game is built for WebGL to run inside the portfolio site's player (an iframe whose shape changes with the page and full screen).
+- Template: Assets/WebGLTemplates/Portfolio fills the frame, shows a loading percentage and loads nothing from other sites (the site's Content-Security-Policy blocks that). Player Settings select it.
+- Settings: Brotli compression, no decompression fallback, data caching on, explicitly thrown exceptions only, engine code stripping and Medium managed stripping, hardware statistics off.
+- Fit: PixelPerfectCanvasScaler keeps whole-number scales for crisp pixels and shrinks to fit exactly when the frame is smaller than 288x392, so the whole maze is always visible.
+- Controls: arrow keys or WASD, swipe on touch screens, P to pause (never Esc, which the site uses to leave the game). The game also pauses when it loses focus, and the game-complete dialog restarts the level.
+- Build: File > Build Profiles > Web, scene Assets/Scenes/Pacman.unity, output Builds/WebGL (ignored by git). Copy index.html and Build/ into the site's public/games/pac-man/ folder.
