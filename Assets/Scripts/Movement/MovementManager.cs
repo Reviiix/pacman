@@ -46,6 +46,14 @@ namespace Movement
             canMove = true;
         }
 
+        /// <summary>
+        /// Stops every character and the player's input, as when the game ends.
+        /// </summary>
+        public void StopMoving()
+        {
+            canMove = false;
+        }
+
         private void Update()
         {
             if (!canMove) return;
