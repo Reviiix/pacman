@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Renders the game's sound effects from sounds.json into 16-bit mono WAV files, with no packages.
-// Each sound mixes voices; a voice is an oscillator (square with a duty cycle, triangle or noise) playing a list of notes,
+// Each sound mixes voices; a voice is an oscillator (zero-mean square with a duty cycle, triangle or noise) playing a list of notes,
 // each with its own length, optional pitch slide and an attack/decay/sustain/release envelope. The mix is normalised to
 // the sound's peak level, edged with short fades so it never clicks, and trimmed of trailing silence.
 // Usage: node tools/synth.js sounds.json out
@@ -61,7 +61,7 @@ function renderVoice(voice, seed) {
         let v;
         if (voice.wave === 'square') {
           const duty = voice.duty || 0.5;
-          v = (phase < duty ? 1 : -1) + polyBlep(phase, dt) - polyBlep((phase + 1 - duty) % 1, dt);
+          v = (phase < duty ? 1 : -1) + polyBlep(phase, dt) - polyBlep((phase + 1 - duty) % 1, dt) - (2 * duty - 1);
         } else if (voice.wave === 'triangle') {
           v = 1 - 4 * Math.abs(phase - 0.5);
         } else {
