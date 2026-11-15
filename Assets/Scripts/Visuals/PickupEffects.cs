@@ -2,21 +2,24 @@ using System.Collections;
 using GridSystem.GridItems;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Visuals
 {
     /// <summary>
-    /// Plays a pooled sugar-burst flash where pellets and pickups are eaten, plus a rising "+NN" popup for bonus points.
+    /// Plays pooled sugar-burst prefabs where pellets and pickups are eaten, plus a pooled "+NN" popup prefab for bonus points.
     /// </summary>
     public class PickupEffects : MonoBehaviour
     {
         private const float PopupRiseArtPixels = 8f;
-        [SerializeField] private Sprite[] burstFrames;
-        [SerializeField] [Min(0.01f)] private float firstFrameSeconds = 0.06f;
-        [SerializeField] [Min(0.01f)] private float secondFrameSeconds = 0.09f;
+        [SerializeField] private Image burstPrefab;
+        [SerializeField] private Sprite burstFirstFrame;
+        [SerializeField] private Sprite burstSecondFrame;
+        [SerializeField] [FormerlySerializedAs("firstFrameSeconds")] [Min(0.01f)] private float burstFirstFrameSeconds = 0.06f;
+        [SerializeField] [FormerlySerializedAs("secondFrameSeconds")] [Min(0.01f)] private float burstSecondFrameSeconds = 0.09f;
         [SerializeField] [Min(1)] private int burstPoolSize = 6;
-        [SerializeField] private RectTransform popupTemplate;
+        [SerializeField] private RectTransform popupPrefab;
         [SerializeField] [Min(1)] private int popupPoolSize = 3;
         [SerializeField] [Min(0.01f)] private float popupSeconds = 0.6f;
         [SerializeField] [Min(0f)] private float popupFadeSeconds = 0.2f;
@@ -29,41 +32,44 @@ namespace Visuals
         private int nextPopup;
 
         /// <summary>
-        /// Builds the burst and popup pools up front so nothing is instantiated during play.
+        /// Instantiates the burst and popup pools up front so nothing is created during play.
         /// </summary>
         private void Awake()
         {
-            bursts = new Image[burstPoolSize];
-            burstRoutines = new Coroutine[burstPoolSize];
-            for (var i = 0; i < burstPoolSize; i++)
+            if (burstPrefab == null || burstFirstFrame == null || burstSecondFrame == null) Debug.LogWarning($"{name} has no burst prefab or frames; bursts are off.", this);
+            if (popupPrefab == null) Debug.LogWarning($"{name} has no popup prefab; points popups are off.", this);
+
+            bursts = new Image[burstPrefab != null ? burstPoolSize : 0];
+            burstRoutines = new Coroutine[bursts.Length];
+            for (var i = 0; i < bursts.Length; i++)
             {
-                var burst = new GameObject($"Burst {i}", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-                burst.transform.SetParent(transform, false);
-                ((RectTransform)burst.transform).sizeDelta = new Vector2(16f, 16f);
-                bursts[i] = burst.GetComponent<Image>();
-                bursts[i].raycastTarget = false;
-                burst.SetActive(false);
+                bursts[i] = Instantiate(burstPrefab, transform);
+                bursts[i].gameObject.SetActive(false);
             }
 
-            popups = new RectTransform[popupTemplate != null ? popupPoolSize : 0];
+            popups = new RectTransform[popupPrefab != null ? popupPoolSize : 0];
             popupTexts = new TMP_Text[popups.Length][];
             popupRoutines = new Coroutine[popups.Length];
             for (var i = 0; i < popups.Length; i++)
             {
-                popups[i] = Instantiate(popupTemplate, transform);
-                popups[i].name = $"Popup {i}";
+                popups[i] = Instantiate(popupPrefab, transform);
                 popupTexts[i] = popups[i].GetComponentsInChildren<TMP_Text>(true);
                 popups[i].gameObject.SetActive(false);
             }
-            if (popupTemplate != null) popupTemplate.gameObject.SetActive(false);
         }
 
+        /// <summary>
+        /// Listens for eaten pellets and collected pickups.
+        /// </summary>
         private void OnEnable()
         {
             Pellet.Eaten += OnPelletEaten;
             BonusItem.Collected += OnBonusCollected;
         }
 
+        /// <summary>
+        /// Stops listening for eaten pellets and collected pickups.
+        /// </summary>
         private void OnDisable()
         {
             Pellet.Eaten -= OnPelletEaten;
@@ -92,7 +98,7 @@ namespace Visuals
         /// </summary>
         private void PlayBurst(Vector3 position)
         {
-            if (burstFrames == null || burstFrames.Length < 2) return;
+            if (bursts.Length == 0 || burstFirstFrame == null || burstSecondFrame == null) return;
             var index = nextBurst;
             nextBurst = (nextBurst + 1) % bursts.Length;
             if (burstRoutines[index] != null) StopCoroutine(burstRoutines[index]);
@@ -106,10 +112,10 @@ namespace Visuals
         {
             burst.transform.position = position;
             burst.gameObject.SetActive(true);
-            var total = firstFrameSeconds + secondFrameSeconds;
+            var total = burstFirstFrameSeconds + burstSecondFrameSeconds;
             for (var elapsed = 0f; elapsed < total; elapsed += Time.deltaTime)
             {
-                burst.sprite = elapsed < firstFrameSeconds ? burstFrames[0] : burstFrames[1];
+                burst.sprite = elapsed < burstFirstFrameSeconds ? burstFirstFrame : burstSecondFrame;
                 burst.color = new Color(1f, 1f, 1f, 1f - elapsed / total);
                 yield return null;
             }
