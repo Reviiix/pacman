@@ -158,10 +158,10 @@ Run `sh tools/regenerate.sh`, then open `contact_sheet.png` to see all 47 number
 
 ## 6. Enemies
 
-All four are front-facing, 2-frame idle loops that run continuously, each drawn in one body hue with white and ink details.
-Every body is centred on the tile's middle line, so the animator's left-mirroring never shifts it. Only Peeper's
-frame-1 pupil and thread and Swirlpop's swirl and pupils change sides. Jitters is never mirrored, so its gloss stays
-top-left (see section 12). They need no up or down frames.
+All four are front-facing, 2-frame idle loops that run continuously, each drawn in one body hue with white and ink
+details. Every body is centred on the tile's middle line, so the animator's left-mirroring never shifts it. Only
+Peeper's frame-1 pupil and thread and Swirlpop's swirl change sides; Swirlpop's eyes are mirror-symmetric in both
+frames. Jitters is never mirrored, so its gloss stays top-left (see section 12). They need no up or down frames.
 
 | Behaviour (code) | Character | File | Colour | Silhouette and behaviour cue | Frame 0 / frame 1 | fps |
 |---|---|---|---|---|---|---|
