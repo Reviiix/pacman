@@ -3,6 +3,7 @@ using GridSystem;
 using GridSystem.GridItems;
 using Movement;
 using UnityEngine;
+using UserInterface;
 using Visuals;
 
 namespace Core
@@ -14,6 +15,7 @@ namespace Core
     {
         [SerializeField] private PelletTwinkle pelletTwinkle;
         [SerializeField] private Transform pickupLayer;
+        [SerializeField] private GameCompleteDialog gameCompleteDialog;
 
         /// <summary>
         /// Initialises the game systems in dependency order (laying out the grid before characters snap onto it), then starts the presentation layer.
@@ -29,6 +31,25 @@ namespace Core
             MovePickupsToTheirLayer(pellets);
             ConnectCharacterAnimators();
             if (pelletTwinkle != null) pelletTwinkle.Initialise(pellets);
+            if (gameCompleteDialog != null) gameCompleteDialog.Initialise();
+            ScoreManager.OnGameWon += EndGame;
+        }
+
+        /// <summary>
+        /// Stops listening for the win, so a reloaded level does not call into this destroyed initialiser.
+        /// </summary>
+        private void OnDestroy()
+        {
+            ScoreManager.OnGameWon -= EndGame;
+        }
+
+        /// <summary>
+        /// Freezes the characters and shows the game-complete dialog once the last pellet is eaten.
+        /// </summary>
+        private void EndGame()
+        {
+            MovementManager.Instance.StopMoving();
+            if (gameCompleteDialog != null) gameCompleteDialog.Show();
         }
 
         /// <summary>
