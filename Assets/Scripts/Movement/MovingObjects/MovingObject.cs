@@ -6,13 +6,17 @@ using UnityEngine.Serialization;
 
 namespace Movement.MovingObjects
 {
+    /// <summary>
+    /// Moves a character tile by tile across the grid.
+    /// </summary>
     [Serializable]
     public abstract class MovingObject
     {
         private const float NewPositionDistanceTolerance = 0.01f;
-        private const int CurrentPositionDistanceTolerance = 10;
+        private const float TurnToleranceInTiles = 0.225f;
+        private const float DefaultTilesPerSecond = 2.25f;
         public Transform transform;
-        [SerializeField] protected int speed;
+        [SerializeField] [Min(0f)] protected float tilesPerSecond = DefaultTilesPerSecond;
         [SerializeField] protected GridItem current;
         [SerializeField] protected GridItem next;
         private WaitUntil waitUntilReachedCurrentTarget;
@@ -77,9 +81,21 @@ namespace Movement.MovingObjects
             SetNextPosition(current.GetAdjacentItem(currentMovementDirection));
         }
         
+        /// <summary>
+        /// Returns this frame's position towards the next tile, moving a fixed number of tiles per second at any screen size.
+        /// </summary>
         public Vector3 GetDestination()
         {
-            return Vector3.MoveTowards(transform.position, next.transform.position, speed * Time.deltaTime);
+            return Vector3.MoveTowards(transform.position, next.transform.position, tilesPerSecond * GetTileWorldSize() * Time.deltaTime);
+        }
+
+        /// <summary>
+        /// Returns the width of one grid tile in world units, which changes with the canvas scale.
+        /// </summary>
+        private float GetTileWorldSize()
+        {
+            var tile = (RectTransform)current.transform;
+            return tile.rect.width * tile.lossyScale.x;
         }
 
         private MovementManager.Direction GetDirectionFromKeyCode(KeyCode key)
@@ -94,9 +110,12 @@ namespace Movement.MovingObjects
             };
         }
 
+        /// <summary>
+        /// Whether the character is close enough to its current tile to turn immediately.
+        /// </summary>
         private bool CloseToCurrentGridItem()
         {
-            return Vector3.Distance(transform.position, current.transform.position) <= CurrentPositionDistanceTolerance;
+            return Vector3.Distance(transform.position, current.transform.position) <= TurnToleranceInTiles * GetTileWorldSize();
         }
 
         protected virtual bool NewPositionReached()
