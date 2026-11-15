@@ -9,7 +9,7 @@ namespace Visuals
     [RequireComponent(typeof(RawImage))]
     public class VignetteOverlay : MonoBehaviour
     {
-        [SerializeField] private Color color = new(0.078f, 0.043f, 0.149f, 1f);
+        [SerializeField] private Color color = new Color32(0x02, 0x04, 0x10, 0xFF);
         [SerializeField] [Range(0f, 1f)] private float cornerAlpha = 0.25f;
         [SerializeField] [Range(0f, 1f)] private float fadeStart = 0.45f;
         [SerializeField] private Vector2Int textureSize = new(68, 88);
