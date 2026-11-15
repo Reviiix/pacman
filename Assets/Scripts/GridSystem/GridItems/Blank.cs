@@ -9,9 +9,7 @@ namespace GridSystem.GridItems
     public class Blank : GridItem
     {
         #if UNITY_EDITOR
-        private bool hasPellet;
         [CanBeNull] private GameObject pellet;
-        private bool hasBonusItem;
         [CanBeNull] private GameObject bonusItem;
 
         public void InitialiseBlank(GameObject newPelletPrefab, GameObject newBonusItemPrefab)
@@ -35,17 +33,16 @@ namespace GridSystem.GridItems
 
         #region Pellet
         /// <summary>
-        /// Adds a linked pellet to this tile.
+        /// Adds a linked pellet to this tile unless it already holds one.
         /// </summary>
         [ContextMenu(nameof(AddPellet))]
         private void AddPellet()
         {
-            if (hasPellet)
+            if (GetComponentInChildren<Pellet>(true) != null)
             {
                 Debug.LogWarning($"{name} already has a pellet; skipped adding a duplicate.", this);
                 return;
             }
-            hasPellet = true;
             pellet = AddPickup(pelletPrefab);
         }
 
@@ -66,7 +63,6 @@ namespace GridSystem.GridItems
         [ContextMenu(nameof(RemovePellet))]
         private void RemovePellet()
         {
-            hasPellet = false;
             DestroyPelletObject();
         }
 
@@ -94,17 +90,16 @@ namespace GridSystem.GridItems
 
         #region BonusItem
         /// <summary>
-        /// Adds a linked bonus pickup to this tile.
+        /// Adds a linked bonus pickup to this tile unless it already holds one.
         /// </summary>
         [ContextMenu(nameof(AddBonusItem))]
         private void AddBonusItem()
         {
-            if (hasBonusItem)
+            if (GetComponentInChildren<BonusItem>(true) != null)
             {
                 Debug.LogWarning($"{name} already has a bonus pickup; skipped adding a duplicate.", this);
                 return;
             }
-            hasBonusItem = true;
             bonusItem = AddPickup(bonusItemPrefab);
         }
         
@@ -114,7 +109,6 @@ namespace GridSystem.GridItems
         [ContextMenu(nameof(RemoveBonusItem))]
         private void RemoveBonusItem()
         {
-            hasBonusItem = false;
             DestroyBonusItemObject();
         }
 
