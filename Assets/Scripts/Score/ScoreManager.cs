@@ -13,6 +13,7 @@ namespace GameStates
     public class ScoreManager : Singleton<ScoreManager>
     {
         public static Action<int> OnScoreChange;
+        public static event Action OnGameWon;
         private int totalPellets;
         private int pelletsEaten;
         private int score;
@@ -24,16 +25,19 @@ namespace GameStates
             ResetPelletsAndPoints();
         }
 
+        /// <summary>
+        /// Scores an eaten pellet and announces the win once, when the last one goes.
+        /// </summary>
         public void IncrementPelletsHit()
         {
             score++;
             pelletsEaten++;
-            gameWon = CheckGameWon();
             OnScoreChange?.Invoke(score);
 
-            if (gameWon)
+            if (!gameWon && CheckGameWon())
             {
-                Debug.Log("You Won!");
+                gameWon = true;
+                OnGameWon?.Invoke();
             }
         }
         
@@ -42,6 +46,7 @@ namespace GameStates
             totalPellets = PelletManager.Instance.numberOfPellets;
             pelletsEaten = 0;
             score = 0;
+            gameWon = false;
         }
 
         /// <summary>
