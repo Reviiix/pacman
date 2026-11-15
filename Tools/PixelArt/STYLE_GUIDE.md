@@ -5,20 +5,19 @@ Mallow the marshmallow cat collects sugar sparkles while four candy creatures hu
 1980s maze chaser (bright maze edges, small glowing dots, chunky characters, centred score bar). Every shape and colour is
 original.
 
-This guide is the reference for producing and integrating every sprite. The source of truth is `art.txt`. Everything else
-is generated from it.
+This guide describes the art and how it is wired into Unity. The source of truth is `art.txt`; everything else is generated
+from it. The generated files below are not committed: run `sh tools/regenerate.sh` to produce them.
 
 | File | What it is |
 |---|---|
 | `art.txt` | Editable ASCII source: palette, every sprite frame, wall quadrant patterns |
 | `spec.json` | Built from `art.txt` (`node tools/build.js art.txt spec.json`) |
-| `out/*.png` | Production PNG strips (frames left to right) and `walls.png` (47-tile autotile sheet) |
-| `contact_sheet.png` | Every frame at 6x with a 2x copy (the real in-game size), all 47 wall tiles with indices, palette |
-| `mockup.png` / `mockup_alt_frames.png` | The real level at 3x, frame 0 and frame 1 of every animated sprite |
-| `review/canvas_576x784_x2.png` | The real WebGL canvas (288x392 reference at 2x, 8 px margins) |
-| `review/stress_walls_x2.png` | Wall stress test: pillars, checkerboards, rings, masses, crosses, concave corners |
-| `review/metrics.txt` | Contrast, CIEDE2000 and colour-blind separation between actors, ghost-colour echo check |
-| `review/before_after_x3.png` | The judged proposal next to this revision |
+| `out/*.png` (generated) | Production PNG strips (frames left to right) and `walls.png` (47-tile autotile sheet) |
+| `contact_sheet.png` (generated) | Every frame at 6x with a 2x copy (the real in-game size), all 47 wall tiles with indices, palette |
+| `mockup.png` / `mockup_alt_frames.png` (generated) | The real level at 3x, frame 0 and frame 1 of every animated sprite |
+| `review/canvas_576x784_x2.png` (generated) | The real WebGL canvas (288x392 reference at 2x, 8 px margins) |
+| `review/stress_walls_x2.png` (generated) | Wall stress test: pillars, checkerboards, rings, masses, crosses, concave corners |
+| `review/metrics.txt` (generated) | Contrast, CIEDE2000 and colour-blind separation between actors, ghost-colour echo check |
 | `tools/` | Node toolchain with no dependencies (see [Art pipeline](#14-art-pipeline)) |
 
 ---
@@ -34,9 +33,10 @@ is generated from it.
 - **Light:** comes from the top-left everywhere. Highlights (`W`, `L`) go on top and left edges, shading (`S`, `D`, `E`) on
   the bottom, right and underside.
 - **White** is a large fill only on the hero, so the player is always the brightest figure. Enemies use white only for
-  eyes, fangs and Peeper's thread. Pickups use it only for highlights and sugar.
-- **Faces:** every enemy has white eyes with ink pupils. No pickup has eyes or a face, so candy enemies are never mistaken
-  for candy pickups.
+  small details: eyes, fangs, Peeper's thread, Jitters' gloss corner and sweat drop, and Swirlpop's paper stick. Pickups use
+  it only for highlights and sugar.
+- **Faces:** every enemy has a face (white eyes with ink pupils, except Jitters' squeezed-shut ink `><` and Peeper's tiny
+  ink side eyes). No pickup has eyes or a face, so candy enemies are never mistaken for candy pickups.
 - **One hue per actor:** each enemy owns one hue that no other actor uses as a body colour.
 - **Originality (hard rule):** no yellow disc or wedge-mouthed hero. No dome-headed or wavy-skirted ghosts. No
   red/pink/cyan/orange enemy set, no blue "scared" enemy, no zigzag "frightened" mouth. No thin double-line maze outline. No
@@ -63,11 +63,7 @@ is generated from it.
 | `O` | `#ff9b45` | Tangerine | Orange slice, caramel, potion cork, bell shading | 8.1:1 |
 | `E` | `#3a2878` | Dusk | Shared enemy underside shade (wing edges, spider belly, jelly base) | 1.4:1 |
 
-Changes from the judged proposal: `D` brightened from `#7a2270` and `J` deepened from `#8f2c80` (the wall bevel). `V`
-lightened from `#a97cff` (the bat was the weakest actor). `B` deepened from `#4c8bff` and the lolly swirl moved from lilac to
-strawberry (the bat and lolly were too close). The Scared jelly moved from lemon to spearmint (`T`, slightly deepened from
-`#3fe6b8`). Cocoa `C` became tangerine `O`, so the Orange pickup can be a real orange. Do not add a 17th colour without
-updating this table and re-running `tools/check.js`.
+Do not add a 17th colour without updating this table and re-running `tools/check.js`.
 
 ## 3. Background, corridors and layout
 
@@ -80,16 +76,15 @@ updating this table and re-running `tools/check.js`.
 
 ## 4. Walls: strawberry jelly bars lit from the top-left
 
-![walls](contact_sheet.png)
+Run `sh tools/regenerate.sh`, then open `contact_sheet.png` to see all 47 numbered wall tiles.
 
-- **Autotile:** Blob47, the 8-neighbour mask that `MazeSkin` already supports. The sheet holds 47 tiles in ascending
+- **Autotile:** Blob47, the 8-neighbour mask that `MazeSkin` supports. The sheet holds 47 tiles in ascending
   reduced-mask order (N=1, NE=2, E=4, SE=8, S=16, SW=32, W=64, NW=128), the same order as `MazeSkin.BuildBlobLookup`.
   `walls.png` (752x16) is sliced by the importer into `walls_0` … `walls_46`, which go into `MazeSkin.wallTiles` in that
   order.
-- **Wall mode `corners`:** the patterns are 8x8 quadrants authored as the north-east quadrant, as before, but with one set
-  per tile corner. That lets north- and west-facing edges be lit while south- and east-facing edges sit in shade. The
-  original renderer mirrors one set into every corner, so the lighting comes out symmetric. Use `tools/render.js`, a superset
-  of the original toolkit. The shared original writes the sprite strips but throws when it reaches the walls.
+- **Wall mode `corners`:** the patterns are 8x8 quadrants authored as the north-east quadrant, with one set per tile corner.
+  That lets north- and west-facing edges be lit while south- and east-facing edges sit in shade. `tools/render.js` renders
+  this mode.
 - **Bands** (from the exposed edge inwards):
   - Lit faces (north, west): `L` gloss 1 px, `P` strawberry 2 px, `D` raspberry 1 px, then the core.
   - Shade faces (south, east): `D` raspberry 1 px, then the core.
@@ -133,12 +128,11 @@ updating this table and re-running `tools/check.js`.
   tail peeking out on the screen-right side.
 - **Reads as:** the strongest silhouette on screen (179 opaque px, 17:1). It shares no shape with any enemy: not round, no
   mouth wedge, no yellow.
-- **Animation:** 8 fps (0.125 s per frame), advancing only while moving. Ideally hold frame 0 when blocked by a wall (this
-  needs a small optional change in `CharacterAnimator`).
+- **Animation:** 8 fps (0.125 s per frame), advancing only while moving: the Player's `CharacterAnimator` has
+  `animateOnlyWhileMoving` on, so she holds frame 0 when a wall blocks her.
 - **Facing:**
   - Left uses the side frames mirrored (`scale.x = -1`).
-  - Up and Down use `hero_up` / `hero_down` through `CharacterAnimator.upFrames` / `downFrames`, so she no longer snaps to
-    face right on vertical moves.
+  - Up and Down use `hero_up` / `hero_down` through `CharacterAnimator.upFrames` / `downFrames`.
 
 ## 6. Enemies
 
@@ -169,11 +163,9 @@ Rules for new enemy art:
   and rounded corners: 12 bright pixels, 13.5:1 on the corridor.
 - **Frame 1 (twinkle):** the same 4x4 footprint with a brighter diagonal `W` glint (8 `W`, 4 `Y`). It is never larger than
   4x4, so it never reads as a power pellet (the game has none).
-- **Twinkle behaviour (optional, sparse):**
-  - One driver, not 142 animators, with pellets on their own sub-canvas.
-  - Every 0.25 s, about 1 in 12 uneaten pellets (at least 1) show frame 1 for one tick. They are re-picked at random each
-    tick and never the same pellet twice in a row.
-  - Shipping every pellet static on frame 0 is fine for the first version.
+- **Twinkle behaviour (sparse):** one `PelletTwinkle` driver (not 142 animators) lights about 1 in 12 uneaten pellets (at
+  least 1) on frame 1 every 0.25 s tick, re-picking at random and preferring pellets that were not lit last tick. Pellets
+  live on their own sub-canvas (`GRP_Pickups`), so twinkles never rebuild the maze.
 
 ## 8. Bonus pickups
 
@@ -187,7 +179,7 @@ Static and faceless, drawn from scratch, each about 12-16 px tall with a 1 px ou
 | 2 | `Orange` | 30 | `pickup_orange.png` | Jelly orange half-slice: tangerine peel, white pith, orange segments with white segment lines and lemon highlights |
 | 3 | `Apple` | 40 | `pickup_apple.png` | Toffee apple: `R` apple with tangerine caramel drips, a lilac stick and a mint-and-sour-apple leaf. The drips never use ink inside the body, so it never looks like a face |
 | 4 | `Melon` | 50 | `pickup_melon.png` | Watermelon wedge: strawberry flesh with ink seeds, white rind line, spearmint rind |
-| 5 | `Galaxian` → **`Potion`** | 60 | `pickup_potion.png` | Round-bottomed flask: lilac glass, strawberry brew with white bubbles, tangerine cork, a lemon twinkle beside it. Replaces the trademarked spaceship; rename the enum value to `Potion` |
+| 5 | `Potion` | 60 | `pickup_potion.png` | Round-bottomed flask: lilac glass, strawberry brew with white bubbles, tangerine cork, a lemon twinkle beside it |
 | 6 | `Bell` | 70 | `pickup_bell.png` | Lemon candy bell with tangerine shading, a white shine, a cherry-red bow and an ink clapper |
 | 7 | `Key` | 80 | `pickup_key.png` | Sweetheart key: cherry-red heart bow with a white shine, 2 px lemon and tangerine shaft, two teeth |
 
@@ -196,24 +188,22 @@ colour an enemy hue (`V`, `G`, `T`, `B`).
 
 ## 9. HUD
 
-![hud](out/hud.png)
+`tools/regenerate.sh` writes a mockup of the HUD to `out/hud.png`.
 
 - **Layout:** a 272x24 band at the top of the canvas, on the same `N` background, with no panel or frame. The content is
   centred as one group: twinkle, 8 px gap, `SCORE`, 8 px gap, six digits, 8 px gap, twinkle.
 - **Label `SCORE`:** gloss pink `L #ffcbe8`, drop shadow raspberry `D #a8358a`.
-- **Score:** six digits, zero-padded (`ScoreDisplay.digits = 6`), sugar white `W #ffffff`, drop shadow lilac
-  `S #b3a6ea`.
+- **Score:** six digits, zero-padded, sugar white `W #ffffff`, drop shadow lilac `S #b3a6ea`. Digits sit in 7 px monospace
+  cells so the readout never shifts when a digit changes width.
 - **Shadows:** offset exactly 1 art pixel straight down, with no blur or softness.
-- **Type:** the project's pixel TTF (`Assets/Fonts/PixelFont`), sized so the cap height is 7 art px (one font pixel = one
-  art pixel at the canvas scale), with the glyph tops 8 px below the top of the band. The 5x7 glyphs in the mockup only
-  stand in for the TTF.
-- **Twinkles:** two 16x16 Images using `pellet_0` (the 4x4 sparkle), vertically centred on the glyphs. They may join the
-  pellet twinkle driver.
+- **Type:** the project's TTF (`Assets/Fonts/PixelFont`), regular weight (never Bold, which dilates the SDF strokes), at
+  size 9.2647 (`7 x 90 / 68`, from the font's cap line), so the cap height is 7 art px. The font's outlines are not drawn on
+  an exact pixel grid, so some glyph edges are slightly soft; a true bitmap pixel font would be fully crisp.
+- **Twinkles:** two 16x16 Images using `pellet_0` (the 4x4 sparkle), vertically centred on the glyphs.
 - **Banners:** none (no READY!). If a win message is added later, use the same `L`-plus-shadow and `W`-plus-shadow pairs,
   centred over the middle corridor, never yellow text.
-- **Implementation note:** TMP underlay has one colour per material. Use two TMP texts (label and value), each with its own
-  underlay material, or a shadow copy of the text 1 art px lower that `ScoreDisplay` updates. The current single text with
-  a rich-text label colour cannot give the two shadow colours.
+- **In Unity:** `TXT_ScoreLabel` and `TXT_ScoreLabelShadow` are static texts. `TXT_ScoreValue` carries `ScoreDisplay`,
+  which writes the digits into it and into `TXT_ScoreValueShadow` without allocating.
 
 ## 10. FX and overlays
 
@@ -221,10 +211,13 @@ All effects are sprites or text, with no shaders, post-processing or particles.
 
 | Effect | Spec |
 |---|---|
-| Sugar burst (pellet eaten) | `fx_sugar_burst.png`, 2 frames: a white core with lemon rays, then a ring of lemon sparks. Frame 0 shows for 0.06 s and frame 1 for 0.09 s, while alpha fades from 1 to 0 over the 0.15 s. Pooled; never instantiate per pellet |
-| Bonus pickup | The same burst on the pickup's cell, plus a `+NN` popup: pixel TTF in `W` with a 1 px `P` shadow, rising 8 art px over 0.6 s and fading over the last 0.2 s. Pooled |
-| Scanlines | The existing `ScanlineOverlay`, with darkness **0.15**. The component defaults to 0.25, so set it on the scene instance. It darkens one screen row per art pixel and hides itself at 1x |
-| Vignette (optional) | Radial: alpha **0.25** of `K` at the corners, smoothstep from 45% of the half-diagonal outwards. It covers the maze rect (272x352) only, not the HUD. Generate it at runtime like `ScanlineOverlay` (for example a 68x88 RGBA texture, bilinear, clamp, `raycastTarget` off). Never a PNG under `Assets/Art/Sprites`, where the importer would force Point filtering and the gradient would band |
+| Sugar burst (pellet eaten) | `fx_sugar_burst.png`, 2 frames: a white core with lemon rays, then a ring of lemon sparks. Frame 0 shows for 0.06 s and frame 1 for 0.09 s, while alpha fades from 1 to 0 over the 0.15 s. `PickupEffects` pools instances of the `FX_SugarBurst` prefab |
+| Bonus pickup | The same burst on the pickup's cell, plus a `+NN` popup (the `FX_PointsPopup` prefab, pooled): the TTF in `W` with a 1 px `P` shadow, rising 8 art px a whole pixel at a time over 0.6 s and fading over the last 0.2 s |
+| Scanlines | `ScanlineOverlay` on `FX_Scanlines`, darkness **0.15**. It darkens the bottom screen row of every art pixel (phased to the centre-anchored art grid) and hides itself at 1x |
+| Vignette | `VignetteOverlay` on `FX_Vignette`: alpha **0.25** of `K` at the corners, smoothstep from 45% of the half-diagonal outwards, over the maze rect (272x352) only. The 68x88 gradient is generated at runtime (bilinear), never a PNG under `Assets/Art/Sprites`, where the importer would point-filter it and the gradient would band |
+
+Both overlay RawImages are saved fully transparent; each component turns its RawImage on once it has generated its texture,
+so the scene stays visible in edit mode.
 
 Draw order, back to front:
 
@@ -239,14 +232,15 @@ Draw order, back to front:
 9. HUD
 10. Scanlines
 
-Debug target markers (debug builds only) sit above the enemies. The look must also hold with no vignette; it does, and the
+Debug target markers sit above the enemies and show whenever `ProjectSettings.DebugSettings.DebugEnemyTargets` is on (it
+is a compile-time setting, so turn it off before shipping). The look must also hold with no vignette; it does, and the
 vignette only deepens the corners.
 
 ## 11. Animation timings
 
 | Sprite | Frames | `secondsPerFrame` | Notes |
 |---|---|---|---|
-| `hero_side`, `hero_up`, `hero_down` | 2 each | 0.125 (8 fps) | Advance while moving; hold frame 0 when blocked (optional); side frames mirrored for Left |
+| `hero_side`, `hero_up`, `hero_down` | 2 each | 0.125 (8 fps) | Advance while moving; hold frame 0 when blocked; side frames mirrored for Left |
 | `enemy_chase` | 2 | 0.125 (8 fps) | Wing flap, always looping |
 | `enemy_cutoff` | 2 | 0.167 (6 fps) | Thread bob and glance, always looping |
 | `enemy_scared` | 2 | 0.2 (5 fps) | Tall and squash wobble, always looping |
@@ -256,40 +250,39 @@ vignette only deepens the corners.
 | `+NN` popup | text | 0.6 s | Rises 8 art px, fades over the last 0.2 s |
 | Pickups, walls, debug target | 1 | – | Static (pickups may bob 1 px at 2 Hz) |
 
-All pivots are centred, and every frame is 16x16. Movement and frames land on whole art pixels.
+All pivots are centred, and every frame is 16x16. Frames and moving characters land on whole art pixels: `MovingObject`
+moves an unrounded logical position and draws the character at it rounded to whole canvas units.
 
-## 12. Unity integration notes (for the integration step)
+## 12. How the art is wired into Unity
 
-- **Import:** PNGs go under `Assets/Art/Sprites/<Folder>/`. `PixelArtImporter` applies Point filtering, no mipmaps, no
-  compression, 16 pixels per unit and FullRect on first import, and slices strips whose width is a whole multiple of their
-  height into `<file>_<n>`. Set Max Size to 1024 for `walls.png` (752 px wide) and 64 for everything else.
-- **Atlas:** pack all game sprites into one Sprite Atlas: Point filtering, no compression, padding 2, no rotation, no tight
-  packing, mipmaps off.
-- **Sub-canvases:** static maze; pellets (rebuilt on eat or twinkle); actors (moving every frame); HUD; overlays. Moving
-  characters must not re-batch the 374 grid cells and 142 pellets.
-- **Image colours:** every art Image uses white (no tint). Clear the current placeholder tints: Player red, enemies
-  blue/pink/orange/green, and the Pellet prefab's yellow, which would turn the white core yellow.
-- **Debug targets:** the four `*EnemyTarget` Images use `debug_target` tinted with the owning enemy's colour:
-
-  | Target | Tint |
-  |---|---|
-  | `SeekerEnemyTarget` (Chase) | `#c4a6ff` |
-  | `CutOffEnemyTarget` | `#a2f25a` |
-  | `ScaredEnemyTarget` | `#34d9ac` |
-  | `RandomEnemyTarget` | `#3a74f0` |
-
-- **`MazeSkin`:** layout `Blob47`, `wallTiles` = `walls_0` … `walls_46` in order, `wallTint` white, `corridorColor`
-  transparent, `treatOutsideAsWall` true. `MazeSkin` only logs an error when tiles are missing, not when they are out of
-  order, so a "fill wall tiles from texture" editor helper (sorted by the `_N` suffix) is worth adding. Check the result with
-  the grid's edit-mode apply.
-- **`CharacterAnimator`:**
-  - Player: `sideFrames` = `hero_side_0/1`, `upFrames` = `hero_up_0/1`, `downFrames` = `hero_down_0/1`, 0.125 s.
-  - Each enemy: `sideFrames` only, with the timings in section 11.
-- **Score:** `ScoreManager.bonusPickUpSprites` = cherry, strawberry, orange, apple, melon, potion, bell, key. Rename
-  `BonusItemType.Galaxian` to `Potion`. Keep its position (value 5) so serialised data survives, and rename
-  `ChangeToGalaxian` to `ChangeToPotion`. `ScoreDisplay.labelColor` = `#ffcbe8`, value text white, shadows as in section 9.
-- **Unused assets:** once nothing references them, remove `Assets/Images/icons8-x-50.png` (a third-party icon, replaced by
-  `debug_target`) and `Assets/Images/pickups.png`.
+- **Import:** PNGs go under `Assets/Art/Sprites/<Folder>/`. `PixelArtImporter` gives new textures Point filtering, no
+  mipmaps, no compression, 16 pixels per unit and FullRect, raises Max Size on every import to the next power of two above
+  the largest side (at least 32: 1024 for `walls.png`, 32 for everything else), and slices strips whose width is a whole
+  multiple of their height into `<file>_<n>`, keeping sprite IDs when a strip is re-sliced.
+- **Scaling and layout:** `PixelPerfectCanvasScaler` on both canvases picks the largest whole-number scale for the 288x392
+  reference. Grid cells are fixed 16x16 (the layout groups do not size cells from their content).
+- **Canvases:**
+  - `GRP_Grid`: nested canvas for the static maze.
+  - `GRP_Pickups`: nested canvas for pellets and the bonus item. `ProjectInitializer` moves them here from their cells at
+    start-up.
+  - `GRP_Game`, the root: characters, FX, debug markers and the vignette.
+  - `GRP_UserInterface`: the HUD and the scanlines.
+- **Prefabs:** `Assets/Prefabs/Characters/Player`, an `Enemy` base with `Enemy_Chase`, `Enemy_CutOff`, `Enemy_Scared` and
+  `Enemy_Random` variants (frames and timing only), `Assets/Prefabs/FX/FX_SugarBurst` and `FX_PointsPopup`, and the existing
+  `Pellet` and `BonusPickUp` (all level pellets are instances).
+- **Image colours:** every art Image is white (no tint).
+- **Debug targets:** `SeekerEnemyTarget` (Chase, `#c4a6ff`), `CutOffEnemyTarget` (`#a2f25a`) and `ScaredEnemyTarget`
+  (`#34d9ac`) use `debug_target` tinted with their enemy's colour. Random has no target.
+- **`MazeSkin`** (`Assets/Art/MazeSkin.asset`): layout `Blob47`, `wallTiles` = `walls_0` … `walls_46` in order (use the
+  **Fill Wall Tiles From Sheet** context menu after changing `walls.png`), `wallTint` white, `corridorColor` transparent,
+  `treatOutsideAsWall` true. `GridManager` applies it at start-up; its **Apply Maze Skin** context menu previews it in edit
+  mode.
+- **`CharacterAnimator`:** the Player uses `hero_side_0/1`, `hero_up_0/1` and `hero_down_0/1` at 0.125 s with
+  `animateOnlyWhileMoving`; each enemy variant uses its `sideFrames` with the timings in section 11.
+- **Score:** `ScoreManager.bonusPickUpSprites` = cherry, strawberry, orange, apple, melon, potion, bell, key, in
+  `BonusItemType` order.
+- **Atlas:** no Sprite Atlas is used. Add one (Point filtering, no compression, padding 2, no rotation, no tight packing) if
+  WebGL draw calls become a concern.
 
 ## 13. Naming conventions
 
@@ -328,25 +321,25 @@ Every frame is 16x16. "Drawn" means final art is in `spec.json` and `out/`.
 | `hero_side.png` | 32x16 | 2 | `hero_side_0..1` | Player `CharacterAnimator.sideFrames` | Drawn |
 | `hero_up.png` | 32x16 | 2 | `hero_up_0..1` | Player `upFrames` | Drawn |
 | `hero_down.png` | 32x16 | 2 | `hero_down_0..1` | Player `downFrames` | Drawn |
-| `enemy_chase.png` | 32x16 | 2 | `enemy_chase_0..1` | SeekerEnemy (Chase) `sideFrames` | Drawn |
-| `enemy_cutoff.png` | 32x16 | 2 | `enemy_cutoff_0..1` | SeekerEnemy (Cutoff) `sideFrames` | Drawn |
-| `enemy_scared.png` | 32x16 | 2 | `enemy_scared_0..1` | SeekerEnemy (Scared) `sideFrames` | Drawn |
-| `enemy_random.png` | 32x16 | 2 | `enemy_random_0..1` | RandomMovementEnemy `sideFrames` | Drawn |
+| `enemy_chase.png` | 32x16 | 2 | `enemy_chase_0..1` | `Enemy_Chase` prefab `sideFrames` | Drawn |
+| `enemy_cutoff.png` | 32x16 | 2 | `enemy_cutoff_0..1` | `Enemy_CutOff` prefab `sideFrames` | Drawn |
+| `enemy_scared.png` | 32x16 | 2 | `enemy_scared_0..1` | `Enemy_Scared` prefab `sideFrames` | Drawn |
+| `enemy_random.png` | 32x16 | 2 | `enemy_random_0..1` | `Enemy_Random` prefab `sideFrames` | Drawn |
 | `pellet.png` | 32x16 | 2 | `pellet_0..1` | Pellet prefab (frame 0), twinkle driver (frame 1), HUD twinkles | Drawn |
 | `pickup_cherry.png` | 16x16 | 1 | single | `bonusPickUpSprites[0]` | Drawn |
 | `pickup_strawberry.png` | 16x16 | 1 | single | `bonusPickUpSprites[1]` | Drawn |
 | `pickup_orange.png` | 16x16 | 1 | single | `bonusPickUpSprites[2]` | Drawn |
 | `pickup_apple.png` | 16x16 | 1 | single | `bonusPickUpSprites[3]` | Drawn |
 | `pickup_melon.png` | 16x16 | 1 | single | `bonusPickUpSprites[4]` | Drawn |
-| `pickup_potion.png` | 16x16 | 1 | single | `bonusPickUpSprites[5]` (was Galaxian) | Drawn |
+| `pickup_potion.png` | 16x16 | 1 | single | `bonusPickUpSprites[5]` | Drawn |
 | `pickup_bell.png` | 16x16 | 1 | single | `bonusPickUpSprites[6]` | Drawn |
 | `pickup_key.png` | 16x16 | 1 | single | `bonusPickUpSprites[7]` | Drawn |
 | `walls.png` | 752x16 | 47 | `walls_0..46` | `MazeSkin.wallTiles` (Blob47) | Generated |
-| `fx_sugar_burst.png` | 32x16 | 2 | `fx_sugar_burst_0..1` | Pooled pellet and pickup burst | Drawn (optional feature) |
-| `debug_target.png` | 16x16 | 1 | single | The four `*EnemyTarget` markers, tinted per enemy | Drawn |
+| `fx_sugar_burst.png` | 32x16 | 2 | `fx_sugar_burst_0..1` | `PickupEffects` burst frames (`FX_SugarBurst` prefab) | Drawn |
+| `debug_target.png` | 16x16 | 1 | single | The three `*EnemyTarget` markers, tinted per enemy | Drawn |
 | Scanline overlay tile | 1 x scale | – | – | `ScanlineOverlay` (generated at runtime, darkness 0.15) | No file needed |
-| Vignette | about 68x88 | – | – | New runtime overlay (bilinear, outside the sprites folder) | No file needed |
-| HUD text, `+NN` popup | – | – | – | Pixel TTF with the colours above | No sprite |
+| Vignette | 68x88 | – | – | `VignetteOverlay` (generated at runtime, bilinear) | No file needed |
+| HUD text, `+NN` popup | – | – | – | The project TTF with the colours above | No sprite |
 
 Optional extras, not needed by the current loop: a WebGL loading or favicon icon (crop `hero_down_0`) and a hero "caught"
 pose (2 frames) if a lose state is added. Enemies need no frightened, eaten or up/down sprites: there are no power-ups and
@@ -354,7 +347,7 @@ they face the camera.
 
 ## 14. Art pipeline
 
-Node only, with no packages. From the style folder (or `Tools/PixelArt/` once committed):
+Node only, with no packages. From `Tools/PixelArt/`:
 
 ```sh
 sh tools/regenerate.sh
@@ -367,9 +360,9 @@ and `review/metrics.txt`.
 |---|---|
 | `tools/build.js` | `art.txt` to `spec.json`. Handles `@palette`, `@sprite`, `@frame [mirror]` and `@walls corners` with `@corner ne/nw/se/sw` blocks |
 | `tools/walls.js` | Generates the four corner pattern sets from a distance field (bands, core, radius, inset, glints) |
-| `tools/render.js` | The original toolkit plus the `corners` wall mode and the mockup vignette preview. Commands: `sprites <spec> <outDir> [scale]`, `mockup <config> <out.png> [scale]` |
+| `tools/render.js` | Writes sprite strips, the 47-tile wall sheet (including the `corners` wall mode) and level mockups (with a vignette preview). Commands: `sprites <spec> <outDir> [scale]`, `mockup <config> <out.png> [scale]` |
 | `tools/sheet.js`, `tools/hud.js`, `tools/make_mockup.js`, `tools/imgutil.js` | Review images |
-| `tools/check.js` | Readability and originality metrics, using the same maths as the readability judge |
+| `tools/check.js` | Readability and originality metrics: contrast, CIEDE2000 separation in normal and colour-blind vision, and hue distance from the original arcade enemy colours |
 
 **Adding or changing a sprite:**
 
@@ -379,7 +372,7 @@ and `review/metrics.txt`.
 4. Look at the 2x column of the contact sheet and at `review/canvas_576x784_x2.png`.
 5. Read `review/metrics.txt`.
 6. Copy the changed `out/*.png` into `Assets/Art/Sprites/<Folder>/`. Strip widths must stay whole multiples of 16, or the
-   slice names change.
+   slice names change. After changing `walls.png`, run **Fill Wall Tiles From Sheet** on `Assets/Art/MazeSkin.asset`.
 
 **Review checklist:**
 
@@ -392,34 +385,7 @@ and `review/metrics.txt`.
 - [ ] All 47 wall tiles checked on the contact sheet and the stress map.
 - [ ] Nothing in the originality hard rule.
 
-## 15. Must-fix compliance
-
-| Judge | Must-fix | Done |
-|---|---|---|
-| Beauty | Quiet the walls (deeper `J`, inset 1-2 px) | `J` deepened to `#6e2468` (1.7:1), flat core, inset raised to 2 px, so corridors read 20 px |
-| Beauty | Sparse, small twinkle | The twinkle stays inside the 4x4 footprint, about 1 in 12 pellets per 0.25 s tick, staggered at random |
-| Beauty | Beef up the cat (2 px legs, thick tail, strong outline); 2 px spider legs | Cat has fully outlined 2 px legs, a 2 px hooked tail and a closed outline (179 px, the strongest silhouette). Peeper has three chunky 2 px legs per side |
-| Beauty | Brighten the bat | `V` lightened to `#c4a6ff` (5.7:1 to 8.3:1 on the corridor, 4.8:1 on the wall core) |
-| Readability | Scared jelly off lemon | Spearmint `T #34d9ac`, with no Clyde or Pac-Man-yellow echo and well apart from the pellets |
-| Readability | Lolly away from the bat | Deeper blue body with a strawberry swirl. Bat vs lolly went from 12.8 to 24.6 dE (worst simulation 16.4, was about 11) |
-| Readability | Twinkle within the footprint | Yes, 4x4 in both frames |
-| Readability | Border as one band; top-left bevel, not an all-round rim | `outOfBoundsIsWall` true; four-corner wall mode with lit north and west faces and shaded south and east faces |
-| Feasibility | Wall-tile order helper or documented order | Order documented (section 4) with a helper recommended (section 12); the contact sheet numbers every tile |
-| Feasibility | Commit the pipeline with a one-line regenerate | `tools/` plus `sh tools/regenerate.sh`, ready to drop into `Tools/PixelArt/` |
-| Feasibility | Ship pellets static, or as a cached swap | Static frame 0 is the baseline; the twinkle is one optional cached driver |
-| Feasibility | Draw the 6 remaining pickups; a true orange | All 8 drawn; cocoa became tangerine `O` for a real orange |
-| Feasibility | Optional facing change for the cat | Solved in art: `hero_up` and `hero_down` plug into the existing `upFrames`/`downFrames` |
-
-Ideas grafted from the runner-ups:
-
-- **Circuit:** the standing 47-tile review grid and stress map; the runtime vignette, kept low; scanlines kept at 0.15.
-- **Console-bricks:** connectivity changes only the rims while the core stays flat; everything checked at the real 2x; the
-  eaten-pellet sparkle FX.
-- **Neon:** each actor's hue kept exclusive, and pellets in a hue no actor uses as a body colour.
-- **Candy:** its own centred HUD with flanking twinkles.
-- **Feasibility groundwork:** one atlas and character sub-canvases.
-
-## 16. Readability results (`review/metrics.txt`)
+## 15. Readability results (`review/metrics.txt`)
 
 - **Separation:** every actor pair is at least 15 dE in normal vision and the deutan and protan simulations. The closest
   pairs are bat vs lolly (worst simulation 16.4) and hero vs jelly (16.5).
@@ -438,23 +404,12 @@ Ideas grafted from the runner-ups:
   | Lolly body | 4.0:1 | Its white eyes and pink swirl are 17:1 and 7.2:1 |
   | Pellet | 13.5:1 | 12 bright px, 48 screen px at 2x |
 
-## 17. Integration status
+## 16. Known limits
 
-Everything in this guide shipped in the first pass:
-
-- **Renderer:** `tools/render.js` (with the `corners` wall mode) is the project renderer under `Tools/PixelArt/`.
-- **Pixel TTF:** the font's cap line is 68 at 90 pt, so the HUD and popups use size `7 x 90 / 68 = 9.2647`, giving a
-  7 art px cap height (one font pixel per art pixel).
-- **Code:**
-  - `CharacterAnimator.animateOnlyWhileMoving` makes the hero hold frame 0 when blocked.
-  - `PelletTwinkle` is the single twinkle driver, started by `ProjectInitializer`.
-  - `PickupEffects` plays the pooled sugar burst and the `+NN` popup.
-  - `VignetteOverlay` generates the vignette at runtime.
-  - `ScoreDisplay` drives the `TXT_ScoreShadow` copy for the two shadow colours.
-  - `BonusItemType.Galaxian` is renamed to `Potion`.
-  - `MazeSkin` has a **Fill Wall Tiles From Sheet** context menu.
-- **Scene:**
-  - The maze sits on its own sub-canvas (`GRP_Grid`).
-  - Pellets and the bonus item are prefab instances.
-  - Grid cells are fixed 16x16, so sprites cannot skew the layout.
-- **Not done:** a Sprite Atlas. It is optional at this sprite count; add one if WebGL draw calls become a concern.
+- **HUD font:** the project TTF's outlines are not on an exact pixel grid, so some HUD and popup glyph edges are slightly
+  soft. A true bitmap pixel font (with a raster, point-filtered TMP atlas) would make them fully crisp.
+- **Debug markers:** shown whenever `ProjectSettings.DebugSettings.DebugEnemyTargets` is on, including in release builds.
+- **Spawn:** Chase, CutOff and Random start on the same tile and travel together for the first few seconds, so they overlap
+  until their targets diverge.
+- **Atlas:** none yet (see section 12).
+- **Testing scene:** `PacmanTesting.unity` uses the new maze but keeps its original placeholder characters.
