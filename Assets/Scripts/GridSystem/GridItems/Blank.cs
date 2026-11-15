@@ -42,7 +42,7 @@ namespace GridSystem.GridItems
         {
             if (hasPellet)
             {
-                Debug.LogWarning($"Attempting to add a duplicate {nameof(pelletPrefab)} to {nameof(GridItem)}: {Indices.Key},{Indices.Value}. Skipped creation to avoid duplicate.");
+                Debug.LogWarning($"{name} already has a pellet; skipped adding a duplicate.", this);
                 return;
             }
             hasPellet = true;
@@ -80,7 +80,7 @@ namespace GridSystem.GridItems
                 var found = GetComponentInChildren<Pellet>(true);
                 if (found == null)
                 {
-                    Debug.LogWarning($"No pellet under {nameof(GridItem)} {Indices.Key},{Indices.Value}.", this);
+                    Debug.LogWarning($"No pellet under {name}.", this);
                     return;
                 }
                 pellet = found.gameObject;
@@ -101,7 +101,7 @@ namespace GridSystem.GridItems
         {
             if (hasBonusItem)
             {
-                Debug.LogWarning($"Attempting to add a duplicate {nameof(bonusItemPrefab)} to {nameof(GridItem)}: {Indices.Key},{Indices.Value}. Skipped creation to avoid duplicate.");
+                Debug.LogWarning($"{name} already has a bonus pickup; skipped adding a duplicate.", this);
                 return;
             }
             hasBonusItem = true;
@@ -128,7 +128,7 @@ namespace GridSystem.GridItems
                 var found = GetComponentInChildren<BonusItem>(true);
                 if (found == null)
                 {
-                    Debug.LogWarning($"No bonus pickup under {nameof(GridItem)} {Indices.Key},{Indices.Value}.", this);
+                    Debug.LogWarning($"No bonus pickup under {name}.", this);
                     return;
                 }
                 bonusItem = found.gameObject;
