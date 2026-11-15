@@ -11,6 +11,10 @@ namespace GridSystem.GridItems
     [RequireComponent(typeof(Image))]
     public class BonusItem : MonoBehaviour
     {
+        /// <summary>
+        /// Raised with the pickup's world position and the points it awarded when it is collected.
+        /// </summary>
+        public static event Action<Vector3, int> Collected;
         [SerializeField] private BonusItemType type = BonusItemType.Cherry;
         private GridItem parent;
 
@@ -46,9 +50,13 @@ namespace GridSystem.GridItems
             BonusItemHit();
         }
 
+        /// <summary>
+        /// Scores the pickup, announces it for effects and removes it.
+        /// </summary>
         private void BonusItemHit()
         {
-            ScoreManager.Instance.BonusItemHit(type);
+            var points = ScoreManager.Instance.BonusItemHit(type);
+            Collected?.Invoke(transform.position, points);
             Destroy(gameObject);
         }
 

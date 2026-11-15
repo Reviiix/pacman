@@ -49,9 +49,12 @@ namespace GameStates
             return pelletsEaten >= totalPellets;
         }
         
-        public void BonusItemHit(BonusItem.BonusItemType type)
+        /// <summary>
+        /// Adds the pickup type's points to the score and returns them.
+        /// </summary>
+        public int BonusItemHit(BonusItem.BonusItemType type)
         {
-            score += type switch
+            var points = type switch
             {
                 BonusItem.BonusItemType.Cherry => 10,
                 BonusItem.BonusItemType.Strawberry => 20,
@@ -63,7 +66,9 @@ namespace GameStates
                 BonusItem.BonusItemType.Key => 80,
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, $"{type} not accounted for in switch statement.")
             };
+            score += points;
             OnScoreChange?.Invoke(score);
+            return points;
         }
         
         public Sprite GetBonusPickUpGraphic(BonusItem.BonusItemType type)
