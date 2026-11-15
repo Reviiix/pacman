@@ -8,6 +8,9 @@ using UnityEngine.UI;
 
 namespace GridSystem.GridItems
 {
+    /// <summary>
+    /// One maze tile: knows its grid position and neighbours and shows its wall or corridor look.
+    /// </summary>
     [RequireComponent(typeof(Image))]
     public abstract class GridItem : MonoBehaviour
     {
@@ -20,16 +23,20 @@ namespace GridSystem.GridItems
         #endif
         [SerializeField] private TMP_Text debugIndices;
 
+        /// <summary>
+        /// Stores the tile's grid position and Image, then shows its debug label or, in Play mode, removes it; a tile without a label skips that step.
+        /// </summary>
         public void Initialise(KeyValuePair<int, int> indices)
         {
             Display = GetComponent<Image>();
             Indices = indices;
 
+            if (debugIndices == null) return;
             if (ProjectSettings.DebugSettings.DebugGridIndices)
             {
                 debugIndices.text = $"{Indices.Key},{Indices.Value}";
             }
-            else
+            else if (Application.isPlaying)
             {
                 Destroy(debugIndices.gameObject);
             }
