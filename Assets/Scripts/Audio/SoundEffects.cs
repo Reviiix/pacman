@@ -1,3 +1,4 @@
+using System.Collections;
 using GameStates;
 using GridSystem.GridItems;
 using UnityEngine;
@@ -17,15 +18,16 @@ namespace GameAudio
         [SerializeField] private AudioClip resumeClip;
         [SerializeField] private AudioClip startClip;
         [SerializeField] private AudioClip winClip;
+        [SerializeField] [Min(0f)] private float startJingleWindowSeconds = 4f;
         private int nextPellet;
         private bool gameWon;
 
         /// <summary>
-        /// Plays the level-start jingle.
+        /// Plays the level-start jingle as soon as it can be heard.
         /// </summary>
         public void Initialise()
         {
-            PlayJingle(startClip);
+            StartCoroutine(PlayStartJingleWhenAudible());
         }
 
         /// <summary>
@@ -85,19 +87,33 @@ namespace GameAudio
         }
 
         /// <summary>
-        /// Plays a short effect, overlapping any already playing.
+        /// Waits for a browser to allow audio, then plays the start jingle; skips it if that takes longer than the window, when it would interrupt play rather than open it.
         /// </summary>
-        private void PlayEffect(AudioClip clip)
+        private IEnumerator PlayStartJingleWhenAudible()
         {
-            if (effectsSource != null && clip != null) effectsSource.PlayOneShot(clip);
+            var deadline = Time.unscaledTime + startJingleWindowSeconds;
+            while (!WebAudioState.IsRunning)
+            {
+                if (Time.unscaledTime > deadline) yield break;
+                yield return null;
+            }
+            if (!gameWon) PlayJingle(startClip);
         }
 
         /// <summary>
-        /// Replaces the playing jingle with another.
+        /// Plays a short effect, overlapping any already playing, once audio can be heard.
+        /// </summary>
+        private void PlayEffect(AudioClip clip)
+        {
+            if (effectsSource != null && clip != null && WebAudioState.IsRunning) effectsSource.PlayOneShot(clip);
+        }
+
+        /// <summary>
+        /// Replaces the playing jingle with another, once audio can be heard.
         /// </summary>
         private void PlayJingle(AudioClip clip)
         {
-            if (jingleSource == null || clip == null) return;
+            if (jingleSource == null || clip == null || !WebAudioState.IsRunning) return;
             jingleSource.clip = clip;
             jingleSource.Play();
         }
