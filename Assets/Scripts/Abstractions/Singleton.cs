@@ -87,10 +87,10 @@ namespace Abstractions
                 return;
             }
 
-            var sameScene = FindOtherInSameScene(duplicate);
-            if (sameScene != null)
+            var otherInScene = FindOtherInSameScene(duplicate);
+            if (otherInScene != null)
             {
-                Debug.LogWarning($"Scene '{duplicate.gameObject.scene.name}' has two {type} components, on {sameScene.name} and {duplicate.name}. Remove one; otherwise Play mode removes whichever enables second, with an error.", duplicate);
+                Debug.LogWarning($"Scene '{duplicate.gameObject.scene.name}' has two {type} components, on {otherInScene.name} and {duplicate.name}. Remove one; otherwise Play mode removes whichever enables second, with an error.", duplicate);
             }
             else
             {
