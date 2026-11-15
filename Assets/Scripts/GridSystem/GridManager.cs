@@ -4,6 +4,7 @@ using Abstractions;
 using GridSystem.GridItems;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Visuals;
 
 namespace GridSystem
 {
@@ -24,12 +25,33 @@ namespace GridSystem
         [SerializeField] private GameObject gridItemPrefabPrefab;
         [SerializeField] [Range(MinimumItems, MaximumRows)] public int amountOfRows = MaximumRows / 2;
         [SerializeField] [Range(MinimumItems, MaximumColumns)] public int amountOfColumns = MaximumColumns / 2;
+        [SerializeField] private MazeSkin mazeSkin;
 
         [ContextMenu(nameof(Initialise))]
         public void Initialise()
         {
             SetGridItems();
             SetNeighbors();
+            ApplyMazeSkin();
+        }
+
+        /// <summary>
+        /// Gives every wall its autotiled sprite and every corridor its colour; also runnable from the context menu in edit mode.
+        /// </summary>
+        [ContextMenu(nameof(ApplyMazeSkin))]
+        public void ApplyMazeSkin()
+        {
+            if (mazeSkin == null) return;
+            if (!Application.isPlaying)
+            {
+                SetGridItems(false);
+                #if UNITY_EDITOR
+                var images = new List<UnityEngine.Object>();
+                foreach (var gridItem in gridItems) images.Add(gridItem.GetComponent<UnityEngine.UI.Image>());
+                UnityEditor.Undo.RecordObjects(images.ToArray(), nameof(ApplyMazeSkin));
+                #endif
+            }
+            mazeSkin.Apply(itemLookup);
         }
         
         /// <summary>
@@ -117,9 +139,9 @@ namespace GridSystem
         }
         
         /// <summary>
-        /// Collects the grid items from the level hierarchy (rows of columns) and indexes them for constant-time lookups.
+        /// Collects the grid items from the level hierarchy (rows of columns), indexes them for constant-time lookups and optionally initialises them.
         /// </summary>
-        private void SetGridItems()
+        private void SetGridItems(bool initialiseItems = true)
         {
             gridItems.Clear();
             itemLookup = new GridItem[amountOfColumns, amountOfRows];
@@ -130,7 +152,7 @@ namespace GridSystem
                 {
                     var gridItem = gridObject.transform.GetChild(i).transform.GetChild(j).GetComponent<GridItem>();
                     RegisterItem(gridItem, j, i);
-                    gridItem.Initialise(new KeyValuePair<int, int>(j, i));
+                    if (initialiseItems) gridItem.Initialise(new KeyValuePair<int, int>(j, i));
                 }
             }
         }

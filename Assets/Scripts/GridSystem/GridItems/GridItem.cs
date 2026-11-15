@@ -81,10 +81,20 @@ namespace GridSystem.GridItems
         {
             return Neighbors.FirstOrDefault(x => x.Indices.Key == Indices.Key + 1);
         }
-        
+
         public bool MultiplePathWaysAvailable()
         {
             return Neighbors.Count(x => x is Blank) > 2;
+        }
+
+        /// <summary>
+        /// Sets the tile's sprite and colour, finding the Image itself when the item has not been initialised (edit mode).
+        /// </summary>
+        public void SetAppearance(Sprite sprite, Color color)
+        {
+            if (Display == null) Display = GetComponent<Image>();
+            Display.sprite = sprite;
+            Display.color = color;
         }
 
         protected void RemoveSelf()
