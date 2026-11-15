@@ -3562,7 +3562,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Visuals.PickupEffects
   burstPrefab: {fileID: 2386070526566013533, guid: 838878272e8594f5f904261b47d0fc30, type: 3}
-  burstFirstFrame: {fileID: 1337378199, guid: 31ce10db2f3154f0f9bee3d635f6bad2, type: 3}
   burstSecondFrame: {fileID: 359171062, guid: 31ce10db2f3154f0f9bee3d635f6bad2, type: 3}
   burstFirstFrameSeconds: 0.06
   burstSecondFrameSeconds: 0.09
@@ -10795,7 +10794,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 161414af388a44ed39c2ede18720a048, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Visuals.PelletTwinkle
-  restFrame: {fileID: 189733919, guid: fad802743b9614cbfa82f15643fe7e5e, type: 3}
   twinkleFrame: {fileID: 2089036514, guid: fad802743b9614cbfa82f15643fe7e5e, type: 3}
   tickSeconds: 0.25
   oneIn: 12
