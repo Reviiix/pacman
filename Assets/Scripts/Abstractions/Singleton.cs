@@ -16,7 +16,7 @@ namespace Abstractions
         {
             if (Instance != null && !ReferenceEquals(Instance, this))
             {
-                SingletonUtility.HandleDuplicate(this, Instance, typeof(T));
+                SingletonUtility.HandleDuplicate(this, typeof(T));
                 return;
             }
 
@@ -49,7 +49,7 @@ namespace Abstractions
         {
             if (Instance != null && !ReferenceEquals(Instance, this))
             {
-                SingletonUtility.HandleDuplicate(this, Instance, typeof(T));
+                SingletonUtility.HandleDuplicate(this, typeof(T));
                 return;
             }
 
@@ -74,23 +74,41 @@ namespace Abstractions
     internal static class SingletonUtility
     {
         /// <summary>
-        /// Removes a duplicate in Play mode; in edit mode only warns (distinctly when both share a scene), since a second open scene must never lose its components.
+        /// Removes a duplicate in Play mode; in edit mode only warns (distinctly when its own scene holds another), since a second open scene must never lose its components.
         /// </summary>
-        public static void HandleDuplicate(Component duplicate, object registered, System.Type type)
+        public static void HandleDuplicate(Behaviour duplicate, System.Type type)
         {
             if (Application.isPlaying)
             {
                 Debug.LogError($"Duplicate singleton {type} found on {duplicate.name}. Removing the duplicate.", duplicate);
                 Object.Destroy(duplicate);
+                return;
             }
-            else if (registered is Component other && other != null && other.gameObject.scene == duplicate.gameObject.scene)
+
+            var sameScene = FindOtherInSameScene(duplicate);
+            if (sameScene != null)
             {
-                Debug.LogWarning($"Scene '{duplicate.gameObject.scene.name}' has two {type} components, on {other.name} and {duplicate.name}. Remove one; otherwise Play mode removes whichever enables second, with an error.", duplicate);
+                Debug.LogWarning($"Scene '{duplicate.gameObject.scene.name}' has two {type} components, on {sameScene.name} and {duplicate.name}. Remove one; otherwise Play mode removes whichever enables second, with an error.", duplicate);
             }
             else
             {
-                Debug.LogWarning($"{type} on {duplicate.name} in scene '{duplicate.gameObject.scene.name}' waits while another one is registered, and takes over when that one goes away.", duplicate);
+                Debug.LogWarning($"{type} on {duplicate.name} in scene '{duplicate.gameObject.scene.name}' waits while another one is registered, and can take over when that one goes away.", duplicate);
             }
+        }
+
+        /// <summary>
+        /// Finds another enabled component of the duplicate's type in the duplicate's own scene, registered or not.
+        /// </summary>
+        private static Behaviour FindOtherInSameScene(Behaviour duplicate)
+        {
+            foreach (var candidate in Object.FindObjectsByType(duplicate.GetType(), FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+            {
+                if (candidate is Behaviour { isActiveAndEnabled: true } behaviour && behaviour != duplicate && behaviour.gameObject.scene == duplicate.gameObject.scene)
+                {
+                    return behaviour;
+                }
+            }
+            return null;
         }
 
         /// <summary>
