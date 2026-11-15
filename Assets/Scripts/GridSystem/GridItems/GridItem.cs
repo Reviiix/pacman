@@ -42,6 +42,16 @@ namespace GridSystem.GridItems
             }
         }
 
+        #if UNITY_EDITOR
+        /// <summary>
+        /// Gives the component replacing this tile its debug label, which a component added by script starts without.
+        /// </summary>
+        protected void HandOverDebugLabel(GridItem replacement)
+        {
+            replacement.debugIndices = debugIndices;
+        }
+        #endif
+
         public void SetNeighbors()
         {
             Neighbors = new[]

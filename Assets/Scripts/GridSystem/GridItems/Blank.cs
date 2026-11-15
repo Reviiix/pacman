@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace GridSystem.GridItems
 {
+    /// <summary>
+    /// A walkable tile whose edit-mode tools add or remove a pellet or bonus pickup.
+    /// </summary>
     public class Blank : GridItem
     {
         #if UNITY_EDITOR
@@ -111,10 +114,15 @@ namespace GridSystem.GridItems
         }
         #endregion BonusItem
 
+        /// <summary>
+        /// Turns this tile into a wall, handing its debug label to the new Wall component.
+        /// </summary>
         [ContextMenu(nameof(ChangeToWall))]
         private void ChangeToWall()
         {
-            gameObject.AddComponent<Wall>().InitialiseWall(pelletPrefab, bonusItemPrefab);
+            var wall = gameObject.AddComponent<Wall>();
+            HandOverDebugLabel(wall);
+            wall.InitialiseWall(pelletPrefab, bonusItemPrefab);
             RemovePellet();
             RemoveSelf();
         }
