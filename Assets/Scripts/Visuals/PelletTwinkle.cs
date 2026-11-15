@@ -27,6 +27,9 @@ namespace Visuals
         /// </summary>
         public void Initialise(IEnumerable<Pellet> source)
         {
+            if (routine != null) StopCoroutine(routine);
+            RestLitPellets();
+            previouslyLit.Clear();
             pellets.Clear();
             restSprites.Clear();
             foreach (var pellet in source)
@@ -35,7 +38,6 @@ namespace Visuals
                 pellets.Add(image);
                 restSprites[image] = image.sprite;
             }
-            if (routine != null) StopCoroutine(routine);
             routine = StartCoroutine(Twinkle());
         }
 
@@ -68,8 +70,8 @@ namespace Visuals
             previouslyLit.Clear();
             foreach (var image in lit)
             {
-                if (image == null) continue;
-                image.sprite = restSprites[image];
+                if (image == null || !restSprites.TryGetValue(image, out var restSprite)) continue;
+                image.sprite = restSprite;
                 previouslyLit.Add(image);
             }
             lit.Clear();
