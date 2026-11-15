@@ -11,7 +11,6 @@ namespace Movement
     public class MovementManager : Singleton<MovementManager>
     {
         public static readonly Direction[] Directions = { Direction.Up, Direction.Down, Direction.Left, Direction.Right };
-        private Transform[] objectsToMove;
         [SerializeField] private PlayerMovement player;
         [SerializeField] private SeekerEnemyMovement[] seekerEnemy;
         private bool canMove;
@@ -29,16 +28,18 @@ namespace Movement
             }
         }
 
+        /// <summary>
+        /// Caches the mirrored targets, places every character on its start tile and starts movement.
+        /// </summary>
         public void Initialise()
         {
             CacheMirroredWalkableItems();
-            CreateCollection();
             player.Initialise(this);
             foreach (var seeker in seekerEnemy)
             {
                 seeker.Initialise(this);
             }
-            
+
             canMove = true;
         }
 
@@ -49,6 +50,9 @@ namespace Movement
             MoveObjects();
         }
 
+        /// <summary>
+        /// Advances every character's tile logic, then moves each one towards its next tile.
+        /// </summary>
         private void MoveObjects()
         {
             player.CheckPosition();
@@ -56,44 +60,11 @@ namespace Movement
             {
                 seeker.CheckPosition();
             }
-            MovementJobs.MoveObjects(objectsToMove, CalculateDestinations());
-        }
-        
-        /// <summary>
-        /// job system works better with collections than single objects
-        /// </summary>
-        private void CreateCollection()
-        {
-            // objectsToMove = new[] { player.transform, randomEnemy.transform, seekerEnemy.transform };
-            objectsToMove = new Transform[1 + seekerEnemy.Length];
-            objectsToMove[0] = player.transform;
-            for (var i = 0; i < seekerEnemy.Length; i++)
+            player.ApplyPosition(player.GetDestination());
+            foreach (var seeker in seekerEnemy)
             {
-                objectsToMove[i + 1] = seekerEnemy[i].transform;
+                seeker.ApplyPosition(seeker.GetDestination());
             }
-        }
-
-        private Vector3[] CalculateDestinations()
-        {
-            var array = new Vector3[1 + seekerEnemy.Length];
-
-            for (var i = 0; i < array.Length; i++)
-            {
-                var movement = new Vector3();
-                
-                if (i == 0)
-                {
-                    movement = player.GetDestination();
-                }
-                else
-                {
-                    movement = seekerEnemy[i - 1].GetDestination();
-                }
-
-                array[i] = movement;
-            }
-            
-            return array;
         }
         
         public GridItem GetPlayersNextPosition()

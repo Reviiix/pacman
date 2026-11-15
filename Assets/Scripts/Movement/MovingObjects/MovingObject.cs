@@ -25,6 +25,7 @@ namespace Movement.MovingObjects
         public MovementManager.Direction currentMovementDirection;
         public event Action<MovementManager.Direction> DirectionChanged;
         private MonoBehaviour coroutiner;
+        private Vector3 logicalLocalPosition;
         [SerializeField] protected Transform targetDebug;
 
         /// <summary>
@@ -64,7 +65,7 @@ namespace Movement.MovingObjects
 
         private void SnapToExactCurrentGridItem()
         {
-            transform.position = current.transform.position;
+            ApplyPosition(ToLocal(current));
         }
 
         public void DetermineDirectionChange(KeyCode key)
@@ -103,20 +104,37 @@ namespace Movement.MovingObjects
         }
 
         /// <summary>
-        /// Returns this frame's position towards the next tile, moving a fixed number of tiles per second at any screen size.
+        /// Returns this frame's logical position towards the next tile, in the parent canvas's units, moving a fixed number of tiles per second.
         /// </summary>
         public Vector3 GetDestination()
         {
-            return Vector3.MoveTowards(transform.position, next.transform.position, tilesPerSecond * GetTileWorldSize() * Time.deltaTime);
+            return Vector3.MoveTowards(logicalLocalPosition, ToLocal(next), tilesPerSecond * GetTileSize() * Time.deltaTime);
         }
 
         /// <summary>
-        /// Returns the width of one grid tile in world units, which changes with the canvas scale.
+        /// Stores the logical position and draws the character on the nearest whole art pixel (one canvas unit), so it lines up with the maze while moving.
         /// </summary>
-        private float GetTileWorldSize()
+        public void ApplyPosition(Vector3 localPosition)
+        {
+            logicalLocalPosition = localPosition;
+            transform.localPosition = new Vector3(Mathf.Round(localPosition.x), Mathf.Round(localPosition.y), localPosition.z);
+        }
+
+        /// <summary>
+        /// Returns a grid item's position in the character's parent canvas space, which stays the same when the canvas rescales.
+        /// </summary>
+        private Vector3 ToLocal(GridItem item)
+        {
+            return transform.parent.InverseTransformPoint(item.transform.position);
+        }
+
+        /// <summary>
+        /// Returns the width of one grid tile in the parent canvas's units.
+        /// </summary>
+        private float GetTileSize()
         {
             var tile = (RectTransform)next.transform;
-            return tile.rect.width * tile.lossyScale.x;
+            return tile.rect.width * tile.lossyScale.x / transform.parent.lossyScale.x;
         }
 
         private MovementManager.Direction GetDirectionFromKeyCode(KeyCode key)
@@ -136,12 +154,15 @@ namespace Movement.MovingObjects
         /// </summary>
         private bool CloseToCurrentGridItem()
         {
-            return Vector3.Distance(transform.position, current.transform.position) <= TurnToleranceInTiles * GetTileWorldSize();
+            return Vector3.Distance(logicalLocalPosition, ToLocal(current)) <= TurnToleranceInTiles * GetTileSize();
         }
 
+        /// <summary>
+        /// Whether the character's logical position has arrived at the next tile.
+        /// </summary>
         protected virtual bool NewPositionReached()
         {
-            return Vector3.Distance(transform.position, next.transform.position) <= NewPositionDistanceTolerance;
+            return Vector3.Distance(logicalLocalPosition, ToLocal(next)) <= NewPositionDistanceTolerance;
         }
 
         private void SetCurrentPosition(GridItem position)
