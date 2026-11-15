@@ -4,7 +4,7 @@ using UnityEngine;
 namespace GridSystem.GridItems
 {
     /// <summary>
-    /// A walkable tile whose editor tools add or remove a pellet or bonus pickup.
+    /// A walkable tile whose edit-mode tools add or remove a pellet or bonus pickup.
     /// </summary>
     public class Blank : GridItem
     {
@@ -23,6 +23,16 @@ namespace GridSystem.GridItems
             UnityEditorInternal.ComponentUtility.MoveComponentUp(GetComponent<Blank>());
         }
 
+        /// <summary>
+        /// Greys the level tools out in Play mode, where the pickups have moved to the pickup layer and edits are lost on exit.
+        /// </summary>
+        [ContextMenu(nameof(AddPellet), true)]
+        [ContextMenu(nameof(RemovePellet), true)]
+        [ContextMenu(nameof(AddBonusItem), true)]
+        [ContextMenu(nameof(RemoveBonusItem), true)]
+        [ContextMenu(nameof(ChangeToWall), true)]
+        private bool CanUseLevelTools() => !Application.isPlaying;
+
         #region Pellet
         /// <summary>
         /// Adds a linked pellet to this tile.
@@ -40,11 +50,10 @@ namespace GridSystem.GridItems
         }
 
         /// <summary>
-        /// Adds a pickup centred on this tile: a linked prefab instance in edit mode (so prefab edits reach it), a plain copy in Play mode.
+        /// Adds a linked prefab instance centred on this tile, so later prefab edits reach it.
         /// </summary>
         private GameObject AddPickup(GameObject prefab)
         {
-            if (Application.isPlaying) return Instantiate(prefab, transform.position, Quaternion.identity, transform);
             var instance = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(prefab, transform);
             instance.transform.position = transform.position;
             UnityEditor.Undo.RegisterCreatedObjectUndo(instance, nameof(AddPickup));
@@ -72,22 +81,15 @@ namespace GridSystem.GridItems
                 var found = GetComponentInChildren<Pellet>(true);
                 if (found == null)
                 {
-                    Debug.LogWarning($"No pellet under {nameof(GridItem)} {Indices.Key},{Indices.Value} (in Play mode pellets move to the pickup layer).", this);
+                    Debug.LogWarning($"No pellet under {nameof(GridItem)} {Indices.Key},{Indices.Value}.", this);
                     return;
                 }
                 pellet = found.gameObject;
             }
-            if (Application.isPlaying)
+            UnityEditor.EditorApplication.delayCall+=()=>
             {
-                Destroy(pellet);
-            }
-            else
-            {
-                UnityEditor.EditorApplication.delayCall+=()=>
-                {
-                    DestroyImmediate(pellet);
-                };
-            }
+                DestroyImmediate(pellet);
+            };
         }
         #endregion Pellet
 
@@ -128,22 +130,15 @@ namespace GridSystem.GridItems
                 var found = GetComponentInChildren<BonusItem>(true);
                 if (found == null)
                 {
-                    Debug.LogWarning($"No bonus pickup under {nameof(GridItem)} {Indices.Key},{Indices.Value} (in Play mode pickups move to the pickup layer).", this);
+                    Debug.LogWarning($"No bonus pickup under {nameof(GridItem)} {Indices.Key},{Indices.Value}.", this);
                     return;
                 }
                 bonusItem = found.gameObject;
             }
-            if (Application.isPlaying)
+            UnityEditor.EditorApplication.delayCall+=()=>
             {
-                Destroy(bonusItem);
-            }
-            else
-            {
-                UnityEditor.EditorApplication.delayCall+=()=>
-                {
-                    DestroyImmediate(bonusItem);
-                };
-            }
+                DestroyImmediate(bonusItem);
+            };
         }
         #endregion BonusItem
 
