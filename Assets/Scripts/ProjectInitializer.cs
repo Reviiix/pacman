@@ -1,5 +1,6 @@
 using GameStates;
 using GridSystem;
+using GridSystem.GridItems;
 using Movement;
 using UnityEngine;
 using Visuals;
@@ -12,8 +13,10 @@ namespace Core
     /// </summary>
     public class ProjectInitializer : MonoBehaviour
     {
+        [SerializeField] private PelletTwinkle pelletTwinkle;
+
         /// <summary>
-        /// Initialises the game systems in dependency order (laying out the grid before characters snap onto it), then connects character sprites to their movement.
+        /// Initialises the game systems in dependency order (laying out the grid before characters snap onto it), then starts the presentation layer.
         /// </summary>
         private void Start()
         {
@@ -23,6 +26,7 @@ namespace Core
             PelletManager.Instance.Initialise();
             ScoreManager.Instance.Initialise();
             ConnectCharacterAnimators();
+            if (pelletTwinkle != null) pelletTwinkle.Initialise(FindObjectsByType<Pellet>(FindObjectsSortMode.None));
         }
 
         /// <summary>
