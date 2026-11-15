@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Readability checks for a rendered sprite set, using the same maths as the readability judge:
+// Readability checks for a rendered sprite set:
 // WCAG contrast vs the background and wall fill, CIEDE2000 between actors (normal and colour-blind simulations),
 // silhouette overlap, and hue echoes of the original arcade ghost colours on the same behaviour role.
 //   node check.js <spec.json> <outDir>

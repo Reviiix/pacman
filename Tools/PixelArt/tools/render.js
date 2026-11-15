@@ -14,8 +14,8 @@
 //     // or "mode": "cardinal", "base": [16 rows], "armN": [16 rows]   (arm pointing north, rotated for E/S/W)
 //   }
 // }
-// This copy (Candy Haunt style kit) adds the "corners" wall mode and the mockup overlay "vignette" (strength 0..1, with
-// "vignetteKeepTop" art rows left untouched for the HUD) to the original toolkit; everything else is unchanged.
+// Wall modes: "quadrants", "corners" and "cardinal". Mockups can add an overlay "vignette" (strength 0..1, with
+// "vignetteKeepTop" art rows left untouched for the HUD).
 //
 // Commands:
 //   node render.js sprites <spec.json> <outDir> [previewScale=8]
