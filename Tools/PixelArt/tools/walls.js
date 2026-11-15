@@ -4,9 +4,11 @@
 // Each corner set names the bands for its authored top edge and right edge; render.js flips the sets into place:
 //   ne: top = north (lit),  right = east (shade)      nw: top = north (lit),  right = west (lit)
 //   se: top = south (shade), right = east (shade)     sw: top = south (shade), right = west (lit)
-// Run directly to print an "@walls corners" block for art.txt (optional glints are corner:pattern:x:y:key, x/y in the authored 8x8):
+// Run directly to print an "@walls corners" block for art.txt (optional glints, or single-pixel band overrides, are
+// corner:pattern:x:y:key, x/y in the authored 8x8):
 //   node walls.js <litBands> <shadeBands> <core> [radius=4] [inset=1] [glint...]
-//   Candy Haunt walls: node walls.js LPD D J 4 2 nw:outer:4:3:W
+//   Cobalt Cabinet walls: node walls.js LS EE J 3 2 nw:outer:4:2:W nw:inner:4:3:S ne:inner:4:3:S sw:inner:4:3:S se:inner:4:3:E
+//   (inner corners are rounded, so with 2 bands the second band loses its corner pixel at x4,y3; the inner overrides restore it)
 function cornerSet({ top, right, core, R = 4, inset = 1, preferTopOnTie = true }) {
   const edge = 8 - inset;          // wall body spans x < edge (authored east side exposed)
   const topLine = inset;           // wall body spans y > topLine (authored north side exposed)

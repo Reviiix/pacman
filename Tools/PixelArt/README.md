@@ -1,7 +1,7 @@
-# Pixel art source
+# Pixel art source: Cobalt Cabinet
 
-Source and toolchain for the game's "Candy Haunt" pixel art. Unity ignores this folder; the imported sprites live in
-`Assets/Art/Sprites/`.
+Source and toolchain for the game's "Cobalt Cabinet" pixel art: a blue arcade-cabinet look with flat, outline-free sprites.
+Unity ignores this folder; the imported sprites live in `Assets/Art/Sprites/`.
 
 - `art.txt` is the source of truth: the 16-colour palette, every sprite frame as ASCII and the wall generator settings.
 - `STYLE_GUIDE.md` covers the look, the palette roles, the animation timings, the naming rules and how the art is wired into Unity.
