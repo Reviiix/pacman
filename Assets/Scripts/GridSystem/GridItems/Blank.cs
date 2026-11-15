@@ -25,7 +25,7 @@ namespace GridSystem.GridItems
 
         #region Pellet
         /// <summary>
-        /// Adds a linked pellet to this tile and registers the tile with the PelletManager.
+        /// Adds a linked pellet to this tile.
         /// </summary>
         [ContextMenu(nameof(AddPellet))]
         private void AddPellet()
@@ -37,7 +37,6 @@ namespace GridSystem.GridItems
             }
             hasPellet = true;
             pellet = AddPickup(pelletPrefab);
-            PelletManager.Instance.AddPelletToList(this);
         }
 
         /// <summary>
@@ -52,13 +51,15 @@ namespace GridSystem.GridItems
             return instance;
         }
         
+        /// <summary>
+        /// Removes this tile's pellet.
+        /// </summary>
         [ContextMenu(nameof(RemovePellet))]
         private void RemovePellet()
         {
             // if (!hasPellet) return;
             hasPellet = false;
             DestroyPelletObject();
-            PelletManager.Instance.RemovePelletFromList(this);
         }
 
         /// <summary>
@@ -106,13 +107,15 @@ namespace GridSystem.GridItems
             bonusItem = AddPickup(bonusItemPrefab);
         }
         
+        /// <summary>
+        /// Removes this tile's bonus pickup.
+        /// </summary>
         [ContextMenu(nameof(RemoveBonusItem))]
         private void RemoveBonusItem()
         {
             //if (!hasBonusItem) return;
             hasBonusItem = false;
             DestroyBonusItemObject();
-            //PelletManager.Instance.RemovePelletFromList(this);
         }
 
         /// <summary>

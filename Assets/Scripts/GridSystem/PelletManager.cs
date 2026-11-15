@@ -1,16 +1,14 @@
-using System;
 using System.Collections.Generic;
 using Abstractions;
 using GridSystem.GridItems;
-using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace GridSystem
 {
-    [ExecuteInEditMode]
+    /// <summary>
+    /// Holds the level's pellet count for the win check.
+    /// </summary>
     public class PelletManager : Singleton<PelletManager>
     {
-        [SerializeField] private List<Blank> allActivePellets = new List<Blank>();
         public int numberOfPellets { get; private set; }
 
         /// <summary>
@@ -19,18 +17,6 @@ namespace GridSystem
         public void Initialise(IReadOnlyCollection<Pellet> pellets)
         {
             numberOfPellets = pellets.Count;
-        }
-
-        public void AddPelletToList(Blank gridItem)
-        {
-            if (allActivePellets.Contains(gridItem)) return;
-            allActivePellets.Add(gridItem);
-        }
-
-        public void RemovePelletFromList(Blank gridItem)
-        {
-            if (!allActivePellets.Contains(gridItem)) return;
-            allActivePellets.Remove(gridItem);
         }
     }
 }
