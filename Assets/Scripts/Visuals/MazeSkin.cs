@@ -23,6 +23,40 @@ namespace Visuals
         [SerializeField] private Color wallTint = Color.white;
         [SerializeField] private Color corridorColor = Color.clear;
         [SerializeField] private bool treatOutsideAsWall;
+        #if UNITY_EDITOR
+        [SerializeField] private Texture2D wallSheet;
+
+        /// <summary>
+        /// Fills the wall tiles from the sliced wall sheet, ordered by each slice's numeric suffix (walls_0, walls_1...).
+        /// </summary>
+        [ContextMenu(nameof(FillWallTilesFromSheet))]
+        private void FillWallTilesFromSheet()
+        {
+            if (wallSheet == null)
+            {
+                Debug.LogError($"Assign a wall sheet to {name} first.", this);
+                return;
+            }
+            var tiles = new List<Sprite>();
+            foreach (var asset in UnityEditor.AssetDatabase.LoadAllAssetRepresentationsAtPath(UnityEditor.AssetDatabase.GetAssetPath(wallSheet)))
+            {
+                if (asset is Sprite sprite) tiles.Add(sprite);
+            }
+            tiles.Sort((a, b) => GetSliceIndex(a).CompareTo(GetSliceIndex(b)));
+            UnityEditor.Undo.RecordObject(this, nameof(FillWallTilesFromSheet));
+            wallTiles = tiles.ToArray();
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+
+        /// <summary>
+        /// Returns the number after the last underscore in a slice name, or -1 when there is none.
+        /// </summary>
+        private static int GetSliceIndex(Sprite sprite)
+        {
+            var suffix = sprite.name.Substring(sprite.name.LastIndexOf('_') + 1);
+            return int.TryParse(suffix, out var index) ? index : -1;
+        }
+        #endif
 
         /// <summary>
         /// Skins every item in a column/row grid: walls get their autotile sprite, corridors get the corridor colour.
