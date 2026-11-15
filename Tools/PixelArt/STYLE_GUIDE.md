@@ -294,7 +294,8 @@ moves an unrounded logical position and draws the character at it rounded to who
   - `GRP_Game`, the root: characters, FX, debug markers and the vignette.
   - `GRP_UserInterface`: the HUD and the scanlines.
 - **Prefabs:** `Assets/Prefabs/Characters/Player`, an `Enemy` base with `Enemy_Chase`, `Enemy_CutOff`, `Enemy_Scared` and
-  `Enemy_Random` variants (frames and timing only), `Assets/Prefabs/FX/FX_SugarBurst` and `FX_PointsPopup`, and the existing
+  `Enemy_Random` variants (frames and timing, plus `mirrorWhenFacingLeft` off on `Enemy_Scared`),
+  `Assets/Prefabs/FX/FX_SugarBurst` and `FX_PointsPopup`, and the existing
   `Pellet` and `BonusPickUp` (all level pellets are instances).
 - **Image colours:** every art Image is white (no tint).
 - **Debug targets:** `SeekerEnemyTarget` (Chase, `#c294ff`), `CutOffEnemyTarget` (`#bcf43a`) and `ScaredEnemyTarget`
