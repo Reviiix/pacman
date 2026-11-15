@@ -10,14 +10,13 @@ namespace Abstractions
         public static T Instance { get; private set; }
 
         /// <summary>
-        /// Registers this component as the instance, or removes it if another instance is already registered.
+        /// Registers this component as the instance unless another one is already registered.
         /// </summary>
         protected virtual void OnEnable()
         {
             if (Instance != null && !ReferenceEquals(Instance, this))
             {
-                Debug.LogError($"Duplicate singleton {typeof(T)} found on {name}. Removing the duplicate.", this);
-                SingletonUtility.DestroyDuplicate(this);
+                SingletonUtility.HandleDuplicate(this, typeof(T));
                 return;
             }
 
@@ -25,7 +24,7 @@ namespace Abstractions
         }
 
         /// <summary>
-        /// Clears the instance only if this is the registered one, so removing a duplicate keeps the real instance.
+        /// Clears the instance only if this is the registered one, so a duplicate going away keeps the real instance.
         /// </summary>
         protected virtual void OnDisable()
         {
@@ -44,14 +43,13 @@ namespace Abstractions
         protected static T Instance;
 
         /// <summary>
-        /// Registers this component as the instance, or removes it if another instance is already registered.
+        /// Registers this component as the instance unless another one is already registered.
         /// </summary>
         protected virtual void Awake()
         {
             if (Instance != null && !ReferenceEquals(Instance, this))
             {
-                Debug.LogError($"Duplicate singleton {typeof(T)} found on {name}. Removing the duplicate.", this);
-                SingletonUtility.DestroyDuplicate(this);
+                SingletonUtility.HandleDuplicate(this, typeof(T));
                 return;
             }
 
@@ -76,17 +74,18 @@ namespace Abstractions
     internal static class SingletonUtility
     {
         /// <summary>
-        /// Destroys a duplicate singleton component, using DestroyImmediate in edit mode where Destroy is not allowed.
+        /// Removes a duplicate in Play mode; in edit mode only warns, since a second open scene must never lose its components.
         /// </summary>
-        public static void DestroyDuplicate(Component duplicate)
+        public static void HandleDuplicate(Component duplicate, System.Type type)
         {
             if (Application.isPlaying)
             {
+                Debug.LogError($"Duplicate singleton {type} found on {duplicate.name}. Removing the duplicate.", duplicate);
                 Object.Destroy(duplicate);
             }
             else
             {
-                Object.DestroyImmediate(duplicate);
+                Debug.LogWarning($"Another {type} is already registered; {duplicate.name} in scene '{duplicate.gameObject.scene.name}' is ignored while both are open.", duplicate);
             }
         }
     }
