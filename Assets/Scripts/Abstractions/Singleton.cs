@@ -16,7 +16,7 @@ namespace Abstractions
         {
             if (Instance != null && !ReferenceEquals(Instance, this))
             {
-                SingletonUtility.HandleDuplicate(this, typeof(T));
+                SingletonUtility.HandleDuplicate(this, Instance, typeof(T));
                 return;
             }
 
@@ -49,7 +49,7 @@ namespace Abstractions
         {
             if (Instance != null && !ReferenceEquals(Instance, this))
             {
-                SingletonUtility.HandleDuplicate(this, typeof(T));
+                SingletonUtility.HandleDuplicate(this, Instance, typeof(T));
                 return;
             }
 
@@ -74,14 +74,18 @@ namespace Abstractions
     internal static class SingletonUtility
     {
         /// <summary>
-        /// Removes a duplicate in Play mode; in edit mode only warns, since a second open scene must never lose its components.
+        /// Removes a duplicate in Play mode; in edit mode only warns (distinctly when both share a scene), since a second open scene must never lose its components.
         /// </summary>
-        public static void HandleDuplicate(Component duplicate, System.Type type)
+        public static void HandleDuplicate(Component duplicate, object registered, System.Type type)
         {
             if (Application.isPlaying)
             {
                 Debug.LogError($"Duplicate singleton {type} found on {duplicate.name}. Removing the duplicate.", duplicate);
                 Object.Destroy(duplicate);
+            }
+            else if (registered is Component other && other != null && other.gameObject.scene == duplicate.gameObject.scene)
+            {
+                Debug.LogWarning($"Scene '{duplicate.gameObject.scene.name}' has two {type} components, on {other.name} and {duplicate.name}. Remove one; otherwise Play mode removes whichever enables second, with an error.", duplicate);
             }
             else
             {
