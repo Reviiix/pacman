@@ -66,7 +66,6 @@ namespace GridSystem.GridItems
         [ContextMenu(nameof(RemovePellet))]
         private void RemovePellet()
         {
-            // if (!hasPellet) return;
             hasPellet = false;
             DestroyPelletObject();
         }
@@ -115,7 +114,6 @@ namespace GridSystem.GridItems
         [ContextMenu(nameof(RemoveBonusItem))]
         private void RemoveBonusItem()
         {
-            //if (!hasBonusItem) return;
             hasBonusItem = false;
             DestroyBonusItemObject();
         }
