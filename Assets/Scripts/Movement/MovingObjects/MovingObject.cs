@@ -26,7 +26,12 @@ namespace Movement.MovingObjects
         public event Action<MovementManager.Direction> DirectionChanged;
         private MonoBehaviour coroutiner;
         [SerializeField] protected Transform targetDebug;
-        
+
+        /// <summary>
+        /// Whether the character is heading for another tile, rather than held in place by a wall.
+        /// </summary>
+        public bool IsMoving => next != null && next != current;
+
         public virtual void Initialise(MonoBehaviour coroutineHandler)
         {
             coroutiner = coroutineHandler;

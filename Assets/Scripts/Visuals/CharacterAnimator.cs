@@ -16,17 +16,20 @@ namespace Visuals
         [SerializeField] private Sprite[] upFrames;
         [SerializeField] private Sprite[] downFrames;
         [SerializeField] [Min(0.01f)] private float secondsPerFrame = 0.15f;
+        [SerializeField] private bool animateOnlyWhileMoving;
         private Image image;
         private Sprite[] currentFrames;
         private int frameIndex;
         private WaitForSeconds frameWait;
         private Coroutine playback;
+        private MovingObject followed;
 
         /// <summary>
         /// Faces the character's current direction and follows every future direction change.
         /// </summary>
         public void Follow(MovingObject movingObject)
         {
+            followed = movingObject;
             Face(movingObject.currentMovementDirection);
             movingObject.DirectionChanged += Face;
         }
@@ -69,14 +72,15 @@ namespace Visuals
         }
 
         /// <summary>
-        /// Advances one frame per interval for as long as the character is enabled.
+        /// Advances one frame per interval, holding the first frame while a followed character is blocked if so configured.
         /// </summary>
         private IEnumerator Play()
         {
             while (true)
             {
                 yield return frameWait;
-                frameIndex++;
+                var holding = animateOnlyWhileMoving && followed != null && !followed.IsMoving;
+                frameIndex = holding ? 0 : frameIndex + 1;
                 ShowFrame();
             }
         }
