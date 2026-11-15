@@ -266,7 +266,7 @@ function loadStripFrame(file, frameIndex, frameWidth) {
   return { width: w, height: img.height, data: cropData(img, frameIndex * w, 0, w, img.height) };
 }
 // mockup.json: { "map": "path/to/map.txt", "tile": 16, "background": "#000", "corridor": "#000" (optional),
-//   "wallSpec": "walls spec.json", "outOfBoundsIsWall": false,
+//   "wallSpec": "walls spec.json", "outOfBoundsIsWall": false,   (colours are hex or a wallSpec palette key, e.g. "N")
 //   "layers": [ { "png": "pellet.png", "frame": 0, "cells": "pellets" | [[x,y],...] , "offset": [0,0] } ],
 //   "overlay": { "scanlines": 0.15 } }
 function renderMockup(configFile, outFile, scale = 3) {
@@ -276,13 +276,14 @@ function renderMockup(configFile, outFile, scale = 3) {
   const map = fs.readFileSync(rel(cfg.map), 'utf8').split('\n').filter(l => /^\s*\d+ /.test(l)).map(l => l.replace(/^\s*\d+ /, ''));
   const tile = cfg.tile || 16;
   const hudTop = cfg.hudTop || 0;
-  const img = newImage(map[0].length * tile, map.length * tile + hudTop, hexToRgba(cfg.background || '#000000'));
   const { spec: wspec, palette: wpal } = loadSpec(rel(cfg.wallSpec));
+  const colour = c => wpal[c] || hexToRgba(c);
+  const img = newImage(map[0].length * tile, map.length * tile + hudTop, colour(cfg.background || '#000000'));
   const ws = wallSheet(wspec.walls, wpal);
   if (ws.errors.length) console.error(ws.errors.join('\n'));
   map.forEach((row, y) => [...row].forEach((ch, x) => {
     if (ch === '#') blit(img, ws.images[wallIndexFor(wspec.walls, map, x, y, !!cfg.outOfBoundsIsWall)], x * tile, y * tile + hudTop);
-    else if (cfg.corridor) blit(img, newImage(tile, tile, hexToRgba(cfg.corridor)), x * tile, y * tile + hudTop);
+    else if (cfg.corridor) blit(img, newImage(tile, tile, colour(cfg.corridor)), x * tile, y * tile + hudTop);
   }));
   for (const layer of cfg.layers || []) {
     const sprite = loadStripFrame(rel(layer.png), layer.frame || 0, layer.frameWidth);

@@ -1,2 +1,2 @@
-{ "map": "../maps/stress-map.txt", "tile": 16, "background": "#1e1442", "corridor": null, "wallSpec": "../spec.json",
+{ "map": "../maps/stress-map.txt", "tile": 16, "background": "N", "corridor": null, "wallSpec": "../spec.json",
   "outOfBoundsIsWall": true, "layers": [ { "png": "../out/pellet.png", "frame": 0, "cells": "pellets" } ] }
