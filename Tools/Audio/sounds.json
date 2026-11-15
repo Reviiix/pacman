@@ -1,0 +1,80 @@
+{
+  "sampleRate": 22050,
+  "sounds": {
+    "sfx_pellet_0": {
+      "peakDb": -15, "lowpass": 6000,
+      "voices": [{ "wave": "square", "duty": 0.25, "notes": [{ "note": "C6", "to": "D6", "len": 0.05, "env": { "a": 0.002, "d": 0.03, "s": 0.4, "r": 0.015 } }] }]
+    },
+    "sfx_pellet_1": {
+      "peakDb": -15, "lowpass": 6000,
+      "voices": [{ "wave": "square", "duty": 0.25, "notes": [{ "note": "D6", "to": "E6", "len": 0.05, "env": { "a": 0.002, "d": 0.03, "s": 0.4, "r": 0.015 } }] }]
+    },
+    "sfx_pellet_2": {
+      "peakDb": -15, "lowpass": 6000,
+      "voices": [{ "wave": "square", "duty": 0.25, "notes": [{ "note": "E6", "to": "G6", "len": 0.05, "env": { "a": 0.002, "d": 0.03, "s": 0.4, "r": 0.015 } }] }]
+    },
+    "sfx_pellet_3": {
+      "peakDb": -15, "lowpass": 6000,
+      "voices": [{ "wave": "square", "duty": 0.25, "notes": [{ "note": "G6", "to": "A6", "len": 0.05, "env": { "a": 0.002, "d": 0.03, "s": 0.4, "r": 0.015 } }] }]
+    },
+    "sfx_bonus": {
+      "peakDb": -8, "lowpass": 7000,
+      "voices": [
+        { "wave": "square", "duty": 0.125, "env": { "a": 0.002, "d": 0.04, "s": 0.6, "r": 0.02 },
+          "notes": [{ "note": "E5", "len": 0.05 }, { "note": "A5", "len": 0.05 }, { "note": "C#6", "len": 0.05 }, { "note": "E6", "len": 0.05 }, { "note": "A6", "len": 0.16, "env": { "a": 0.002, "d": 0.12, "s": 0.2, "r": 0.04 } }] },
+        { "wave": "triangle", "vol": 0.6, "env": { "a": 0.002, "d": 0.05, "s": 0.7, "r": 0.03 },
+          "notes": [{ "note": "A3", "len": 0.1 }, { "note": "E4", "len": 0.1 }, { "note": "A4", "len": 0.16 }] }
+      ]
+    },
+    "sfx_pause": {
+      "peakDb": -10, "lowpass": 5000,
+      "voices": [{ "wave": "square", "duty": 0.5, "env": { "a": 0.002, "d": 0.03, "s": 0.5, "r": 0.02 },
+        "notes": [{ "note": "B5", "len": 0.06 }, { "note": "F#5", "len": 0.06 }, { "note": "B4", "len": 0.1 }] }]
+    },
+    "sfx_resume": {
+      "peakDb": -10, "lowpass": 5000,
+      "voices": [{ "wave": "square", "duty": 0.5, "env": { "a": 0.002, "d": 0.03, "s": 0.5, "r": 0.02 },
+        "notes": [{ "note": "B4", "len": 0.06 }, { "note": "F#5", "len": 0.06 }, { "note": "B5", "len": 0.1 }] }]
+    },
+    "sfx_start": {
+      "peakDb": -7, "lowpass": 6500,
+      "voices": [
+        { "wave": "square", "duty": 0.25, "env": { "a": 0.003, "d": 0.06, "s": 0.55, "r": 0.03 },
+          "notes": [
+            { "note": "D5", "len": 0.12 }, { "note": "F#5", "len": 0.12 }, { "note": "A5", "len": 0.12 }, { "note": "D6", "len": 0.24 },
+            { "note": "C#6", "len": 0.12 }, { "note": "A5", "len": 0.12 }, { "note": "B5", "len": 0.12 },
+            { "note": "D6", "len": 0.42, "env": { "a": 0.003, "d": 0.2, "s": 0.35, "r": 0.12 } }
+          ] },
+        { "wave": "triangle", "vol": 0.7, "env": { "a": 0.003, "d": 0.08, "s": 0.8, "r": 0.04 },
+          "notes": [
+            { "note": "D3", "len": 0.24 }, { "note": "A3", "len": 0.24 }, { "note": "D3", "len": 0.24 },
+            { "note": "G3", "len": 0.24 }, { "note": "D3", "len": 0.42, "env": { "a": 0.003, "d": 0.25, "s": 0.4, "r": 0.12 } }
+          ] }
+      ]
+    },
+    "sfx_win": {
+      "peakDb": -6, "lowpass": 7000,
+      "voices": [
+        { "wave": "square", "duty": 0.25, "env": { "a": 0.003, "d": 0.06, "s": 0.6, "r": 0.03 },
+          "notes": [
+            { "note": "G5", "len": 0.1 }, { "note": "G5", "len": 0.1 }, { "note": "G5", "len": 0.1 }, { "note": "D6", "len": 0.3 },
+            { "note": "C6", "len": 0.1 }, { "note": "B5", "len": 0.1 }, { "note": "C6", "len": 0.1 }, { "note": "E6", "len": 0.3 },
+            { "note": "D6", "len": 0.1 }, { "note": "E6", "len": 0.1 }, { "note": "F#6", "len": 0.1 },
+            { "note": "G6", "len": 0.7, "env": { "a": 0.003, "d": 0.3, "s": 0.4, "r": 0.25 } }
+          ] },
+        { "wave": "square", "duty": 0.5, "vol": 0.35, "env": { "a": 0.003, "d": 0.08, "s": 0.5, "r": 0.04 },
+          "notes": [
+            { "note": "B4", "len": 0.3 }, { "note": "B4", "len": 0.3 }, { "note": "E5", "len": 0.3 }, { "note": "G5", "len": 0.3 },
+            { "note": "A5", "len": 0.3 }, { "note": "B5", "len": 0.7, "env": { "a": 0.003, "d": 0.3, "s": 0.4, "r": 0.25 } }
+          ] },
+        { "wave": "triangle", "vol": 0.75, "env": { "a": 0.003, "d": 0.1, "s": 0.8, "r": 0.05 },
+          "notes": [
+            { "note": "G3", "len": 0.3 }, { "note": "D3", "len": 0.3 }, { "note": "C3", "len": 0.3 }, { "note": "E3", "len": 0.3 },
+            { "note": "D3", "len": 0.3 }, { "note": "G3", "len": 0.7, "env": { "a": 0.003, "d": 0.35, "s": 0.4, "r": 0.25 } }
+          ] },
+        { "wave": "noise", "vol": 0.25, "delay": 1.5, "env": { "a": 0.002, "d": 0.3, "s": 0, "r": 0.05 },
+          "notes": [{ "note": 6000, "len": 0.35 }] }
+      ]
+    }
+  }
+}
