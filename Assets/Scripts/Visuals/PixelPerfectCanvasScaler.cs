@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace Visuals
 {
     /// <summary>
-    /// Scales a canvas by the largest whole number that fits its reference size on screen, so pixel art stays crisp.
+    /// Scales a canvas by the largest whole number that fits its reference size on screen, so pixel art stays crisp, shrinking to fit exactly when the screen is smaller than the reference.
     /// </summary>
     [RequireComponent(typeof(CanvasScaler))]
     public class PixelPerfectCanvasScaler : MonoBehaviour
@@ -14,13 +14,14 @@ namespace Visuals
         private CanvasScaler canvasScaler;
 
         /// <summary>
-        /// Returns the largest whole-number scale at which the reference size fits the screen, never below the minimum.
+        /// Returns the largest whole-number scale at which the reference size fits the screen, never below the minimum; on a screen too small for even 1x, returns the exact fit so the whole layout stays visible.
         /// </summary>
-        private static int CalculateScale(int screenWidth, int screenHeight, Vector2Int reference, int minimum)
+        private static float CalculateScale(int screenWidth, int screenHeight, Vector2Int reference, int minimum)
         {
-            if (reference.x <= 0 || reference.y <= 0) return Mathf.Max(1, minimum);
-            var fit = Mathf.Min(screenWidth / reference.x, screenHeight / reference.y);
-            return Mathf.Max(Mathf.Max(1, minimum), fit);
+            if (reference.x <= 0 || reference.y <= 0 || screenWidth <= 0 || screenHeight <= 0) return Mathf.Max(1, minimum);
+            var exactFit = Mathf.Min((float)screenWidth / reference.x, (float)screenHeight / reference.y);
+            if (exactFit < 1f) return exactFit;
+            return Mathf.Max(Mathf.Max(1, minimum), Mathf.FloorToInt(exactFit));
         }
 
         /// <summary>
@@ -43,7 +44,7 @@ namespace Visuals
         }
 
         /// <summary>
-        /// Applies the whole-number scale for the current screen size if it has changed.
+        /// Applies the scale for the current screen size if it has changed.
         /// </summary>
         private void ApplyScale()
         {
