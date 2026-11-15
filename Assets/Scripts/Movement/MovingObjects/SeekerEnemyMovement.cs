@@ -61,7 +61,7 @@ namespace Movement.MovingObjects
                 case SeekerType.Random:
                     if (ShouldChangeDirection())
                     {
-                        ChangeDirection(GetValidRandomDirection(currentMovementDirection));   
+                        ChangeDirection(GetValidRandomDirection(CurrentMovementDirection));   
                     }
                     break;
                 default:
@@ -71,7 +71,7 @@ namespace Movement.MovingObjects
         
         private bool ShouldChangeDirection()
         {
-            return current.GetAdjacentItem(currentMovementDirection) is Wall || ShouldTakeAlternativeRoute();
+            return current.GetAdjacentItem(CurrentMovementDirection) is Wall || ShouldTakeAlternativeRoute();
         }
         
         private bool ShouldTakeAlternativeRoute()
@@ -180,7 +180,7 @@ namespace Movement.MovingObjects
         {
             if (Target == null) return;
 
-            var reverseDirection = MovementManager.GetOppositeDirection(currentMovementDirection);
+            var reverseDirection = MovementManager.GetOppositeDirection(CurrentMovementDirection);
             var bestDirection = reverseDirection;
             var bestDistance = int.MaxValue;
             foreach (var direction in SteeringPriority)

@@ -14,13 +14,13 @@ namespace Movement.MovingObjects
             base.OnDestinationReached();
             if (ShouldChangeDirection())
             {
-                ChangeDirection(GetValidRandomDirection(currentMovementDirection));   
+                ChangeDirection(GetValidRandomDirection(CurrentMovementDirection));   
             }
         }
 
         private bool ShouldChangeDirection()
         {
-            return current.GetAdjacentItem(currentMovementDirection) is Wall || ShouldTakeAlternativeRoute();
+            return current.GetAdjacentItem(CurrentMovementDirection) is Wall || ShouldTakeAlternativeRoute();
         }
 
         private bool ShouldTakeAlternativeRoute()

@@ -22,7 +22,7 @@ namespace Movement.MovingObjects
         private WaitUntil waitUntilReachedCurrentTarget;
         protected bool Moving;
         private Coroutine directionChange;
-        [SerializeField] protected MovementManager.Direction currentMovementDirection;
+        [SerializeField] private MovementManager.Direction currentMovementDirection;
         public event Action<MovementManager.Direction> DirectionChanged;
         private MonoBehaviour coroutiner;
         private Vector3 logicalLocalPosition;
