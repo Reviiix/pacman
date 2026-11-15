@@ -1,3 +1,4 @@
+using GameAudio;
 using GameStates;
 using GridSystem;
 using GridSystem.GridItems;
@@ -17,6 +18,7 @@ namespace Core
         [SerializeField] private Transform pickupLayer;
         [SerializeField] private GameCompleteDialog gameCompleteDialog;
         [SerializeField] private PauseController pauseController;
+        [SerializeField] private SoundEffects soundEffects;
 
         /// <summary>
         /// Initialises the game systems in dependency order (laying out the grid before characters snap onto it), then starts the presentation layer.
@@ -34,7 +36,18 @@ namespace Core
             if (pelletTwinkle != null) pelletTwinkle.Initialise(pellets);
             if (gameCompleteDialog != null) gameCompleteDialog.Initialise();
             if (pauseController != null) pauseController.Initialise();
+            ConnectSoundEffects();
             ScoreManager.OnGameWon += EndGame;
+        }
+
+        /// <summary>
+        /// Hooks the sound effects up to the pause and plays the level-start jingle.
+        /// </summary>
+        private void ConnectSoundEffects()
+        {
+            if (soundEffects == null) return;
+            if (pauseController != null) pauseController.PausedChanged += soundEffects.PlayPauseChange;
+            soundEffects.Initialise();
         }
 
         /// <summary>
