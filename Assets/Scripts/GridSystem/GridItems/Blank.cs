@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace GridSystem.GridItems
 {
+    /// <summary>
+    /// A walkable tile whose editor tools add or remove a pellet or bonus pickup.
+    /// </summary>
     public class Blank : GridItem
     {
         #if UNITY_EDITOR
@@ -21,6 +24,9 @@ namespace GridSystem.GridItems
         }
 
         #region Pellet
+        /// <summary>
+        /// Adds a linked pellet to this tile and registers the tile with the PelletManager.
+        /// </summary>
         [ContextMenu(nameof(AddPellet))]
         private void AddPellet()
         {
@@ -55,12 +61,20 @@ namespace GridSystem.GridItems
             PelletManager.Instance.RemovePelletFromList(this);
         }
 
+        /// <summary>
+        /// Destroys this tile's pellet, finding it by component if it was not added in this session.
+        /// </summary>
         private void DestroyPelletObject()
         {
             if (pellet == null)
             {
-                pellet = transform.GetChild(0).gameObject;
-                if (pellet == null) return;
+                var found = GetComponentInChildren<Pellet>(true);
+                if (found == null)
+                {
+                    Debug.LogWarning($"No pellet under {nameof(GridItem)} {Indices.Key},{Indices.Value} (in Play mode pellets move to the pickup layer).", this);
+                    return;
+                }
+                pellet = found.gameObject;
             }
             if (Application.isPlaying)
             {
@@ -77,6 +91,9 @@ namespace GridSystem.GridItems
         #endregion Pellet
 
         #region BonusItem
+        /// <summary>
+        /// Adds a linked bonus pickup to this tile.
+        /// </summary>
         [ContextMenu(nameof(AddBonusItem))]
         private void AddBonusItem()
         {
@@ -98,12 +115,20 @@ namespace GridSystem.GridItems
             //PelletManager.Instance.RemovePelletFromList(this);
         }
 
+        /// <summary>
+        /// Destroys this tile's bonus pickup, finding it by component if it was not added in this session.
+        /// </summary>
         private void DestroyBonusItemObject()
         {
             if (bonusItem == null)
             {
-                bonusItem = transform.GetChild(0).gameObject;
-                if (bonusItem == null) return;
+                var found = GetComponentInChildren<BonusItem>(true);
+                if (found == null)
+                {
+                    Debug.LogWarning($"No bonus pickup under {nameof(GridItem)} {Indices.Key},{Indices.Value} (in Play mode pickups move to the pickup layer).", this);
+                    return;
+                }
+                bonusItem = found.gameObject;
             }
             if (Application.isPlaying)
             {
