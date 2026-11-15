@@ -4,11 +4,17 @@ using Random = UnityEngine.Random;
 
 namespace Movement.MovingObjects
 {
+    /// <summary>
+    /// An enemy that wanders the maze, turning at random when blocked and now and then at a junction.
+    /// </summary>
     [Serializable]
     public class RandomEnemyMovement : MovingObject
     {
         private readonly MovementManager.Direction[] directions = MovementManager.Directions;
-        
+
+        /// <summary>
+        /// Snaps to the reached tile, then turns at random when blocked or now and then at a junction.
+        /// </summary>
         protected override void OnDestinationReached()
         {
             base.OnDestinationReached();
@@ -18,6 +24,9 @@ namespace Movement.MovingObjects
             }
         }
 
+        /// <summary>
+        /// Whether a wall ahead, or an occasional random choice at a junction, calls for a turn.
+        /// </summary>
         private bool ShouldChangeDirection()
         {
             return current.GetAdjacentItem(CurrentMovementDirection) is Wall || ShouldTakeAlternativeRoute();

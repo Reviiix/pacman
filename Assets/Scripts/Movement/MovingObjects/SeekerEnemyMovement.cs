@@ -47,6 +47,9 @@ namespace Movement.MovingObjects
             UpdateNext();
         }
         
+        /// <summary>
+        /// Chooses the next direction: steers towards this type's target tile, or wanders for the Random type.
+        /// </summary>
         private void UpdateNext()
         {
 
@@ -69,6 +72,9 @@ namespace Movement.MovingObjects
             }
         }
         
+        /// <summary>
+        /// Whether a wall ahead, or an occasional random choice at a junction, calls for a turn.
+        /// </summary>
         private bool ShouldChangeDirection()
         {
             return current.GetAdjacentItem(CurrentMovementDirection) is Wall || ShouldTakeAlternativeRoute();
