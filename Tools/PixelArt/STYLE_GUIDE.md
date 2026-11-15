@@ -438,11 +438,23 @@ Ideas grafted from the runner-ups:
   | Lolly body | 4.0:1 | Its white eyes and pink swirl are 17:1 and 7.2:1 |
   | Pellet | 13.5:1 | 12 bright px, 48 screen px at 2x |
 
-## 17. Open points
+## 17. Integration status
 
-- **Renderer:** the `corners` wall mode needs `tools/render.js` here. The shared original renderer throws on this
-  `spec.json` when it reaches the walls. Adopt this copy as the project renderer under `Tools/PixelArt/`.
-- **Pixel TTF:** its real metrics are unknown. Confirm a size that gives a 7 art px cap height on the 16 px grid.
-- **Code changes implied by the art:** none is required to show the art. They are hero hold-frame-when-stopped, the pellet
-  twinkle driver, pooled FX and `+NN` popups, the vignette component, the HUD shadow objects and the `Galaxian` to `Potion`
-  rename. Decide which ship in the first pass.
+Everything in this guide shipped in the first pass:
+
+- **Renderer:** `tools/render.js` (with the `corners` wall mode) is the project renderer under `Tools/PixelArt/`.
+- **Pixel TTF:** the font's cap line is 68 at 90 pt, so the HUD and popups use size `7 x 90 / 68 = 9.2647`, giving a
+  7 art px cap height (one font pixel per art pixel).
+- **Code:**
+  - `CharacterAnimator.animateOnlyWhileMoving` makes the hero hold frame 0 when blocked.
+  - `PelletTwinkle` is the single twinkle driver, started by `ProjectInitializer`.
+  - `PickupEffects` plays the pooled sugar burst and the `+NN` popup.
+  - `VignetteOverlay` generates the vignette at runtime.
+  - `ScoreDisplay` drives the `TXT_ScoreShadow` copy for the two shadow colours.
+  - `BonusItemType.Galaxian` is renamed to `Potion`.
+  - `MazeSkin` has a **Fill Wall Tiles From Sheet** context menu.
+- **Scene:**
+  - The maze sits on its own sub-canvas (`GRP_Grid`).
+  - Pellets and the bonus item are prefab instances.
+  - Grid cells are fixed 16x16, so sprites cannot skew the layout.
+- **Not done:** a Sprite Atlas. It is optional at this sprite count; add one if WebGL draw calls become a concern.
