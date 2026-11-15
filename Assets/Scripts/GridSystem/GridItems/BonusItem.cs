@@ -16,12 +16,6 @@ namespace GridSystem.GridItems
         /// </summary>
         public static event Action<Vector3, int> Collected;
         [SerializeField] private BonusItemType type = BonusItemType.Cherry;
-        private GridItem parent;
-
-        public void Initialise(GridItem p)
-        {
-            parent = p;
-        }
 
         /// <summary>
         /// Shows the sprite for this pickup's type once the score manager is available.
@@ -40,12 +34,10 @@ namespace GridSystem.GridItems
             GetComponent<Image>().sprite = ScoreManager.Instance.GetBonusPickUpGraphic(type);
         }
 
+        /// <summary>
+        /// Collects the pickup when the player's trigger touches it.
+        /// </summary>
         private void OnTriggerEnter2D(Collider2D other)
-        {
-            BonusItemHit();
-        }
-
-        private void OnTriggerStay(Collider other)
         {
             BonusItemHit();
         }
@@ -71,31 +63,58 @@ namespace GridSystem.GridItems
             SetGraphic();
         }
 
+        /// <summary>
+        /// Makes this pickup a cherry.
+        /// </summary>
         [ContextMenu(nameof(ChangeToCherry))]
         private void ChangeToCherry() => ChangeType(BonusItemType.Cherry);
 
+        /// <summary>
+        /// Makes this pickup a strawberry.
+        /// </summary>
         [ContextMenu(nameof(ChangeToStrawberry))]
         private void ChangeToStrawberry() => ChangeType(BonusItemType.Strawberry);
 
+        /// <summary>
+        /// Makes this pickup an orange.
+        /// </summary>
         [ContextMenu(nameof(ChangeToOrange))]
         private void ChangeToOrange() => ChangeType(BonusItemType.Orange);
 
+        /// <summary>
+        /// Makes this pickup an apple.
+        /// </summary>
         [ContextMenu(nameof(ChangeToApple))]
         private void ChangeToApple() => ChangeType(BonusItemType.Apple);
 
+        /// <summary>
+        /// Makes this pickup a melon.
+        /// </summary>
         [ContextMenu(nameof(ChangeToMelon))]
         private void ChangeToMelon() => ChangeType(BonusItemType.Melon);
 
+        /// <summary>
+        /// Makes this pickup a potion.
+        /// </summary>
         [ContextMenu(nameof(ChangeToPotion))]
         private void ChangeToPotion() => ChangeType(BonusItemType.Potion);
 
+        /// <summary>
+        /// Makes this pickup a bell.
+        /// </summary>
         [ContextMenu(nameof(ChangeToBell))]
         private void ChangeToBell() => ChangeType(BonusItemType.Bell);
 
+        /// <summary>
+        /// Makes this pickup a key.
+        /// </summary>
         [ContextMenu(nameof(ChangeToKey))]
         private void ChangeToKey() => ChangeType(BonusItemType.Key);
         #endif
 
+        /// <summary>
+        /// The pickup types in ascending point value (10 to 80); the order matches ScoreManager's pickup sprites.
+        /// </summary>
         public enum BonusItemType
         {
             Cherry, Strawberry, Orange, Apple, Melon, Potion, Bell, Key

@@ -32,7 +32,6 @@ namespace GridSystem.GridItems
             hasPellet = true;
             var parent = transform;
             pellet = Instantiate(pelletPrefab, parent.position, Quaternion.identity, parent);
-            pellet.GetComponent<Pellet>().Initialise(this);
             PelletManager.Instance.AddPelletToList(this);
         }
         
@@ -78,7 +77,6 @@ namespace GridSystem.GridItems
             hasBonusItem = true;
             var parent = transform;
             bonusItem = Instantiate(bonusItemPrefab, parent.position, Quaternion.identity, parent);
-            bonusItem.GetComponent<BonusItem>().Initialise(this);
         }
         
         [ContextMenu(nameof(RemoveBonusItem))]

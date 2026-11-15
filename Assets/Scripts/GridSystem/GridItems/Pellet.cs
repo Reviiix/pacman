@@ -13,19 +13,11 @@ namespace GridSystem.GridItems
         /// Raised with the pellet's world position when it is eaten.
         /// </summary>
         public static event Action<Vector3> Eaten;
-        private GridItem parent;
 
-        public void Initialise(GridItem p)
-        {
-            parent = p;
-        }
-
+        /// <summary>
+        /// Eats the pellet when the player's trigger touches it.
+        /// </summary>
         private void OnTriggerEnter2D(Collider2D other)
-        {
-            PelletHit();
-        }
-
-        private void OnTriggerStay(Collider other)
         {
             PelletHit();
         }
