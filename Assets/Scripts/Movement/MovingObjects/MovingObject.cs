@@ -23,6 +23,7 @@ namespace Movement.MovingObjects
         protected bool Moving;
         private Coroutine directionChange;
         public MovementManager.Direction currentMovementDirection;
+        public event Action<MovementManager.Direction> DirectionChanged;
         private MonoBehaviour coroutiner;
         [SerializeField] protected Transform targetDebug;
         
@@ -76,11 +77,21 @@ namespace Movement.MovingObjects
         protected void ChangeDirection(MovementManager.Direction direction)
         {
             if (current.GetAdjacentItem(direction) is Wall) return;
-            currentMovementDirection = direction;
+            SetMovementDirection(direction);
             SetCurrentPosition(current);
             SetNextPosition(current.GetAdjacentItem(currentMovementDirection));
         }
         
+        /// <summary>
+        /// Sets the movement direction and notifies listeners such as the character's sprite animator when it changes.
+        /// </summary>
+        protected void SetMovementDirection(MovementManager.Direction direction)
+        {
+            if (currentMovementDirection == direction) return;
+            currentMovementDirection = direction;
+            DirectionChanged?.Invoke(direction);
+        }
+
         /// <summary>
         /// Returns this frame's position towards the next tile, moving a fixed number of tiles per second at any screen size.
         /// </summary>

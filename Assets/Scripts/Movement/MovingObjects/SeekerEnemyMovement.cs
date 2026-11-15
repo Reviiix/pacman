@@ -193,7 +193,7 @@ namespace Movement.MovingObjects
 
             var nextItem = current.GetAdjacentItem(bestDirection);
             if (nextItem == null || nextItem is Wall) return;
-            currentMovementDirection = bestDirection;
+            SetMovementDirection(bestDirection);
             next = nextItem;
         }
 
