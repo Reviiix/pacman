@@ -10,6 +10,9 @@ MovementManager moves the player and enemies every frame. Each MovingObject adva
 Visuals
 The pixel-art presentation (integer canvas scaling, autotiled walls, sprite flipbooks, pickup effects and CRT overlays) lives in Assets/Scripts/Visuals. The art source, toolchain and style guide are in Tools/PixelArt.
 
+Audio
+Sound effects are original chiptune sounds synthesised by Tools/Audio (see its README) into Assets/Audio/SFX. SoundEffects in Assets/Scripts/Audio plays them from the pellet, pickup, pause and win events and the level start.
+
 Project Initialiser
 Handles the order of game initialisation. Allows for better debugging of race conditions by giving granular control over order or initialisation. Also gives an easy way to inject dependencies.
 
@@ -22,4 +25,5 @@ The game is built for WebGL to run inside the portfolio site's player (an iframe
 - Settings: Brotli compression, no decompression fallback, data caching on, explicitly thrown exceptions only, engine code stripping and Medium managed stripping, hardware statistics off.
 - Fit: PixelPerfectCanvasScaler keeps whole-number scales for crisp pixels and shrinks to fit exactly when the frame is smaller than 288x392, so the whole maze is always visible.
 - Controls: arrow keys or WASD, swipe on touch screens, P to pause (never Esc, which the site uses to leave the game). The game also pauses when it loses focus, and the game-complete dialog restarts the level.
+- Sound: browsers only let audio play after a click, tap or key press in the game's page, so the start jingle waits for that (and is skipped after four seconds) and earlier effects are silent.
 - Build: File > Build Profiles > Web, scene Assets/Scenes/Pacman.unity, output Builds/WebGL (ignored by git). Copy index.html and Build/ into the site's public/games/pac-man/ folder.
