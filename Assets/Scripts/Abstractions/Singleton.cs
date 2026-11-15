@@ -10,10 +10,11 @@ namespace Abstractions
         public static T Instance { get; private set; }
 
         /// <summary>
-        /// Registers this component as the instance unless another one is already registered.
+        /// Registers this component as the instance unless another one is already registered; a Prefab Mode copy is left out entirely.
         /// </summary>
         protected virtual void OnEnable()
         {
+            if (SingletonUtility.IsInPreviewScene(this)) return;
             if (Instance != null && !ReferenceEquals(Instance, this))
             {
                 SingletonUtility.HandleDuplicate(this, typeof(T));
@@ -43,10 +44,11 @@ namespace Abstractions
         protected static T Instance;
 
         /// <summary>
-        /// Registers this component as the instance unless another one is already registered.
+        /// Registers this component as the instance unless another one is already registered; a Prefab Mode copy is left out entirely.
         /// </summary>
         protected virtual void Awake()
         {
+            if (SingletonUtility.IsInPreviewScene(this)) return;
             if (Instance != null && !ReferenceEquals(Instance, this))
             {
                 SingletonUtility.HandleDuplicate(this, typeof(T));
@@ -120,14 +122,25 @@ namespace Abstractions
             if (Application.isPlaying) return null;
             foreach (var candidate in Object.FindObjectsByType(leaving.GetType(), FindObjectsInactive.Exclude, FindObjectsSortMode.None))
             {
-                if (candidate is Behaviour { isActiveAndEnabled: true } behaviour && behaviour != leaving
-                    && !UnityEditor.SceneManagement.EditorSceneManager.IsPreviewScene(behaviour.gameObject.scene))
+                if (candidate is Behaviour { isActiveAndEnabled: true } behaviour && behaviour != leaving && !IsInPreviewScene(behaviour))
                 {
                     return behaviour;
                 }
             }
             #endif
             return null;
+        }
+
+        /// <summary>
+        /// Whether the component sits in an editor preview scene, such as Prefab Mode's, whose copies never register, warn or take over.
+        /// </summary>
+        public static bool IsInPreviewScene(Component component)
+        {
+            #if UNITY_EDITOR
+            return UnityEditor.SceneManagement.EditorSceneManager.IsPreviewScene(component.gameObject.scene);
+            #else
+            return false;
+            #endif
         }
     }
 }
