@@ -476,7 +476,7 @@ YYYYYO.....YY.YY
 ................
 ................
 
-// ---------------------------------------------------------------- debug target marker (white, tinted per enemy in code)
+// ---------------------------------------------------------------- debug target marker (white, tinted per enemy by its Image colour in the scene)
 @sprite debug_target
 @frame
 KKKKKK....KKKKKK
