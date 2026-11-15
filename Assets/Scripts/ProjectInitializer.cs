@@ -20,12 +20,12 @@ namespace Core
         /// </summary>
         private void Start()
         {
+            var pellets = FindObjectsByType<Pellet>(FindObjectsSortMode.None);
             GridManager.Instance.Initialise();
             Canvas.ForceUpdateCanvases();
             MovementManager.Instance.Initialise();
-            PelletManager.Instance.Initialise();
+            PelletManager.Instance.Initialise(pellets);
             ScoreManager.Instance.Initialise();
-            var pellets = FindObjectsByType<Pellet>(FindObjectsSortMode.None);
             MovePickupsToTheirLayer(pellets);
             ConnectCharacterAnimators();
             if (pelletTwinkle != null) pelletTwinkle.Initialise(pellets);

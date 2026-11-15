@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Abstractions;
 using GridSystem.GridItems;
 using UnityEngine;
@@ -15,11 +14,11 @@ namespace GridSystem
         public int numberOfPellets { get; private set; }
 
         /// <summary>
-        /// Counts only tiles that still hold a pellet, so stale list entries and bonus-item tiles are ignored.
+        /// Takes the level's pellet count from the pellets themselves, wherever they sit in the hierarchy.
         /// </summary>
-        public void Initialise()
+        public void Initialise(IReadOnlyCollection<Pellet> pellets)
         {
-            numberOfPellets = allActivePellets.Count(tile => tile != null && tile.GetComponentInChildren<Pellet>() != null);
+            numberOfPellets = pellets.Count;
         }
 
         public void AddPelletToList(Blank gridItem)
