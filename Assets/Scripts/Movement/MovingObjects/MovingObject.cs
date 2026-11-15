@@ -85,6 +85,9 @@ namespace Movement.MovingObjects
             }
         }
 
+        /// <summary>
+        /// Turns to face a direction and heads for the tile that way, unless a wall is in the way.
+        /// </summary>
         protected void ChangeDirection(MovementManager.Direction direction)
         {
             if (current.GetAdjacentItem(direction) is Wall) return;

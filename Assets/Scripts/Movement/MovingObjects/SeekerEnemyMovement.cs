@@ -5,6 +5,9 @@ using Random = UnityEngine.Random;
 
 namespace Movement.MovingObjects
 {
+    /// <summary>
+    /// An enemy that steers towards a target tile chosen by its type, or wanders at random.
+    /// </summary>
     [Serializable]
     public class SeekerEnemyMovement : MovingObject
     {

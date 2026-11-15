@@ -8,6 +8,9 @@ using UnityEngine.UI;
 
 namespace GridSystem.GridItems
 {
+    /// <summary>
+    /// One maze tile: knows its grid position and neighbours and shows its wall or corridor look.
+    /// </summary>
     [RequireComponent(typeof(Image))]
     public abstract class GridItem : MonoBehaviour
     {

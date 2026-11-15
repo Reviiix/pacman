@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace GameStates
 {
+    /// <summary>
+    /// Keeps the score, decides when every pellet is eaten and supplies the bonus pickup sprites.
+    /// </summary>
     [ExecuteInEditMode]
     public class ScoreManager : Singleton<ScoreManager>
     {
@@ -71,6 +74,9 @@ namespace GameStates
             return points;
         }
         
+        /// <summary>
+        /// Returns the sprite for a bonus pickup type.
+        /// </summary>
         public Sprite GetBonusPickUpGraphic(BonusItem.BonusItemType type)
         {
             return type switch

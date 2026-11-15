@@ -8,6 +8,9 @@ using UnityEngine;
 
 namespace Movement
 {
+    /// <summary>
+    /// Moves the player and enemies every frame and answers questions about the player for the enemies.
+    /// </summary>
     public class MovementManager : Singleton<MovementManager>
     {
         public static readonly Direction[] Directions = { Direction.Up, Direction.Down, Direction.Left, Direction.Right };

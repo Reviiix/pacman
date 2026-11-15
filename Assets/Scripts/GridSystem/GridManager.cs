@@ -7,6 +7,9 @@ using Visuals;
 
 namespace GridSystem
 {
+    /// <summary>
+    /// Owns the level grid: indexes its tiles for lookups, links neighbours and skins the maze.
+    /// </summary>
     [ExecuteInEditMode]
     public class GridManager : Singleton<GridManager>
     {
@@ -26,6 +29,9 @@ namespace GridSystem
         [SerializeField] [Range(MinimumItems, MaximumColumns)] public int amountOfColumns = MaximumColumns / 2;
         [SerializeField] private MazeSkin mazeSkin;
 
+        /// <summary>
+        /// Collects and initialises the tiles, links their neighbours and applies the maze skin.
+        /// </summary>
         [ContextMenu(nameof(Initialise))]
         public void Initialise()
         {
@@ -104,6 +110,9 @@ namespace GridSystem
             }));
         }
 
+        /// <summary>
+        /// Generates a fresh grid of rows and tiles from the prefabs and indexes it.
+        /// </summary>
         private void CreateGrid(Action completeCallback = null)
         {
             gridObject = Instantiate(gridPrefab, gridArea);
