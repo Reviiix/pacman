@@ -14,14 +14,9 @@ namespace Visuals
         private CanvasScaler canvasScaler;
 
         /// <summary>
-        /// The whole-number scale currently applied to the canvas.
-        /// </summary>
-        public int Scale { get; private set; } = 1;
-
-        /// <summary>
         /// Returns the largest whole-number scale at which the reference size fits the screen, never below the minimum.
         /// </summary>
-        public static int CalculateScale(int screenWidth, int screenHeight, Vector2Int reference, int minimum)
+        private static int CalculateScale(int screenWidth, int screenHeight, Vector2Int reference, int minimum)
         {
             if (reference.x <= 0 || reference.y <= 0) return Mathf.Max(1, minimum);
             var fit = Mathf.Min(screenWidth / reference.x, screenHeight / reference.y);
@@ -52,9 +47,9 @@ namespace Visuals
         /// </summary>
         private void ApplyScale()
         {
-            Scale = CalculateScale(Screen.width, Screen.height, referenceSize, minimumScale);
-            if (Mathf.Approximately(canvasScaler.scaleFactor, Scale)) return;
-            canvasScaler.scaleFactor = Scale;
+            var scale = CalculateScale(Screen.width, Screen.height, referenceSize, minimumScale);
+            if (Mathf.Approximately(canvasScaler.scaleFactor, scale)) return;
+            canvasScaler.scaleFactor = scale;
         }
     }
 }

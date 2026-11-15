@@ -37,7 +37,7 @@ namespace Visuals
         /// <summary>
         /// Switches to the frames for the given direction, mirroring the side frames when facing left.
         /// </summary>
-        public void Face(MovementManager.Direction direction)
+        private void Face(MovementManager.Direction direction)
         {
             currentFrames = direction switch
             {

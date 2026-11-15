@@ -44,7 +44,7 @@ namespace GridSystem
         /// Gives every wall its autotiled sprite and every corridor its colour; also runnable from the context menu in edit mode.
         /// </summary>
         [ContextMenu(nameof(ApplyMazeSkin))]
-        public void ApplyMazeSkin()
+        private void ApplyMazeSkin()
         {
             if (mazeSkin == null) return;
             if (!Application.isPlaying)
