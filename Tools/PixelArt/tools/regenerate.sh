@@ -14,7 +14,7 @@ node tools/render.js mockup mockup.json mockup.png 3
 node tools/render.js mockup mockup_alt.json mockup_alt_frames.png 3
 mkdir -p review
 node tools/render.js mockup mockup.json review/mockup_x2.png 2 > /dev/null
-node tools/imgutil.js pad review/mockup_x2.png review/canvas_576x784_x2.png 16 '#1e1442'
+node tools/imgutil.js pad review/mockup_x2.png review/canvas_576x784_x2.png 16 "$(node -p "require('./spec.json').palette.N")"
 node tools/render.js mockup review/stress.json review/stress_walls_x2.png 2
 node tools/check.js spec.json out > review/metrics.txt
 echo "done: see contact_sheet.png, mockup.png, mockup_alt_frames.png and review/"

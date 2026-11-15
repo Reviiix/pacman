@@ -6,7 +6,8 @@
 const fs = require('fs');
 const { encodePng } = require('./render.js');
 const [specFile, outFile, score = '004260'] = process.argv.slice(2);
-const pal = JSON.parse(fs.readFileSync(specFile, 'utf8')).palette;
+const spec = JSON.parse(fs.readFileSync(specFile, 'utf8'));
+const pal = spec.palette;
 const rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
 const G = {
   S: ['.XXXX', 'X....', 'X....', '.XXX.', '....X', '....X', 'XXXX.'],
@@ -39,10 +40,15 @@ const total = label.length * 6 - 1 + gap + score.length * 6 - 1;
 const x0 = Math.floor((W - total) / 2), y0 = 8;
 text(label, x0, y0, pal.L, pal.D);
 text(score, x0 + label.length * 6 - 1 + gap, y0, pal.W, pal.S);
-// Pellet twinkles (the pellet's frame 0, a 4x4 sugar sparkle) either side of the readout, vertically centred on the glyphs.
-for (const cx of [x0 - 12, x0 + total + 8]) {
-  const rows = ['.YY.', 'YWWY', 'YWWY', '.YY.'];
-  rows.forEach((r, yy) => [...r].forEach((k, xx) => { if (k !== '.') px(cx + xx, y0 + 2 + yy, pal[k]); }));
+// Pellet twinkles: the pellet's frame 0, cropped to its drawn pixels, a gap away on either side of the readout and
+// vertically centred on the 7 px glyphs.
+const pellet = spec.sprites.pellet.frames[0];
+const drawn = pellet.flatMap((r, y) => [...r].map((k, x) => (k !== '.' ? [x, y] : null)).filter(Boolean));
+const minX = Math.min(...drawn.map(p => p[0])), maxX = Math.max(...drawn.map(p => p[0]));
+const minY = Math.min(...drawn.map(p => p[1])), maxY = Math.max(...drawn.map(p => p[1]));
+const twinkleWidth = maxX - minX + 1, twinkleTop = y0 + 3 - Math.floor((maxY - minY) / 2);
+for (const left of [x0 - gap - twinkleWidth, x0 + total + gap]) {
+  for (const [x, y] of drawn) px(left + x - minX, twinkleTop + y - minY, pal[pellet[y][x]]);
 }
 fs.writeFileSync(outFile, encodePng(img));
 console.log(`hud: ${outFile}`);
