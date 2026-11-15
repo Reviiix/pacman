@@ -320,7 +320,7 @@ moves an unrounded logical position and draws the character at it rounded to who
 
 ## 13. Naming conventions
 
-- **Case:** lower snake_case, `<category>_<subject>[_<view>].png`. The categories are `hero`, `enemy`, `pickup`, `fx` and
+- **Case:** lower snake_case, `<category>_<subject>[_<view>].png`. The categories are `hero`, `enemy`, `pickup`, `fx`, `ui` and
   `debug`, plus the two singletons `pellet.png` and `walls.png`.
 - **Enemies:** named by behaviour role to match the code (`enemy_chase`, `enemy_cutoff`, `enemy_scared`, `enemy_random`).
   Character names (Fangbat, Peeper, Jitters, Swirlpop) appear only in docs.
@@ -339,6 +339,7 @@ moves an unrounded logical position and draws the character at it rounded to who
   | `Maze/` | `walls` |
   | `FX/` | `fx_*` |
   | `Debug/` | `debug_*` |
+  | `UI/` | `ui_*` |
 
 - **Importer trap:** never put a non-strip image whose width is a whole multiple of its height under `Assets/Art/Sprites`
   (a HUD divider, for example); the importer would slice it.
@@ -372,6 +373,7 @@ are unchanged from the previous look, so every Unity reference survives a copy-o
 | `walls.png` | 752x16 | 47 | `walls_0..46` | `MazeSkin.wallTiles` (Blob47) | Generated |
 | `fx_sugar_burst.png` | 32x16 | 2 | `fx_sugar_burst_0..1` | `PickupEffects` burst frames (`FX_SugarBurst` prefab) | Drawn |
 | `debug_target.png` | 16x16 | 1 | single | The three `*EnemyTarget` markers, tinted per enemy | Drawn |
+| `ui_sound.png` | 32x16 | 2 | `ui_sound_0..1` | `UI_MuteButton` icon: speaker with waves (sound on) / with an X (muted) | Drawn |
 | Scanline overlay tile | 1 x scale | – | – | `ScanlineOverlay` (generated at runtime, darkness 0.15) | No file needed |
 | Vignette | 68x88 | – | – | `VignetteOverlay` (generated at runtime, bilinear, tint `K #020410`) | No file needed |
 | HUD text, `+NN` popup | – | – | – | The project TTF with the colours in sections 9 and 10 | No sprite |
