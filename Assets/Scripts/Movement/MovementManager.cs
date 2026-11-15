@@ -128,6 +128,9 @@ namespace Movement
             return null;
         }
 
+        /// <summary>
+        /// Returns the direction the player is moving.
+        /// </summary>
         public Direction GetPlayerDirection()
         {
             return player.CurrentMovementDirection;

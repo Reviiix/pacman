@@ -68,6 +68,9 @@ namespace Movement.MovingObjects
             Moving = false;
         }
 
+        /// <summary>
+        /// Places the character exactly on its current tile.
+        /// </summary>
         private void SnapToExactCurrentGridItem()
         {
             ApplyPosition(ToLocal(current));

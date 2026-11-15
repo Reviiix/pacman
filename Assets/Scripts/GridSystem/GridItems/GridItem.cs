@@ -100,6 +100,9 @@ namespace GridSystem.GridItems
             Display.color = color;
         }
 
+        /// <summary>
+        /// Removes this tile component, deferring the removal in edit mode.
+        /// </summary>
         protected void RemoveSelf()
         {
             if (Application.isPlaying)

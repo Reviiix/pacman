@@ -165,6 +165,9 @@ namespace GridSystem
             }
         }
 
+        /// <summary>
+        /// Destroys the generated grid, then calls back.
+        /// </summary>
         private void ResetGrid(Action completeCallback = null)
         {
             gridObject = GameObject.FindWithTag(GridTag);
