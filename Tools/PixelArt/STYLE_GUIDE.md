@@ -412,4 +412,4 @@ and `review/metrics.txt`.
 - **Spawn:** Chase, CutOff and Random start on the same tile and travel together for the first few seconds, so they overlap
   until their targets diverge.
 - **Atlas:** none yet (see section 12).
-- **Testing scene:** `PacmanTesting.unity` uses the new maze but keeps its original placeholder characters.
+- **Testing scene:** `PacmanTesting.unity` uses the new maze but keeps its original placeholder characters, and it cannot enter Play mode: it predates the current managers (it has no PelletManager or ScoreManager, and stale enemy data). Open it on its own rather than alongside `Pacman.unity`.
