@@ -16,6 +16,7 @@ namespace Core
         [SerializeField] private PelletTwinkle pelletTwinkle;
         [SerializeField] private Transform pickupLayer;
         [SerializeField] private GameCompleteDialog gameCompleteDialog;
+        [SerializeField] private PauseController pauseController;
 
         /// <summary>
         /// Initialises the game systems in dependency order (laying out the grid before characters snap onto it), then starts the presentation layer.
@@ -32,6 +33,7 @@ namespace Core
             ConnectCharacterAnimators();
             if (pelletTwinkle != null) pelletTwinkle.Initialise(pellets);
             if (gameCompleteDialog != null) gameCompleteDialog.Initialise();
+            if (pauseController != null) pauseController.Initialise();
             ScoreManager.OnGameWon += EndGame;
         }
 
@@ -44,10 +46,11 @@ namespace Core
         }
 
         /// <summary>
-        /// Freezes the characters and shows the game-complete dialog once the last pellet is eaten.
+        /// Ends pausing, freezes the characters and shows the game-complete dialog once the last pellet is eaten.
         /// </summary>
         private void EndGame()
         {
+            if (pauseController != null) pauseController.Lock();
             MovementManager.Instance.StopMoving();
             if (gameCompleteDialog != null) gameCompleteDialog.Show();
         }
