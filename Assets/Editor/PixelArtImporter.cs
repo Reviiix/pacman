@@ -14,26 +14,36 @@ namespace EditorTools
         private const int PixelsPerUnit = 16;
 
         /// <summary>
-        /// Applies pixel-art settings on first import and keeps strip slicing in step with the image's width.
+        /// Applies pixel-art settings on first import, then on every import keeps the max size big enough and the strip slicing in step with the image.
         /// </summary>
         private void OnPreprocessTexture()
         {
             if (!assetPath.StartsWith(PixelArtFolder)) return;
             var importer = (TextureImporter)assetImporter;
             importer.GetSourceTextureWidthAndHeight(out var width, out var height);
-            if (importer.importSettingsMissing) ApplyPixelArtSettings(importer, Mathf.Max(width, height));
+            var requiredMaxSize = GetRequiredMaxSize(Mathf.Max(width, height));
+            if (importer.importSettingsMissing) ApplyPixelArtSettings(importer, requiredMaxSize);
+            if (importer.maxTextureSize < requiredMaxSize) importer.maxTextureSize = requiredMaxSize;
             var isStrip = height > 0 && width > height && width % height == 0;
             importer.spriteImportMode = isStrip ? SpriteImportMode.Multiple : SpriteImportMode.Single;
             if (isStrip) SliceStrip(importer, width / height, height);
         }
 
         /// <summary>
-        /// Point filtering, no mipmaps, no compression, a 16 pixels-per-unit sprite and the smallest max size that keeps every pixel.
+        /// Returns the smallest power-of-two max size (at least 32) that keeps every pixel of an image this large.
         /// </summary>
-        private static void ApplyPixelArtSettings(TextureImporter importer, int largestSide)
+        private static int GetRequiredMaxSize(int largestSide)
+        {
+            return Mathf.Clamp(Mathf.NextPowerOfTwo(largestSide), 32, 8192);
+        }
+
+        /// <summary>
+        /// Point filtering, no mipmaps, no compression, a 16 pixels-per-unit sprite and the given max size.
+        /// </summary>
+        private static void ApplyPixelArtSettings(TextureImporter importer, int maxSize)
         {
             importer.textureType = TextureImporterType.Sprite;
-            importer.maxTextureSize = Mathf.Clamp(Mathf.NextPowerOfTwo(largestSide), 32, 8192);
+            importer.maxTextureSize = maxSize;
             importer.spritePixelsPerUnit = PixelsPerUnit;
             importer.filterMode = FilterMode.Point;
             importer.mipmapEnabled = false;
