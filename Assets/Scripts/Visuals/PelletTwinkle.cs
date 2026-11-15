@@ -13,24 +13,27 @@ namespace Visuals
     {
         private const int PickAttempts = 4;
         private static readonly System.Predicate<Image> IsGone = image => image == null;
-        [SerializeField] private Sprite restFrame;
         [SerializeField] private Sprite twinkleFrame;
         [SerializeField] [Min(0.05f)] private float tickSeconds = 0.25f;
         [SerializeField] [Min(1)] private int oneIn = 12;
         private readonly List<Image> pellets = new();
+        private readonly Dictionary<Image, Sprite> restSprites = new();
         private readonly List<Image> lit = new();
         private readonly List<Image> previouslyLit = new();
         private Coroutine routine;
 
         /// <summary>
-        /// Collects the pellets' Images and starts twinkling them.
+        /// Collects the pellets' Images, remembers each one's own sprite to return to, and starts twinkling them.
         /// </summary>
         public void Initialise(IEnumerable<Pellet> source)
         {
             pellets.Clear();
+            restSprites.Clear();
             foreach (var pellet in source)
             {
-                if (pellet.TryGetComponent(out Image image)) pellets.Add(image);
+                if (!pellet.TryGetComponent(out Image image)) continue;
+                pellets.Add(image);
+                restSprites[image] = image.sprite;
             }
             if (routine != null) StopCoroutine(routine);
             routine = StartCoroutine(Twinkle());
@@ -58,7 +61,7 @@ namespace Visuals
         }
 
         /// <summary>
-        /// Puts every pellet lit last tick back on its rest frame and remembers them so they are not picked again straight away.
+        /// Puts every pellet lit last tick back on its own sprite and remembers them so they are not picked again straight away.
         /// </summary>
         private void RestLitPellets()
         {
@@ -66,7 +69,7 @@ namespace Visuals
             foreach (var image in lit)
             {
                 if (image == null) continue;
-                image.sprite = restFrame;
+                image.sprite = restSprites[image];
                 previouslyLit.Add(image);
             }
             lit.Clear();
