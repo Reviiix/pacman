@@ -76,20 +76,23 @@ namespace Movement.MovingObjects
             ApplyPosition(ToLocal(current));
         }
 
-        public void DetermineDirectionChange(KeyCode key)
+        /// <summary>
+        /// Turns now if the character is close enough to its tile, otherwise queues the turn for when it arrives, replacing any queued turn.
+        /// </summary>
+        public void DetermineDirectionChange(MovementManager.Direction direction)
         {
             if (directionChange != null)
             {
                 coroutiner.StopCoroutine(directionChange);
             }
-            
+
             if (CloseToCurrentGridItem())
             {
-                ChangeDirection(GetDirectionFromKeyCode(key));
+                ChangeDirection(direction);
             }
             else
             {
-                directionChange = coroutiner.StartCoroutine(WaitUntilTargetReached(()=>ChangeDirection(GetDirectionFromKeyCode(key))));
+                directionChange = coroutiner.StartCoroutine(WaitUntilTargetReached(()=>ChangeDirection(direction)));
             }
         }
 
@@ -146,18 +149,6 @@ namespace Movement.MovingObjects
         {
             var tile = (RectTransform)next.transform;
             return tile.rect.width * tile.lossyScale.x / transform.parent.lossyScale.x;
-        }
-
-        private MovementManager.Direction GetDirectionFromKeyCode(KeyCode key)
-        {
-            return key switch
-            {
-                KeyCode.W => MovementManager.Direction.Up,
-                KeyCode.A => MovementManager.Direction.Left,
-                KeyCode.S => MovementManager.Direction.Down,
-                KeyCode.D => MovementManager.Direction.Right,
-                _ => currentMovementDirection
-            };
         }
 
         /// <summary>
