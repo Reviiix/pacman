@@ -22,11 +22,16 @@ namespace Movement.MovingObjects
         private WaitUntil waitUntilReachedCurrentTarget;
         protected bool Moving;
         private Coroutine directionChange;
-        public MovementManager.Direction currentMovementDirection;
+        [SerializeField] protected MovementManager.Direction currentMovementDirection;
         public event Action<MovementManager.Direction> DirectionChanged;
         private MonoBehaviour coroutiner;
         private Vector3 logicalLocalPosition;
         [SerializeField] protected Transform targetDebug;
+
+        /// <summary>
+        /// The direction the character is moving; change it through SetMovementDirection so DirectionChanged fires.
+        /// </summary>
+        public MovementManager.Direction CurrentMovementDirection => currentMovementDirection;
 
         /// <summary>
         /// Whether the character is heading for another tile, rather than held in place by a wall.

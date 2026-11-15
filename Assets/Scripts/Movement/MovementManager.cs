@@ -130,7 +130,7 @@ namespace Movement
 
         public Direction GetPlayerDirection()
         {
-            return player.currentMovementDirection;
+            return player.CurrentMovementDirection;
         }
 
         public static Direction GetOppositeDirection(Direction direction)

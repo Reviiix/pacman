@@ -30,7 +30,7 @@ namespace Visuals
         public void Follow(MovingObject movingObject)
         {
             followed = movingObject;
-            Face(movingObject.currentMovementDirection);
+            Face(movingObject.CurrentMovementDirection);
             movingObject.DirectionChanged += Face;
         }
 
