@@ -105,7 +105,7 @@ namespace Movement.MovingObjects
         /// </summary>
         private float GetTileWorldSize()
         {
-            var tile = (RectTransform)current.transform;
+            var tile = (RectTransform)next.transform;
             return tile.rect.width * tile.lossyScale.x;
         }
 
