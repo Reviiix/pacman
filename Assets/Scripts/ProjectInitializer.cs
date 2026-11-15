@@ -13,11 +13,12 @@ namespace Core
     public class ProjectInitializer : MonoBehaviour
     {
         /// <summary>
-        /// Initialises the game systems in dependency order, then connects character sprites to their movement.
+        /// Initialises the game systems in dependency order (laying out the grid before characters snap onto it), then connects character sprites to their movement.
         /// </summary>
         private void Start()
         {
             GridManager.Instance.Initialise();
+            Canvas.ForceUpdateCanvases();
             MovementManager.Instance.Initialise();
             PelletManager.Instance.Initialise();
             ScoreManager.Instance.Initialise();

@@ -32,10 +32,15 @@ namespace Movement.MovingObjects
         /// </summary>
         public bool IsMoving => next != null && next != current;
 
+        /// <summary>
+        /// Places the character exactly on its starting tile (its next tile if no current one is set) and picks the first tile to head for.
+        /// </summary>
         public virtual void Initialise(MonoBehaviour coroutineHandler)
         {
             coroutiner = coroutineHandler;
             waitUntilReachedCurrentTarget = new WaitUntil(() => !Moving);
+            if (current == null) SetCurrentPosition(next);
+            SnapToExactCurrentGridItem();
             SetNextPosition(GetAdjacentItem(currentMovementDirection));
         }
         
