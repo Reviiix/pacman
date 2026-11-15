@@ -24,13 +24,13 @@ namespace Abstractions
         }
 
         /// <summary>
-        /// Clears the instance only if this is the registered one, so a duplicate going away keeps the real instance.
+        /// If this is the registered instance, hands over to a waiting one in edit mode or clears it, so a duplicate going away keeps the real instance.
         /// </summary>
         protected virtual void OnDisable()
         {
             if (ReferenceEquals(Instance, this))
             {
-                Instance = null;
+                Instance = SingletonUtility.FindEditModeSuccessor(this) as T;
             }
         }
     }
@@ -57,13 +57,13 @@ namespace Abstractions
         }
 
         /// <summary>
-        /// Clears the instance on destroy rather than disable, because Awake will not run again to restore it.
+        /// Hands over to a waiting instance in edit mode, or clears it, on destroy rather than disable, because Awake will not run again to restore it.
         /// </summary>
         protected virtual void OnDestroy()
         {
             if (ReferenceEquals(Instance, this))
             {
-                Instance = null;
+                Instance = SingletonUtility.FindEditModeSuccessor(this) as T;
             }
         }
     }
@@ -85,8 +85,27 @@ namespace Abstractions
             }
             else
             {
-                Debug.LogWarning($"Another {type} is already registered; {duplicate.name} in scene '{duplicate.gameObject.scene.name}' is ignored while both are open.", duplicate);
+                Debug.LogWarning($"{type} on {duplicate.name} in scene '{duplicate.gameObject.scene.name}' waits while another one is registered, and takes over when that one goes away.", duplicate);
             }
+        }
+
+        /// <summary>
+        /// In edit mode, finds another enabled component of the leaving one's type, outside preview scenes, to take over as the instance; in Play mode there is none.
+        /// </summary>
+        public static Component FindEditModeSuccessor(Behaviour leaving)
+        {
+            #if UNITY_EDITOR
+            if (Application.isPlaying) return null;
+            foreach (var candidate in Object.FindObjectsByType(leaving.GetType(), FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+            {
+                if (candidate is Behaviour { isActiveAndEnabled: true } behaviour && behaviour != leaving
+                    && !UnityEditor.SceneManagement.EditorSceneManager.IsPreviewScene(behaviour.gameObject.scene))
+                {
+                    return behaviour;
+                }
+            }
+            #endif
+            return null;
         }
     }
 }
