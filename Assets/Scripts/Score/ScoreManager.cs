@@ -58,7 +58,7 @@ namespace GameStates
                 BonusItem.BonusItemType.Orange => 30,
                 BonusItem.BonusItemType.Apple => 40,
                 BonusItem.BonusItemType.Melon => 50,
-                BonusItem.BonusItemType.Galaxian => 60,
+                BonusItem.BonusItemType.Potion => 60,
                 BonusItem.BonusItemType.Bell => 70,
                 BonusItem.BonusItemType.Key => 80,
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, $"{type} not accounted for in switch statement.")
@@ -75,7 +75,7 @@ namespace GameStates
                 BonusItem.BonusItemType.Orange => bonusPickUpSprites[2],
                 BonusItem.BonusItemType.Apple => bonusPickUpSprites[3],
                 BonusItem.BonusItemType.Melon => bonusPickUpSprites[4],
-                BonusItem.BonusItemType.Galaxian => bonusPickUpSprites[5],
+                BonusItem.BonusItemType.Potion => bonusPickUpSprites[5],
                 BonusItem.BonusItemType.Bell => bonusPickUpSprites[6],
                 BonusItem.BonusItemType.Key => bonusPickUpSprites[7],
                 _ => throw new ArgumentOutOfRangeException(nameof(type), type, $"{type} not accounted for in switch statement.")

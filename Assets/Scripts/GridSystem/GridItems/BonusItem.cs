@@ -78,8 +78,8 @@ namespace GridSystem.GridItems
         [ContextMenu(nameof(ChangeToMelon))]
         private void ChangeToMelon() => ChangeType(BonusItemType.Melon);
 
-        [ContextMenu(nameof(ChangeToGalaxian))]
-        private void ChangeToGalaxian() => ChangeType(BonusItemType.Galaxian);
+        [ContextMenu(nameof(ChangeToPotion))]
+        private void ChangeToPotion() => ChangeType(BonusItemType.Potion);
 
         [ContextMenu(nameof(ChangeToBell))]
         private void ChangeToBell() => ChangeType(BonusItemType.Bell);
@@ -90,7 +90,7 @@ namespace GridSystem.GridItems
 
         public enum BonusItemType
         {
-            Cherry, Strawberry, Orange, Apple, Melon, Galaxian, Bell, Key
+            Cherry, Strawberry, Orange, Apple, Melon, Potion, Bell, Key
         }
     }
 }
