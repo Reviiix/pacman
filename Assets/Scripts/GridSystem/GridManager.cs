@@ -170,6 +170,7 @@ namespace GridSystem
                 Destroy(gridObject);
                 completeCallback?.Invoke();
             }
+            #if UNITY_EDITOR
             else
             {
                 UnityEditor.EditorApplication.delayCall+=()=>
@@ -178,6 +179,7 @@ namespace GridSystem
                     completeCallback?.Invoke();
                 };
             }
+            #endif
         }
         #endregion Generate Grid
     }

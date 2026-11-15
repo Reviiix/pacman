@@ -103,6 +103,7 @@ namespace GridSystem.GridItems
             {
                 Destroy(this);
             }
+            #if UNITY_EDITOR
             else
             {
                 UnityEditor.EditorApplication.delayCall+=()=>
@@ -110,6 +111,7 @@ namespace GridSystem.GridItems
                     DestroyImmediate(this);
                 };
             }
+            #endif
         }
     }
 }
