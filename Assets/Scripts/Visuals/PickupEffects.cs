@@ -14,7 +14,6 @@ namespace Visuals
     {
         private const float PopupRiseArtPixels = 8f;
         [SerializeField] private Image burstPrefab;
-        [SerializeField] private Sprite burstFirstFrame;
         [SerializeField] private Sprite burstSecondFrame;
         [SerializeField] [FormerlySerializedAs("firstFrameSeconds")] [Min(0.01f)] private float burstFirstFrameSeconds = 0.06f;
         [SerializeField] [FormerlySerializedAs("secondFrameSeconds")] [Min(0.01f)] private float burstSecondFrameSeconds = 0.09f;
@@ -23,6 +22,8 @@ namespace Visuals
         [SerializeField] [Min(1)] private int popupPoolSize = 3;
         [SerializeField] [Min(0.01f)] private float popupSeconds = 0.6f;
         [SerializeField] [Min(0f)] private float popupFadeSeconds = 0.2f;
+        private Sprite burstFirstFrame;
+        private Color burstColor;
         private Image[] bursts;
         private Coroutine[] burstRoutines;
         private int nextBurst;
@@ -32,11 +33,16 @@ namespace Visuals
         private int nextPopup;
 
         /// <summary>
-        /// Instantiates the burst and popup pools up front so nothing is created during play.
+        /// Takes the burst's first frame and colour from its prefab and instantiates the burst and popup pools up front so nothing is created during play.
         /// </summary>
         private void Awake()
         {
-            if (burstPrefab == null || burstFirstFrame == null || burstSecondFrame == null) Debug.LogWarning($"{name} has no burst prefab or frames; bursts are off.", this);
+            if (burstPrefab == null || burstPrefab.sprite == null || burstSecondFrame == null) Debug.LogWarning($"{name} has no burst prefab, prefab sprite or second frame; bursts are off.", this);
+            if (burstPrefab != null)
+            {
+                burstFirstFrame = burstPrefab.sprite;
+                burstColor = burstPrefab.color;
+            }
             if (popupPrefab == null) Debug.LogWarning($"{name} has no popup prefab; points popups are off.", this);
 
             bursts = new Image[burstPrefab != null ? burstPoolSize : 0];
@@ -106,7 +112,7 @@ namespace Visuals
         }
 
         /// <summary>
-        /// Shows the first frame then the second, fading from opaque to clear over both.
+        /// Shows the prefab's frame then the second frame, fading the prefab's colour to clear over both.
         /// </summary>
         private IEnumerator Burst(Image burst, Vector3 position)
         {
@@ -116,7 +122,7 @@ namespace Visuals
             for (var elapsed = 0f; elapsed < total; elapsed += Time.deltaTime)
             {
                 burst.sprite = elapsed < burstFirstFrameSeconds ? burstFirstFrame : burstSecondFrame;
-                burst.color = new Color(1f, 1f, 1f, 1f - elapsed / total);
+                burst.color = new Color(burstColor.r, burstColor.g, burstColor.b, burstColor.a * (1f - elapsed / total));
                 yield return null;
             }
             burst.gameObject.SetActive(false);
