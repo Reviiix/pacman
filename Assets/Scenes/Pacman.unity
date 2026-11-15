@@ -2339,14 +2339,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bonusPickUpSprites:
-  - {fileID: -355382486172595394, guid: 49bd9ffbc883544b599fc5241649a424, type: 3}
-  - {fileID: -1444677435, guid: 49bd9ffbc883544b599fc5241649a424, type: 3}
-  - {fileID: 1080099352, guid: 49bd9ffbc883544b599fc5241649a424, type: 3}
-  - {fileID: 1303907461, guid: 49bd9ffbc883544b599fc5241649a424, type: 3}
-  - {fileID: 784307088, guid: 49bd9ffbc883544b599fc5241649a424, type: 3}
-  - {fileID: -1244106048, guid: 49bd9ffbc883544b599fc5241649a424, type: 3}
-  - {fileID: 655588339, guid: 49bd9ffbc883544b599fc5241649a424, type: 3}
-  - {fileID: -1705424219, guid: 49bd9ffbc883544b599fc5241649a424, type: 3}
+  - {fileID: 21300000, guid: cd9ba6afb2044495dbf643fd3d0b2635, type: 3}
+  - {fileID: 21300000, guid: 20bca697854aa43d7bb7ec9005556dd0, type: 3}
+  - {fileID: 21300000, guid: 4bbea0eb19fe4467a8460d46182f2202, type: 3}
+  - {fileID: 21300000, guid: edda15e10343c4865b5c950f92032c27, type: 3}
+  - {fileID: 21300000, guid: fbefc9655491049829fec5468a031c57, type: 3}
+  - {fileID: 21300000, guid: b044491e3afeb4121ae05411f099bc8d, type: 3}
+  - {fileID: 21300000, guid: 8faf01495214841c58653f5829912ebe, type: 3}
+  - {fileID: 21300000, guid: ae47ca6a075f041b8be8c7005c7099d1, type: 3}
 --- !u!114 &1232368972 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4490732647299646541, guid: 146dc9647e512479a9aa39ff26af0e8b, type: 3}
