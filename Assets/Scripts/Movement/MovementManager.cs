@@ -54,6 +54,14 @@ namespace Movement
             canMove = false;
         }
 
+        /// <summary>
+        /// Lets the characters and the player's input carry on, as after a pause.
+        /// </summary>
+        public void ResumeMoving()
+        {
+            canMove = true;
+        }
+
         private void Update()
         {
             if (!canMove) return;
