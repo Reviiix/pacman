@@ -71,8 +71,10 @@ from it. The generated files below are not committed: run `sh tools/regenerate.s
 | `Y` | `#ffcf3a` | Gold | Bell, key, strawberry seeds, caramel highlight | 13.3:1 |
 
 `M` keeps a hue of exactly 330 degrees (`B = (R + G) / 2`), the same 30 degrees from arcade red and arcade pink, and is
-desaturated to read raspberry rather than hot pink. Keep `T` at a hue of 145 degrees or less, never towards teal. Do not add
-a 17th colour (16 is the format's limit); change a slot only after updating this table and re-running `tools/check.js`.
+desaturated to read raspberry rather than hot pink. Keep `T` at a hue of 145 degrees or less, never towards teal. Sixteen
+colours is a style budget that keeps the hardware-sprite look, not a format limit: the build, render and check tools
+accept more single-character keys, though the contact sheet's swatch row fits only 19. Add or change a slot only after
+updating this table and re-running `tools/check.js`.
 
 ## 3. Background, corridors and layout
 
