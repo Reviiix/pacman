@@ -8,12 +8,12 @@ using Visuals;
 namespace Core
 {
     /// <summary>
-    /// Using a project initializer can help reduce the amount of race conditions by offering more granular control of the initialisation sequence.
-    /// Also offers an exy way to implement dependency injections instead of always relying on the singleton pattern.
+    /// Runs the start-up sequence: grid, movement, pellets and score, then wires up the presentation layer.
     /// </summary>
     public class ProjectInitializer : MonoBehaviour
     {
         [SerializeField] private PelletTwinkle pelletTwinkle;
+        [SerializeField] private Transform pickupLayer;
 
         /// <summary>
         /// Initialises the game systems in dependency order (laying out the grid before characters snap onto it), then starts the presentation layer.
@@ -25,8 +25,20 @@ namespace Core
             MovementManager.Instance.Initialise();
             PelletManager.Instance.Initialise();
             ScoreManager.Instance.Initialise();
+            var pellets = FindObjectsByType<Pellet>(FindObjectsSortMode.None);
+            MovePickupsToTheirLayer(pellets);
             ConnectCharacterAnimators();
-            if (pelletTwinkle != null) pelletTwinkle.Initialise(FindObjectsByType<Pellet>(FindObjectsSortMode.None));
+            if (pelletTwinkle != null) pelletTwinkle.Initialise(pellets);
+        }
+
+        /// <summary>
+        /// Moves pellets and bonus items from their maze cells onto their own canvas layer, keeping their positions, so changes to them don't rebuild the static maze.
+        /// </summary>
+        private void MovePickupsToTheirLayer(Pellet[] pellets)
+        {
+            if (pickupLayer == null) return;
+            foreach (var pellet in pellets) pellet.transform.SetParent(pickupLayer, true);
+            foreach (var bonusItem in FindObjectsByType<BonusItem>(FindObjectsSortMode.None)) bonusItem.transform.SetParent(pickupLayer, true);
         }
 
         /// <summary>
