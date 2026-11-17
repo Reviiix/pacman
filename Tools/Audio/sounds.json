@@ -52,6 +52,20 @@
           ] }
       ]
     },
+    "sfx_lose": {
+      "peakDb": -7, "lowpass": 5000,
+      "voices": [
+        { "wave": "square", "duty": 0.5, "env": { "a": 0.003, "d": 0.05, "s": 0.6, "r": 0.03 },
+          "notes": [
+            { "note": "E5", "len": 0.14 }, { "note": "C5", "len": 0.14 }, { "note": "A4", "len": 0.14 },
+            { "note": "F4", "to": "C4", "len": 0.6, "env": { "a": 0.003, "d": 0.2, "s": 0.5, "r": 0.2 } }
+          ] },
+        { "wave": "triangle", "vol": 0.7, "env": { "a": 0.003, "d": 0.08, "s": 0.8, "r": 0.04 },
+          "notes": [
+            { "note": "A2", "len": 0.42 }, { "note": "F2", "to": "C2", "len": 0.6, "env": { "a": 0.003, "d": 0.25, "s": 0.5, "r": 0.2 } }
+          ] }
+      ]
+    },
     "sfx_win": {
       "peakDb": -6, "lowpass": 7000,
       "voices": [
