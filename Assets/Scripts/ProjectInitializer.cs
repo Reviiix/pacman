@@ -16,7 +16,7 @@ namespace Core
     {
         [SerializeField] private PelletTwinkle pelletTwinkle;
         [SerializeField] private Transform pickupLayer;
-        [SerializeField] private GameCompleteDialog gameCompleteDialog;
+        [SerializeField] private EndGameDialog gameCompleteDialog;
         [SerializeField] private PauseController pauseController;
         [SerializeField] private SoundEffects soundEffects;
         [SerializeField] private MuteButton muteButton;
