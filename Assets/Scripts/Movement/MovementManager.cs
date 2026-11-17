@@ -20,6 +20,11 @@ namespace Movement
         private readonly Dictionary<GridItem, GridItem> mirroredWalkableItems = new();
 
         /// <summary>
+        /// The player's character.
+        /// </summary>
+        public PlayerMovement Player => player;
+
+        /// <summary>
         /// The player followed by every enemy.
         /// </summary>
         public IEnumerable<MovingObject> MovingObjects
