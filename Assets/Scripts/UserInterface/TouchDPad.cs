@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace UserInterface
 {
     /// <summary>
-    /// An on-screen D-pad for touch screens: press or slide a thumb over it to steer. It shows only where touch input exists and scales in whole pixel-art steps to about a third of the screen's shorter side.
+    /// An on-screen D-pad for touch screens: press or slide a thumb over it to steer. It shows only where touch input exists and scales in whole pixel-art steps to at most 45% of the screen's shorter side, so each arm suits a thumb.
     /// </summary>
     public class TouchDPad : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
     {
@@ -17,7 +17,7 @@ namespace UserInterface
         [SerializeField] private Image rightButton;
         [SerializeField] private Sprite buttonSprite;
         [SerializeField] private Sprite pressedSprite;
-        [SerializeField] [Range(0.1f, 0.6f)] private float screenFraction = 0.35f;
+        [SerializeField] [Range(0.1f, 0.6f)] private float screenFraction = 0.45f;
         [SerializeField] [Range(0f, 0.9f)] private float deadZoneFraction = 0.25f;
         [SerializeField] private bool showWithoutTouch;
         private RectTransform rect;

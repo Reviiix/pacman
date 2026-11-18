@@ -454,7 +454,7 @@ MonoBehaviour:
   rightButton: {fileID: 5046592368961306816}
   buttonSprite: {fileID: 912817076, guid: b1e4972c8b2684749bf116ae9699e93e, type: 3}
   pressedSprite: {fileID: -337905925, guid: b1e4972c8b2684749bf116ae9699e93e, type: 3}
-  screenFraction: 0.35
+  screenFraction: 0.45
   deadZoneFraction: 0.25
   showWithoutTouch: 0
 --- !u!1 &3396990408908211025
