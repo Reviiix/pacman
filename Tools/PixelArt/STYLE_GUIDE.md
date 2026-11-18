@@ -275,8 +275,8 @@ moves an unrounded logical position and draws the character at it rounded to who
   - `GRP_Grid`: nested canvas for the static maze.
   - `GRP_Pickups`: nested canvas for pellets and the bonus item. `ProjectInitializer` moves them here from their cells at
     start-up, so the `Blank` tile's pickup tools work in edit mode only.
-  - `GRP_Game`, the root: characters, FX, debug markers and the vignette.
-  - `GRP_UserInterface`: the HUD and the scanlines.
+  - `GRP_Game`, the root: its `GRP_Playfield` holds the grid, pickups, characters, FX, debug markers and the vignette.
+  - `GRP_UserInterface`: `GRP_HUD` (score bar, twinkles, mute button), the D-pad, the overlays and the scanlines. `GRP_Playfield` and `GRP_HUD` are what the canvas scalers raise to clear the D-pad's strip on touch screens.
 - **Prefabs:** `Assets/Prefabs/Characters/Player`, an `Enemy` base with `Enemy_Chase`, `Enemy_CutOff`, `Enemy_Scared` and
   `Enemy_Random` variants (frames and timing, plus `mirrorWhenFacingLeft` off on `Enemy_Scared`),
   `Assets/Prefabs/FX/FX_SugarBurst` and `FX_PointsPopup`, and the existing
