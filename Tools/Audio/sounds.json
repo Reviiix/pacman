@@ -2,20 +2,32 @@
   "sampleRate": 22050,
   "sounds": {
     "sfx_pellet_0": {
-      "peakDb": -15, "lowpass": 6000,
-      "voices": [{ "wave": "square", "duty": 0.25, "notes": [{ "note": "C6", "to": "D6", "len": 0.05, "env": { "a": 0.002, "d": 0.03, "s": 0.4, "r": 0.015 } }] }]
+      "peakDb": -16, "lowpass": 4500,
+      "voices": [
+        { "wave": "triangle", "notes": [{ "note": "G5", "len": 0.16, "env": { "a": 0.003, "d": 0.14, "s": 0, "r": 0.02 } }] },
+        { "wave": "triangle", "vol": 0.25, "notes": [{ "note": "G6", "len": 0.08, "env": { "a": 0.002, "d": 0.06, "s": 0, "r": 0.015 } }] }
+      ]
     },
     "sfx_pellet_1": {
-      "peakDb": -15, "lowpass": 6000,
-      "voices": [{ "wave": "square", "duty": 0.25, "notes": [{ "note": "D6", "to": "E6", "len": 0.05, "env": { "a": 0.002, "d": 0.03, "s": 0.4, "r": 0.015 } }] }]
+      "peakDb": -16, "lowpass": 4500,
+      "voices": [
+        { "wave": "triangle", "notes": [{ "note": "A5", "len": 0.16, "env": { "a": 0.003, "d": 0.14, "s": 0, "r": 0.02 } }] },
+        { "wave": "triangle", "vol": 0.25, "notes": [{ "note": "A6", "len": 0.08, "env": { "a": 0.002, "d": 0.06, "s": 0, "r": 0.015 } }] }
+      ]
     },
     "sfx_pellet_2": {
-      "peakDb": -15, "lowpass": 6000,
-      "voices": [{ "wave": "square", "duty": 0.25, "notes": [{ "note": "E6", "to": "G6", "len": 0.05, "env": { "a": 0.002, "d": 0.03, "s": 0.4, "r": 0.015 } }] }]
+      "peakDb": -16, "lowpass": 4500,
+      "voices": [
+        { "wave": "triangle", "notes": [{ "note": "C6", "len": 0.16, "env": { "a": 0.003, "d": 0.14, "s": 0, "r": 0.02 } }] },
+        { "wave": "triangle", "vol": 0.25, "notes": [{ "note": "C7", "len": 0.08, "env": { "a": 0.002, "d": 0.06, "s": 0, "r": 0.015 } }] }
+      ]
     },
     "sfx_pellet_3": {
-      "peakDb": -15, "lowpass": 6000,
-      "voices": [{ "wave": "square", "duty": 0.25, "notes": [{ "note": "G6", "to": "A6", "len": 0.05, "env": { "a": 0.002, "d": 0.03, "s": 0.4, "r": 0.015 } }] }]
+      "peakDb": -16, "lowpass": 4500,
+      "voices": [
+        { "wave": "triangle", "notes": [{ "note": "D6", "len": 0.16, "env": { "a": 0.003, "d": 0.14, "s": 0, "r": 0.02 } }] },
+        { "wave": "triangle", "vol": 0.25, "notes": [{ "note": "D7", "len": 0.08, "env": { "a": 0.002, "d": 0.06, "s": 0, "r": 0.015 } }] }
+      ]
     },
     "sfx_bonus": {
       "peakDb": -8, "lowpass": 7000,

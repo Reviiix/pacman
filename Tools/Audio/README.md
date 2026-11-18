@@ -28,7 +28,7 @@ clips for the browser, which decodes them itself).
 
 | File | When it plays | Notes |
 |---|---|---|
-| `sfx_pellet_0` … `sfx_pellet_3` | Each pellet, in turn | A rising C–D–E–G pentatonic trickle of 50 ms chirps, kept quiet (-15 dBFS) because it repeats constantly |
+| `sfx_pellet_0` … `sfx_pellet_3` | Each pellet, in turn | A rising G–A–C–D pentatonic trickle of soft bell plinks: a triangle tone with a quiet octave above it, a quick attack and a 0.14 s fade, low-passed at 4.5 kHz and kept quiet (-16 dBFS) because it repeats constantly |
 | `sfx_bonus` | A bonus pickup | A bright A-major arpeggio over a triangle bass |
 | `sfx_pause` / `sfx_resume` | P pauses / resumes | Three falling or rising square tones |
 | `sfx_start` | The level starts | A short D-major jingle. A browser only lets audio play after a click, tap or key press in the page, so `SoundEffects` holds the jingle until then and skips it if that takes over four seconds |
