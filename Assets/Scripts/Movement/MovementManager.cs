@@ -67,6 +67,14 @@ namespace Movement
             canMove = true;
         }
 
+        /// <summary>
+        /// Turns the player as a key or swipe would, but only while the characters can move, so on-screen controls do nothing while paused or after the game ends.
+        /// </summary>
+        public void TurnPlayer(Direction direction)
+        {
+            if (canMove) player.DetermineDirectionChange(direction);
+        }
+
         private void Update()
         {
             if (!canMove) return;
