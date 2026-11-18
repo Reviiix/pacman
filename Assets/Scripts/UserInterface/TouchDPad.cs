@@ -2,15 +2,17 @@ using Movement;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Visuals;
 
 namespace UserInterface
 {
     /// <summary>
-    /// An on-screen D-pad for touch screens: press or slide a thumb over it to steer. It shows only where touch input exists and scales in whole pixel-art steps to at most 45% of the screen's shorter side, so each arm suits a thumb.
+    /// An on-screen D-pad for touch screens: press or slide a thumb over it to steer. It shows only where touch input exists, scales in whole screen pixels per art pixel to at most 45% of the screen's shorter side so each arm suits a thumb, and keeps a strip clear for itself below the game when there is no room beside it.
     /// </summary>
     public class TouchDPad : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
     {
         private const float ArtSize = 48f;
+        private const float MarginArtPixels = 6f;
         [SerializeField] private Image upButton;
         [SerializeField] private Image downButton;
         [SerializeField] private Image leftButton;
@@ -20,43 +22,87 @@ namespace UserInterface
         [SerializeField] [Range(0.1f, 0.6f)] private float screenFraction = 0.45f;
         [SerializeField] [Range(0f, 0.9f)] private float deadZoneFraction = 0.25f;
         [SerializeField] private bool showWithoutTouch;
+        [SerializeField] private PixelPerfectCanvasScaler[] layoutCanvases;
         private RectTransform rect;
-        private Canvas rootCanvas;
+        private PixelPerfectCanvasScaler ownCanvas;
         private Image pressedButton;
         private MovementManager.Direction? heldDirection;
         private Vector2Int sizedForScreen;
-        private float sizedForCanvasScale;
 
         /// <summary>
-        /// Shows the D-pad only on touch devices (or when forced for testing) and sizes it for the screen.
+        /// Shows the D-pad only on touch devices (or when forced for testing), then sizes it and makes room for it.
         /// </summary>
         public void Initialise()
         {
             rect = (RectTransform)transform;
-            rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
+            ownCanvas = GetComponentInParent<PixelPerfectCanvasScaler>();
             gameObject.SetActive(showWithoutTouch || TouchScreen.IsAvailable);
-            ApplyScale();
+            if (gameObject.activeSelf) ApplyLayout();
         }
 
         /// <summary>
-        /// Resizes the D-pad when the screen or the canvas scale changes, such as on rotation or entering full screen.
+        /// Lays the D-pad and the game out again when the screen changes size, such as on rotation or entering full screen.
         /// </summary>
         private void Update()
         {
-            if (rootCanvas == null) return;
-            if (sizedForScreen.x != Screen.width || sizedForScreen.y != Screen.height || !Mathf.Approximately(sizedForCanvasScale, rootCanvas.scaleFactor)) ApplyScale();
+            if (ownCanvas != null && (sizedForScreen.x != Screen.width || sizedForScreen.y != Screen.height)) ApplyLayout();
         }
 
         /// <summary>
-        /// Scales the 48 px D-pad by the whole number that brings it closest to its share of the screen without exceeding it, at least 1x.
+        /// Picks the D-pad's size, keeps a strip clear for it below the game unless it fits beside the game, and places it in the bottom-right corner on whole screen pixels.
         /// </summary>
-        private void ApplyScale()
+        private void ApplyLayout()
         {
             sizedForScreen = new Vector2Int(Screen.width, Screen.height);
-            sizedForCanvasScale = rootCanvas.scaleFactor;
-            var target = screenFraction * Mathf.Min(Screen.width, Screen.height);
-            var steps = Mathf.Max(1, Mathf.FloorToInt(target / (ArtSize * Mathf.Max(0.01f, sizedForCanvasScale))));
-            rect.localScale = new Vector3(steps, steps, 1f);
+            var target = Mathf.Max(1, Mathf.FloorToInt(screenFraction * Mathf.Min(Screen.width, Screen.height) / ArtSize));
+            var steps = ChooseSteps(target);
+            var footprint = Footprint(steps);
+            var reserve = HasRoomBeside(footprint) ? 0 : footprint;
+            foreach (var canvas in layoutCanvases) if (canvas != null) canvas.SetBottomReserve(reserve);
+            var canvasScale = ownCanvas.ScaleFor(Screen.width, Screen.height - reserve);
+            var margin = MarginArtPixels * steps / canvasScale;
+            rect.localScale = new Vector3(steps / canvasScale, steps / canvasScale, 1f);
+            rect.anchoredPosition = new Vector2(-margin, margin);
+        }
+
+        /// <summary>
+        /// Returns the most screen pixels per art pixel, up to the target, that shrink the game no further than half the target would, so the D-pad stays big without costing the game a scale step it need not lose.
+        /// </summary>
+        private int ChooseSteps(int target)
+        {
+            if (HasRoomBeside(Footprint(target))) return target;
+            var minimum = Mathf.Max(1, target / 2);
+            var scaleAtMinimum = GameScaleWith(minimum);
+            for (var steps = target; steps > minimum; steps--)
+            {
+                if (GameScaleWith(steps) >= scaleAtMinimum) return steps;
+            }
+            return minimum;
+        }
+
+        /// <summary>
+        /// Returns the square the D-pad and its margins take, in screen pixels.
+        /// </summary>
+        private static int Footprint(int steps)
+        {
+            return Mathf.RoundToInt((ArtSize + 2f * MarginArtPixels) * steps);
+        }
+
+        /// <summary>
+        /// Whether the D-pad fits in the space beside the game at full screen height, as in landscape.
+        /// </summary>
+        private bool HasRoomBeside(int footprint)
+        {
+            var gameWidth = ownCanvas.ReferenceSize.x * ownCanvas.ScaleFor(Screen.width, Screen.height);
+            return (Screen.width - gameWidth) / 2f >= footprint;
+        }
+
+        /// <summary>
+        /// Returns the game's scale with a strip kept clear for a D-pad of this size.
+        /// </summary>
+        private float GameScaleWith(int steps)
+        {
+            return ownCanvas.ScaleFor(Screen.width, Screen.height - Footprint(steps));
         }
 
         /// <summary>
