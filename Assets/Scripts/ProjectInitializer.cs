@@ -22,13 +22,15 @@ namespace Core
         [SerializeField] private SoundEffects soundEffects;
         [SerializeField] private MuteButton muteButton;
         [SerializeField] private TouchDPad touchDPad;
+        [SerializeField] private FadeFromBlack fadeFromBlack;
         private bool gameOver;
 
         /// <summary>
-        /// Initialises the game systems in dependency order (laying out the grid before characters snap onto it), then starts the presentation layer.
+        /// Blacks out the screen to fade in from, initialises the game systems in dependency order (laying out the grid before characters snap onto it), then starts the presentation layer.
         /// </summary>
         private void Start()
         {
+            if (fadeFromBlack != null) fadeFromBlack.Play();
             var pellets = FindObjectsByType<Pellet>(FindObjectsSortMode.None);
             GridManager.Instance.Initialise();
             Canvas.ForceUpdateCanvases();

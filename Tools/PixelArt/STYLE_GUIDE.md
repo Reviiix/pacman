@@ -228,6 +228,7 @@ All effects are sprites or text, with no shaders, post-processing or particles.
 | Bonus pickup | The same burst on the pickup's cell, plus a `+NN` popup (the `FX_PointsPopup` prefab, pooled): the TTF in `W #ffffff` with a 1 px `S #4378f0` shadow, rising 8 art px a whole pixel at a time over 0.6 s and fading over the last 0.2 s |
 | Scanlines | `ScanlineOverlay` on `FX_Scanlines`, darkness **0.15**. It darkens the bottom screen row of every art pixel (phased to the centre-anchored art grid) and hides itself at 1x |
 | Vignette | `VignetteOverlay` on `FX_Vignette`: alpha **0.25** of `K #020410` at the corners, smoothstep from 45% of the half-diagonal outwards, over the maze rect (272x352) only. The 68x88 gradient is generated at runtime (bilinear), never a PNG under `Assets/Art/Sprites`, where the importer would point-filter it and the gradient would band |
+| Fade from black (level start) | `FadeFromBlack` on `FX_FadeFromBlack` (prefab, last child of `GRP_UserInterface`, own canvas at sorting order 100 so it covers the HUD and dialogs): fully black for **0.15 s**, then opacity steps down in **8** even steps over **0.8 s**, like a console palette fade, and the object switches off. Real time, so it finishes even if the game starts paused; never blocks input. The Image is saved disabled so the scene stays visible in edit mode |
 
 Both overlay RawImages are saved fully transparent; each component turns its RawImage on once it has generated its texture,
 so the scene stays visible in edit mode.

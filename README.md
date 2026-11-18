@@ -11,7 +11,7 @@ Game over
 Each enemy has a small trigger collider (EnemyContact); when one touches the player the game ends with a GAME OVER, tap to retry dialog, which reloads the level.
 
 Visuals
-The pixel-art presentation (integer canvas scaling, autotiled walls, sprite flipbooks, pickup effects and CRT overlays) lives in Assets/Scripts/Visuals. The art source, toolchain and style guide are in Tools/PixelArt.
+The pixel-art presentation (integer canvas scaling, autotiled walls, sprite flipbooks, pickup effects, CRT overlays and the stepped fade from black when a level starts) lives in Assets/Scripts/Visuals. The art source, toolchain and style guide are in Tools/PixelArt.
 
 Audio
 Sound effects are original chiptune sounds synthesised by Tools/Audio (see its README) into Assets/Audio/SFX. SoundEffects in Assets/Scripts/Audio plays them from the pellet, pickup, pause and win events and the level start.
