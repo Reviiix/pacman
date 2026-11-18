@@ -33,6 +33,6 @@ clips for the browser, which decodes them itself).
 | `sfx_pause` / `sfx_resume` | P pauses / resumes | Three falling or rising square tones |
 | `sfx_start` | The level starts | A short D-major jingle. A browser only lets audio play after a click, tap or key press in the page, so `SoundEffects` holds the jingle until then and skips it if that takes over four seconds |
 | `sfx_win` | The last pellet is eaten | A G-major fanfare with a noise sparkle on the final chord |
-| `sfx_lose` | The player runs into their tail | A falling A-minor phrase ending in a slide down, over a sliding triangle bass |
+| `sfx_lose` | An enemy catches the player | A falling A-minor phrase ending in a slide down, over a sliding triangle bass |
 
 All melodies are original. Keep it that way: do not copy themes or sound effects from existing games.
