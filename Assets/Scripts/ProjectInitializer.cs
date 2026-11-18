@@ -16,10 +16,13 @@ namespace Core
     {
         [SerializeField] private PelletTwinkle pelletTwinkle;
         [SerializeField] private Transform pickupLayer;
-        [SerializeField] private GameCompleteDialog gameCompleteDialog;
+        [SerializeField] private EndGameDialog gameCompleteDialog;
+        [SerializeField] private EndGameDialog gameOverDialog;
         [SerializeField] private PauseController pauseController;
         [SerializeField] private SoundEffects soundEffects;
         [SerializeField] private MuteButton muteButton;
+        [SerializeField] private TouchDPad touchDPad;
+        private bool gameOver;
 
         /// <summary>
         /// Initialises the game systems in dependency order (laying out the grid before characters snap onto it), then starts the presentation layer.
@@ -36,10 +39,13 @@ namespace Core
             ConnectCharacterAnimators();
             if (pelletTwinkle != null) pelletTwinkle.Initialise(pellets);
             if (gameCompleteDialog != null) gameCompleteDialog.Initialise();
+            if (gameOverDialog != null) gameOverDialog.Initialise();
             if (pauseController != null) pauseController.Initialise();
             if (muteButton != null) muteButton.Initialise();
+            if (touchDPad != null) touchDPad.Initialise();
             ConnectSoundEffects();
-            ScoreManager.OnGameWon += EndGame;
+            ScoreManager.OnGameWon += WinGame;
+            EnemyContact.PlayerCaught += LoseGame;
         }
 
         /// <summary>
@@ -53,21 +59,40 @@ namespace Core
         }
 
         /// <summary>
-        /// Stops listening for the win, so a reloaded level does not call into this destroyed initialiser.
+        /// Stops listening for the win and the catch, so a reloaded level does not call into this destroyed initialiser.
         /// </summary>
         private void OnDestroy()
         {
-            ScoreManager.OnGameWon -= EndGame;
+            ScoreManager.OnGameWon -= WinGame;
+            EnemyContact.PlayerCaught -= LoseGame;
         }
 
         /// <summary>
-        /// Ends pausing, freezes the characters and shows the game-complete dialog once the last pellet is eaten.
+        /// Shows the game-complete dialog once the last pellet is eaten.
         /// </summary>
-        private void EndGame()
+        private void WinGame()
         {
+            FinishGame(gameCompleteDialog);
+        }
+
+        /// <summary>
+        /// Shows the game-over dialog when an enemy catches the player.
+        /// </summary>
+        private void LoseGame()
+        {
+            FinishGame(gameOverDialog);
+        }
+
+        /// <summary>
+        /// Ends the game once only: ends pausing, freezes the characters and shows the given dialog.
+        /// </summary>
+        private void FinishGame(EndGameDialog dialog)
+        {
+            if (gameOver) return;
+            gameOver = true;
             if (pauseController != null) pauseController.Lock();
             MovementManager.Instance.StopMoving();
-            if (gameCompleteDialog != null) gameCompleteDialog.Show();
+            if (dialog != null) dialog.Show();
         }
 
         /// <summary>

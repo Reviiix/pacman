@@ -2,8 +2,8 @@
 
 An early-1980s arcade cabinet screen in blue. Solid cobalt bars, bevelled from the top-left with an ice edge, an azure band
 and a navy shade, sit on a calm near-black night. Small white-core pellets glow azure, and the score bar is ice and white.
-Mallow the white cat, in a red neckerchief, collects the pellets while four flat, chunky creatures hunt her. Every character
-is drawn like a hardware sprite: no outlines and at most three colours. Every shape and colour is original.
+A green rolling ball collects the pellets while four balls, pink, orange, red and light red, chase it. Every sprite is drawn
+like a hardware sprite: no outlines and at most three colours per ball. Every shape and colour is original.
 
 This guide describes the art and how it is wired into Unity. The source of truth is `art.txt`; everything else is generated
 from it. The generated files below are not committed: run `sh tools/regenerate.sh` to produce them.
@@ -29,27 +29,27 @@ from it. The generated files below are not committed: run `sh tools/regenerate.s
 - **Pixels:** palette colours only, all fully opaque. No anti-aliasing, no dithering, no semi-transparent pixels. Alpha
   fades happen in code (FX), never in the art.
 - **No outlines:** every character and pickup is a flat, solid silhouette with no ink outline, like a hardware sprite. Ink
-  (`K`) is almost the background colour, so it is used only inside a body: pupils, the hero's eyes and nose, mouths, Jitters'
-  face, Swirlpop's swirl groove and melon seeds. A pupil is always enclosed by white or body colour, so it never reads as
-  a notch against the background.
-- **Colours per sprite:** a character uses at most 3 colours: one body colour plus white and/or ink details (the hero is
-  white with a red neckerchief and an ink face, and her back view uses only 2). A pickup uses at most 4.
-- **Chunky strokes:** legs, tails and sticks are 2 px thick. The exceptions are Peeper's jointed legs and silk thread,
-  which are 1 px, the hero's tail, which tapers to a 1 px tip, and the fruit stems.
-- **Light:** comes from the top-left everywhere. Highlights (`W`, `L`) go on top and left edges, shading on the bottom and
-  right (`E` on walls, `S` on the pellet glow).
-- **White** is a large fill only on the hero, so the player is always the brightest figure. Enemies use white only for
-  small details (at most 18 px a frame): eyes, fangs, Peeper's thread, Jitters' gloss corner and sweat drop, and Swirlpop's
-  eyes and stick. Pickups use it only for shines, sticks, pith and rind lines and the potion's glass.
-- **Faces:** every enemy has a face (white eyes with ink pupils, except Jitters' squeezed-shut ink `><`). No pickup has eyes
-  or a face, so creatures are never mistaken for pickups.
-- **One hue per actor:** each enemy owns one hue that no other actor uses as a body colour.
+  (`K`) is almost the background colour, so it is used only inside a body (melon seeds) and on the debug-target rim.
+- **Colours per sprite:** a ball uses 3 colours: its body, its band (which also shades its bottom crescent, except on the
+  player, whose crescent is `F`) and the white shine. A pickup uses at most 4.
+- **Chunky strokes:** sticks are 2 px thick; fruit stems may be thinner.
+- **Light:** comes from the top-left on walls, pellets and pickups. The balls are the exception: their shine sits at the top
+  centre and their shade along the bottom, both left-right symmetric, so mirroring a ball for leftward travel never moves
+  its light.
+- **White** appears on the balls only as the 6 px shine, plus the player's two white bands. Pickups use it only for shines,
+  sticks, pith and rind lines and the potion's glass.
+- **Actors are balls:** the player and every enemy are 14 px rolling balls, so no pickup may be a plain round blob: the
+  cherry keeps its stem and leaf.
+- **Telling actors apart:** the enemies are pink, orange, red and light red, each with a darker band. The player is the
+  only green ball and the only one with white bands, a pattern that still separates it for red-green colour-blind players,
+  for whom green and orange or red alone are too close (see section 15).
 - **Originality (hard rule):** no yellow disc or wedge-mouthed hero. No dome-headed or wavy-skirted ghosts. No
-  red/pink/cyan/orange enemy set, no blue "scared" enemy, no zigzag "frightened" mouth. No thin double-line maze outline:
+  red/pink/cyan/orange enemy set: the balls' pink, orange, red and light red were asked for by name, have no cyan, and sit on
+  behaviour roles that don't match the arcade colours (pink chases, orange cuts off, red is scared). No blue "scared" enemy, no zigzag "frightened" mouth. No thin double-line maze outline:
   walls are filled bars. No copied arcade fruit layouts (for example a cherry pair on a V stem). No READY! banner styling.
   Every sprite is an original drawing.
 
-## 2. Palette (16 colours, all used)
+## 2. Palette (19 colours, all used)
 
 | Key | Hex | Name | Used for | Contrast vs `N` |
 |---|---|---|---|---|
@@ -59,20 +59,23 @@ from it. The generated files below are not committed: run `sh tools/regenerate.s
 | `L` | `#b8e4ff` | Ice | Wall lit edge, pellet glint, HUD label, burst rays and centre, potion brew | 14.6:1 |
 | `D` | `#2756d8` | Deep blue | HUD label shadow only | 3.2:1 |
 | `E` | `#0c1a52` | Navy | Wall shade, 2 px on south and east faces | 1.2:1 |
-| `W` | `#ffffff` | White | Hero, eyes, fangs, thread, sticks, shines, wall corner glint, pellet core and twinkle, burst core, HUD digits, points popup | 19.7:1 |
-| `K` | `#020410` | Ink | Pupils, the hero's eyes and nose, Fangbat's mouth, Jitters' face, Swirlpop's swirl groove, melon seeds, debug-target rim, vignette tint. Never an outline | 1.0:1 |
-| `V` | `#c294ff` | Violet | Fangbat (Chase) only | 8.4:1 |
-| `G` | `#bcf43a` | Lime | Peeper (CutOff) only | 15.1:1 |
-| `M` | `#da609d` | Raspberry | Jitters (Scared) only | 5.8:1 |
-| `T` | `#1fa858` | Jade | Swirlpop (Random); also pickup stems, leaves and melon rind | 6.4:1 |
-| `R` | `#ff3b3b` | Red | Hero neckerchief, cherry, strawberry, apple, melon flesh, bell bow | 5.6:1 |
-| `O` | `#ff8a1f` | Orange | Orange rind, toffee caramel, bell rim and clapper, key shading, potion cork | 8.3:1 |
+| `W` | `#ffffff` | White | Ball shines, the player's bands, sticks, pickup shines, wall corner glint, pellet core and twinkle, burst core, HUD digits, points popup | 19.7:1 |
+| `K` | `#020410` | Ink | Melon seeds, debug-target rim, vignette tint. Never an outline | 1.0:1 |
+| `H` | `#46d860` | Green | Player ball body | 10.5:1 |
+| `F` | `#0d5e2b` | Forest | Player ball shade crescent | 2.5:1 |
+| `I` | `#ff5cc8` | Pink | Chase ball body | 7.1:1 |
+| `Z` | `#a8226e` | Deep pink | Chase ball band | 2.9:1 |
+| `P` | `#ffcfc6` | Light red | Random ball body | 14.0:1 |
+| `R` | `#ff3b3b` | Red | Scared ball body, CutOff and Random ball bands; cherry, strawberry, apple, melon flesh, bell bow | 5.6:1 |
+| `C` | `#b3122b` | Crimson | Scared ball band | 2.8:1 |
+| `T` | `#1fa858` | Jade | Pickup stems, leaves and melon rind | 6.4:1 |
+| `O` | `#ff8a1f` | Orange | CutOff ball body; orange rind, toffee caramel, bell rim and clapper, key shading, potion cork | 8.3:1 |
 | `A` | `#ffb347` | Tangerine | Orange flesh | 11.0:1 |
 | `Y` | `#ffcf3a` | Gold | Bell, key, strawberry seeds, caramel highlight | 13.3:1 |
 
-`M` keeps a hue of exactly 330 degrees (`B = (R + G) / 2`), the same 30 degrees from arcade red and arcade pink, and is
-desaturated to read raspberry rather than hot pink. Keep `T` at a hue of 145 degrees or less, never towards teal. Sixteen
-colours is a style budget that keeps the hardware-sprite look, not a format limit: the build, render and check tools
+The enemy colours keep every pair of enemies at least 24 dE apart in normal vision. Pink is held at a hue of about 320
+degrees so it stays clear of the arcade red on the Chase role; keep it there if you retune it.
+Nineteen colours is a style budget that keeps the hardware-sprite look, not a format limit: the build, render and check tools
 accept more single-character keys, though the contact sheet's swatch row fits only 19. Add or change a slot only after
 updating this table and re-running `tools/check.js`.
 
@@ -116,8 +119,7 @@ Run `sh tools/regenerate.sh`, then open `contact_sheet.png` to see all 47 number
   hand-edit the `@walls` block or `walls.png`. Change the command, paste its output over the block, rebuild, then check
   the 47-tile grid on the contact sheet and `review/stress_walls_x2.png`. If you change the number of bands, move or drop
   the overrides to match.
-- **Keep the azure band 1 px:** Fangbat's violet stays clear of it for red-green colour-blind players (10.9 dE in protan
-  and 16.8 in deutan vision, with a 1.73 luminance ratio). A 2 px azure band would camouflage the Chase enemy there.
+- **Keep the azure band 1 px:** a wider band would crowd the corridor edge the balls roll along.
 - **Level design:** any layout works. Pillars, checkerboards, rings, thick masses, crosses and concave corners are all
   verified on the stress map. Diagonal-only neighbours deliberately do not connect.
 - **Contrast:**
@@ -132,53 +134,36 @@ Run `sh tools/regenerate.sh`, then open `contact_sheet.png` to see all 47 number
   The maze reads bright at its top-left edges, the navy shade gives every bar a raised bevel on its bottom-right, and the
   dark core keeps the border and side-tunnel masses calm across the roughly 54% of the screen the walls cover.
 
-## 5. The hero: Mallow, the white cat
+## 5. The player: the green ball
 
-| File | View | Frame 0 | Frame 1 |
+| File | Travel | Frames 0-3 |
+|---|---|---|
+| `hero_side.png` | Right (mirrored in code for left) | Two white bands half a ball apart move 2 px right per frame |
+| `hero_up.png` | Up | The bands, now horizontal, move 2 px up per frame |
+| `hero_down.png` | Down | The bands move 2 px down per frame |
+
+- **Look:** a 14 px `H` green ball with a `F` crescent along its bottom, a 6 px white shine at the top centre and two white
+  bands that roll across it. The bands narrow to 1 px at the rim, so the ball reads as round while it turns.
+- **Reads as:** the only green actor and the only one with white bands (10.5:1 on the corridor).
+- **Animation:** 0.15 s per frame, a band period of 8 px every 0.6 s, which matches the 2.25 tiles a second it travels.
+  It advances only while moving: the Player's `CharacterAnimator` has `animateOnlyWhileMoving` on, so the ball holds still
+  when a wall blocks it.
+- **Facing:** Left uses the side frames mirrored (`scale.x = -1`), which reverses the roll; Up and Down use `hero_up` /
+  `hero_down` through `upFrames` / `downFrames`.
+
+## 6. Enemies: the red balls
+
+Every enemy is a 14 px ball of the same build as the player's, in its own colour, with a darker band. Each has side, up and down strips, all 4 frames at 0.15 s, mirrored for Left like the player.
+
+| Behaviour (code) | Files | Body | Band |
 |---|---|---|---|
-| `hero_side.png` | Side view facing right (mirrored in code for left) | Stride: front and back legs apart | Passing: whole body 1 px higher, legs straight under hips and shoulders, tail flicks back |
-| `hero_up.png` | Back view (walking up) | Left hind paw down | Body bobs 1 px, right paw down |
-| `hero_down.png` | Front view (walking down) | Left front paw down | Body bobs 1 px, right paw down |
+| **Chase**: heads straight for the player | `enemy_chase.png`, `_up`, `_down` | `I` pink | `Z` deep pink |
+| **CutOff**: aims 3 tiles ahead | `enemy_cutoff.png`, `_up`, `_down` | `O` orange | `R` red |
+| **Scared**: chases until within 9 tiles, then retreats | `enemy_scared.png`, `_up`, `_down` | `R` red | `C` crimson |
+| **Random**: wanders at random | `enemy_random.png`, `_up`, `_down` | `P` light red | `R` red |
 
-- **Look:** a flat white silhouette with no outline or shading, in 3 colours: `W` body, `R` neckerchief and `K` eyes and
-  nose. Two pointed ears, 1x2 ink eyes (set towards the front in the side view) and an ink nose. A 2 px tail, tapering to
-  a 1 px tip, curls up behind her. Legs are 2 px wide, with feet on row 14 in every frame, so she never floats.
-- **Neckerchief:** in the side view the red band wraps the neck and its point hangs over the chest (2 rows deep). In the
-  front and back views the band is exactly as wide as the body (10 px), so the cheeks overhang it by 1 px, which leaves a
-  small neck notch on each side. The front view shows the band with its loose end hanging just left of centre and the tail
-  tip curling up on the right, clear of the body. The back view has no face; it shows the knot with two tails spreading
-  down the back and the tail curling up on the right round one small gap, so the back view never reads as the front.
-- **Reads as:** the brightest and largest figure on screen (134 opaque px, 19.7:1, a luminous mass of 117-128 in every
-  view against at most 73 for any enemy). It shares no shape with any enemy: not round, no mouth wedge, no yellow.
-- **Animation:** 8 fps (0.125 s per frame), advancing only while moving: the Player's `CharacterAnimator` has
-  `animateOnlyWhileMoving` on, so she holds frame 0 when a wall blocks her.
-- **Facing:**
-  - Left uses the side frames mirrored (`scale.x = -1`).
-  - Up and Down use `hero_up` / `hero_down` through `CharacterAnimator.upFrames` / `downFrames`.
-
-## 6. Enemies
-
-All four are front-facing, 2-frame idle loops that run continuously, each drawn in one body hue with white and ink
-details. Every body is centred on the tile's middle line, so the animator's left-mirroring never shifts it. Only
-Peeper's frame-1 pupil and thread and Swirlpop's swirl change sides; Swirlpop's eyes are mirror-symmetric in both
-frames. Jitters is never mirrored, so its gloss stays top-left (see section 12). They need no up or down frames.
-
-| Behaviour (code) | Character | File | Colour | Silhouette and behaviour cue | Frame 0 / frame 1 | fps |
-|---|---|---|---|---|---|---|
-| **Chase**: heads straight for the player | Fangbat | `enemy_chase.png` | `V` violet | A bat with broad membrane wings, scalloped trailing edges, small close-set ears, glaring white eyes and two fangs: a direct hunter, the heaviest wingspan on screen | Wings spread / wings beat up into a V. Only the wings move (42 px, all silhouette) | 8 |
-| **CutOff**: aims 3 tiles ahead | Peeper | `enemy_cutoff.png` | `G` lime | A round spider hanging on a white silk thread from the top edge of the tile, one big 4x4 eye, three 1 px jointed legs a side: a trap-setter that drops in ahead of you | Hanging with legs reaching, pupil centred / body drops 1 px, legs dangle, pupil glances ahead to the eye's front edge (follows the mirror). The eye keeps its 4x4 shape in both frames; only the pupil moves | 6 |
-| **Scared**: chases until within 9 tiles, then retreats | Jitters | `enemy_scared.png` | `M` raspberry | Jelly cube, the only square silhouette. Squeezed-shut `><` eyes and a frown in 2 px ink strokes (never a zigzag), a white gloss corner and a sweat drop: nervous | Tall (10x12) / squashed wide (12x10, about the same area) while the sweat drop flies up | 5 |
-| **Random**: wanders at random | Swirlpop | `enemy_random.png` | `T` jade | A round lolly on a white stick with an ink swirl groove and two white googly eyes peeking over its rim: dizzy | Eyes look outwards / bobs 1 px down its stick, the swirl turns exactly 180 degrees and the eyes cross | 6 |
-
-Rules for new enemy art:
-
-- Keep each enemy inside its own hue, flat and outline-free, in at most 3 colours.
-- Keep eyes white with ink pupils, each pupil enclosed by white or body colour.
-- Keep the body centred on the tile so mirroring never makes it hop.
-- Keep every enemy at least 15 CIEDE2000 from every other actor in normal vision and in the deutan, protan and tritan
-  simulations, or give it a clearly different silhouette. Run `tools/check.js`.
-- No enemy may sit within 30 degrees of hue of its original arcade counterpart on the same behaviour role (the check
-  prints this).
+The balls are drawn by `tools/balls.js`, which rewrites their section of `art.txt` between its marker lines
+(`node tools/balls.js art.txt`); change a ball's colours in its `BALLS` list rather than editing the frames by hand.
 
 ## 7. Pellets: glowing dots
 
@@ -268,11 +253,8 @@ vignette only deepens the corners.
 
 | Sprite | Frames | `secondsPerFrame` | Notes |
 |---|---|---|---|
-| `hero_side`, `hero_up`, `hero_down` | 2 each | 0.125 (8 fps) | Advance while moving; hold frame 0 when blocked; side frames mirrored for Left |
-| `enemy_chase` | 2 | 0.125 (8 fps) | Wing beat (spread, then up), always looping |
-| `enemy_cutoff` | 2 | 0.167 (6 fps) | Thread drop, leg swing and glance, always looping |
-| `enemy_scared` | 2 | 0.2 (5 fps) | Tall and squash wobble with the sweat drop flying up, always looping |
-| `enemy_random` | 2 | 0.167 (6 fps) | Bob, swirl turn and eye cross, always looping |
+| `hero_side`, `hero_up`, `hero_down` | 4 each | 0.15 | Roll while moving; hold still when blocked; side frames mirrored for Left |
+| `enemy_*`, `enemy_*_up`, `enemy_*_down` | 4 each | 0.15 | Roll continuously; side frames mirrored for Left |
 | `pellet` twinkle | 2 | 0.25 s tick | About 1 in 12 uneaten pellets per tick flash white, re-picked at random |
 | `fx_sugar_burst` | 2 | 0.06 then 0.09, once | Alpha fades from 1 to 0 |
 | `+NN` popup | text | 0.6 s | Rises 8 art px, fades over the last 0.2 s |
@@ -293,23 +275,23 @@ moves an unrounded logical position and draws the character at it rounded to who
   - `GRP_Grid`: nested canvas for the static maze.
   - `GRP_Pickups`: nested canvas for pellets and the bonus item. `ProjectInitializer` moves them here from their cells at
     start-up, so the `Blank` tile's pickup tools work in edit mode only.
-  - `GRP_Game`, the root: characters, FX, debug markers and the vignette.
-  - `GRP_UserInterface`: the HUD and the scanlines.
+  - `GRP_Game`, the root: its `GRP_Playfield` holds the grid, pickups, characters, FX, debug markers and the vignette.
+  - `GRP_UserInterface`: `GRP_HUD` (score bar, twinkles, mute button), the D-pad, the overlays and the scanlines. `GRP_Playfield` and `GRP_HUD` are what the canvas scalers raise to clear the D-pad's strip on touch screens.
 - **Prefabs:** `Assets/Prefabs/Characters/Player`, an `Enemy` base with `Enemy_Chase`, `Enemy_CutOff`, `Enemy_Scared` and
   `Enemy_Random` variants (frames and timing, plus `mirrorWhenFacingLeft` off on `Enemy_Scared`),
   `Assets/Prefabs/FX/FX_SugarBurst` and `FX_PointsPopup`, and the existing
   `Pellet` and `BonusPickUp` (all level pellets are instances).
 - **Image colours:** every art Image is white (no tint).
-- **Debug targets:** `SeekerEnemyTarget` (Chase, `#c294ff`), `CutOffEnemyTarget` (`#bcf43a`) and `ScaredEnemyTarget`
-  (`#da609d`) use `debug_target` tinted with their enemy's colour. Random has no target.
+- **Debug targets:** `SeekerEnemyTarget` (Chase, `#ff5cc8`), `CutOffEnemyTarget` (`#ff8a1f`) and `ScaredEnemyTarget`
+  (`#ff3b3b`) use `debug_target` tinted with their enemy's colour. Random has no target.
 - **`MazeSkin`** (`Assets/Art/MazeSkin.asset`): layout `Blob47`, `wallTiles` = `walls_0` … `walls_46` in order (use the
   **Fill Wall Tiles From Sheet** context menu after changing `walls.png`), `wallTint` white, `corridorColor` transparent,
   `treatOutsideAsWall` true. `GridManager` applies it at start-up; its **Apply Maze Skin** context menu previews it in edit
   mode.
-- **`CharacterAnimator`:** the Player uses `hero_side_0/1`, `hero_up_0/1` and `hero_down_0/1` at 0.125 s with
-  `animateOnlyWhileMoving`; each enemy variant uses its `sideFrames` with the timings in section 11. Side frames are
-  mirrored for Left unless `mirrorWhenFacingLeft` is off, which it is only on `Enemy_Scared`: Jitters is symmetric, and
-  mirroring would move its gloss to the top-right, against the top-left light rule.
+- **`CharacterAnimator`:** the Player and every enemy variant use their 4-frame `sideFrames`, `upFrames` and
+  `downFrames` (`hero_*` and `enemy_<role>`, `enemy_<role>_up`, `enemy_<role>_down`) at 0.15 s; the Player has
+  `animateOnlyWhileMoving` on. All side frames are mirrored for Left (`mirrorWhenFacingLeft` on everywhere), which reverses
+  the roll and leaves the symmetric shine in place.
 - **Score:** `ScoreManager.bonusPickUpSprites` = cherry, strawberry, orange, apple, melon, potion, bell, key, in
   `BonusItemType` order.
 - **Colours set in Unity** (everything else comes from the sprites): camera clear colour `#060a1c`; HUD label `#b8e4ff`
@@ -323,7 +305,7 @@ moves an unrounded logical position and draws the character at it rounded to who
 - **Case:** lower snake_case, `<category>_<subject>[_<view>].png`. The categories are `hero`, `enemy`, `pickup`, `fx`, `ui` and
   `debug`, plus the two singletons `pellet.png` and `walls.png`.
 - **Enemies:** named by behaviour role to match the code (`enemy_chase`, `enemy_cutoff`, `enemy_scared`, `enemy_random`).
-  Character names (Fangbat, Peeper, Jitters, Swirlpop) appear only in docs.
+  The `_up` and `_down` strips sit beside each side strip.
 - **Pickups:** `pickup_` plus the lower-case `BonusItemType` name. The sixth slot is `pickup_potion`.
 - **Views:** `_side` faces right, `_up` is the back view, `_down` is the front view. Never ship `_left` copies; the code
   mirrors.
@@ -354,13 +336,8 @@ are unchanged from the previous look, so every Unity reference survives a copy-o
 
 | File | Size | Frames | Unity slices | Used by | Status |
 |---|---|---|---|---|---|
-| `hero_side.png` | 32x16 | 2 | `hero_side_0..1` | Player `CharacterAnimator.sideFrames` | Drawn |
-| `hero_up.png` | 32x16 | 2 | `hero_up_0..1` | Player `upFrames` | Drawn |
-| `hero_down.png` | 32x16 | 2 | `hero_down_0..1` | Player `downFrames` | Drawn |
-| `enemy_chase.png` | 32x16 | 2 | `enemy_chase_0..1` | `Enemy_Chase` prefab `sideFrames` | Drawn |
-| `enemy_cutoff.png` | 32x16 | 2 | `enemy_cutoff_0..1` | `Enemy_CutOff` prefab `sideFrames` | Drawn |
-| `enemy_scared.png` | 32x16 | 2 | `enemy_scared_0..1` | `Enemy_Scared` prefab `sideFrames` | Drawn |
-| `enemy_random.png` | 32x16 | 2 | `enemy_random_0..1` | `Enemy_Random` prefab `sideFrames` | Drawn |
+| `hero_side.png`, `hero_up.png`, `hero_down.png` | 64x16 each | 4 | `hero_side_0..3` and so on | Player `sideFrames`, `upFrames`, `downFrames` | Generated (`balls.js`) |
+| `enemy_<role>.png`, `enemy_<role>_up.png`, `enemy_<role>_down.png` for chase, cutoff, scared, random | 64x16 each | 4 | `enemy_chase_0..3` and so on | `Enemy_<Role>` prefab `sideFrames`, `upFrames`, `downFrames` | Generated (`balls.js`) |
 | `pellet.png` | 32x16 | 2 | `pellet_0..1` | Pellet prefab (frame 0), twinkle driver (frame 1), HUD twinkles | Drawn |
 | `pickup_cherry.png` | 16x16 | 1 | single | `bonusPickUpSprites[0]` | Drawn |
 | `pickup_strawberry.png` | 16x16 | 1 | single | `bonusPickUpSprites[1]` | Drawn |
@@ -374,6 +351,7 @@ are unchanged from the previous look, so every Unity reference survives a copy-o
 | `fx_sugar_burst.png` | 32x16 | 2 | `fx_sugar_burst_0..1` | `PickupEffects` burst frames (`FX_SugarBurst` prefab) | Drawn |
 | `debug_target.png` | 16x16 | 1 | single | The three `*EnemyTarget` markers, tinted per enemy | Drawn |
 | `ui_sound.png` | 32x16 | 2 | `ui_sound_0..1` | `UI_MuteButton` icon: speaker with waves (sound on) / with an X (muted) | Drawn |
+| `ui_dpad.png` | 64x16 | 4 | `ui_dpad_0..3` | `UI_TouchDPad`: button, pressed button, centre hub, white arrow (rotated per arm; the buttons are never rotated so their light stays top-left) | Drawn |
 | Scanline overlay tile | 1 x scale | – | – | `ScanlineOverlay` (generated at runtime, darkness 0.15) | No file needed |
 | Vignette | 68x88 | – | – | `VignetteOverlay` (generated at runtime, bilinear, tint `K #020410`) | No file needed |
 | HUD text, `+NN` popup | – | – | – | The project TTF with the colours in sections 9 and 10 | No sprite |
@@ -397,6 +375,7 @@ and `review/metrics.txt`.
 |---|---|
 | `tools/build.js` | `art.txt` to `spec.json`. Handles `@palette`, `@sprite`, `@frame [mirror]` and `@walls corners` with `@corner ne/nw/se/sw` blocks |
 | `tools/walls.js` | Generates the four corner pattern sets from a distance field (bands, core, radius, inset, glints) |
+| `tools/balls.js` | Generates the player and enemy rolling-ball strips and rewrites their section of `art.txt` (`node tools/balls.js art.txt`) |
 | `tools/render.js` | Writes sprite strips, the 47-tile wall sheet (including the `corners` wall mode) and level mockups (with a vignette preview). Commands: `sprites <spec> <outDir> [scale]`, `mockup <config> <out.png> [scale]` |
 | `tools/sheet.js`, `tools/hud.js`, `tools/make_mockup.js`, `tools/imgutil.js` | Review images |
 | `tools/check.js` | Readability and originality metrics: contrast, CIEDE2000 separation in normal and colour-blind vision, and hue distance from the original arcade enemy colours |
@@ -426,37 +405,21 @@ and `review/metrics.txt`.
 
 ## 15. Readability results (`review/metrics.txt`)
 
-- **Separation:** every actor pair is at least 15 dE in normal vision and in the deutan, protan and tritan simulations. The
-  closest pair is Fangbat vs Jitters (worst simulation 18.2, protan), and those two never spawn together. Chase, CutOff and
-  Random start on one tile, and that trio is at least 23.3 apart (Peeper vs Swirlpop, protan). The tritan floor is 17.4
-  (Mallow vs Peeper).
-- **Ghost colours:** no echo on any behaviour role and no "near" note. Jitters' raspberry is exactly 30 degrees from both
-  arcade red and arcade pink, on the orange role (65 degrees away). Swirlpop's jade is 35 degrees from cyan on the cyan role.
-  The hero is white, not Pac-Man yellow.
-- **Hero:** the brightest figure in every view, with a luminous mass (the sum of every pixel's relative luminance) of
-  117-128 against 71-73 for Peeper, the brightest enemy. Enemies carry at most 18 white pixels a frame.
-- **Animation:** every loop changes its silhouette: Mallow 50 px (side), 32-34 px (up and down); Fangbat 42 px; Peeper 75 px;
-  Jitters 40 px; Swirlpop 22 px plus the swirl and eyes (72 px changed in all).
-- **Contrast on the corridor:**
-
-  | Sprite | Contrast | Note |
-  |---|---|---|
-  | Hero | 19.7:1 | |
-  | Bat | 8.4:1 | 8.2:1 in protan |
-  | Spider | 15.1:1 | |
-  | Jelly | 5.8:1 | 4.8:1 in protan, the lowest of any enemy in any simulation |
-  | Lolly | 6.4:1 | Its white eyes and stick are 19.7:1 |
-  | Pellet | 19.7:1 core, 14.6:1 glint, 4.9:1 glow | 12 bright px, 48 screen px at 2x; 43.4 dE from the hero |
+- **Enemies:** every pair is at least 24.4 dE apart in normal vision (orange vs red). In colour-blind simulations the
+  closest are orange vs red at 9.5 (deutan) and pink vs orange at 8.8 (tritan); their bands and lightness carry the rest.
+- **Player vs enemies:** 47.7 or more in normal vision, but as low as 8.1 in deutan (green vs orange), which is why the
+  player alone has white bands.
+- **Arcade colours:** no enemy echoes the arcade colour of its own behaviour role. `check.js` notes pink as near the arcade
+  pink and orange and red as near the arcade orange and red, which follows from the requested colours.
+- **Contrast on the corridor:** player 10.5:1; enemies 14.0:1 (light red), 8.3:1 (orange), 7.1:1 (pink) and 5.6:1 (red).
+- **Pellet:** 19.7:1 core; at least 34 dE from every ball (pink is the closest).
 
 ## 16. Known limits
 
 - **HUD font:** the project TTF's outlines are not on an exact pixel grid, so some HUD and popup glyph edges are slightly
   soft. A true bitmap pixel font (with a raster, point-filtered TMP atlas) would make them fully crisp.
 - **Debug markers:** shown whenever `ProjectSettings.DebugSettings.DebugEnemyTargets` is on, including in release builds.
-- **Spawn:** Chase, CutOff and Random start on the same tile and travel together for the first few seconds, so they overlap
-  until their targets diverge. With no outlines, overlapping sprites meet edge to edge (the white hero over the lime spider
-  is only 1.30:1 at the edge). If the clump reads muddy in Unity, a 1 px `K` outline on those three enemies is the fallback:
-  `K` is 1.04:1 on the corridor, so it shows only where sprites overlap, at the cost of about a quarter of each body.
-- **Peeper's thread:** mirroring moves Peeper's 1 px thread between columns 7 and 8 on each turn, which is acceptable.
+- **Spawn:** Chase, CutOff and Random start on the same tile and travel together for the first few seconds, so their balls
+  overlap until their targets diverge; their different colours and bands keep the clump legible.
 - **Atlas:** none yet (see section 12).
 - **Testing scene:** `PacmanTesting.unity` uses the new maze but keeps its original placeholder characters, and it cannot enter Play mode: it predates the current managers (it has no PelletManager or ScoreManager, and stale enemy data). Open it on its own rather than alongside `Pacman.unity`.

@@ -94,16 +94,56 @@ PrefabInstance:
       objectReference: {fileID: 390092097, guid: 9c7c641706f034686bfc0f09d1693611, type: 3}
     - target: {fileID: 4966227169226426425, guid: 529946086027549e9be95e34d446e224, type: 3}
       propertyPath: secondsPerFrame
-      value: 0.2
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4966227169226426425, guid: 529946086027549e9be95e34d446e224, type: 3}
+      propertyPath: upFrames.Array.size
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4966227169226426425, guid: 529946086027549e9be95e34d446e224, type: 3}
       propertyPath: mirrorWhenFacingLeft
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4966227169226426425, guid: 529946086027549e9be95e34d446e224, type: 3}
+      propertyPath: downFrames.Array.size
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4966227169226426425, guid: 529946086027549e9be95e34d446e224, type: 3}
       propertyPath: sideFrames.Array.size
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 4966227169226426425, guid: 529946086027549e9be95e34d446e224, type: 3}
+      propertyPath: 'upFrames.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1256444853, guid: e158be75700d44952b131c4500ed3df1, type: 3}
+    - target: {fileID: 4966227169226426425, guid: 529946086027549e9be95e34d446e224, type: 3}
+      propertyPath: 'upFrames.Array.data[1]'
+      value: 
+      objectReference: {fileID: -213022186, guid: e158be75700d44952b131c4500ed3df1, type: 3}
+    - target: {fileID: 4966227169226426425, guid: 529946086027549e9be95e34d446e224, type: 3}
+      propertyPath: 'upFrames.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1924893233, guid: e158be75700d44952b131c4500ed3df1, type: 3}
+    - target: {fileID: 4966227169226426425, guid: 529946086027549e9be95e34d446e224, type: 3}
+      propertyPath: 'upFrames.Array.data[3]'
+      value: 
+      objectReference: {fileID: 414549671, guid: e158be75700d44952b131c4500ed3df1, type: 3}
+    - target: {fileID: 4966227169226426425, guid: 529946086027549e9be95e34d446e224, type: 3}
+      propertyPath: 'downFrames.Array.data[0]'
+      value: 
+      objectReference: {fileID: -1186462038, guid: 2f7105504d76b499fa3471b51f6fa895, type: 3}
+    - target: {fileID: 4966227169226426425, guid: 529946086027549e9be95e34d446e224, type: 3}
+      propertyPath: 'downFrames.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1292744525, guid: 2f7105504d76b499fa3471b51f6fa895, type: 3}
+    - target: {fileID: 4966227169226426425, guid: 529946086027549e9be95e34d446e224, type: 3}
+      propertyPath: 'downFrames.Array.data[2]'
+      value: 
+      objectReference: {fileID: -1649582080, guid: 2f7105504d76b499fa3471b51f6fa895, type: 3}
+    - target: {fileID: 4966227169226426425, guid: 529946086027549e9be95e34d446e224, type: 3}
+      propertyPath: 'downFrames.Array.data[3]'
+      value: 
+      objectReference: {fileID: -640739385, guid: 2f7105504d76b499fa3471b51f6fa895, type: 3}
     - target: {fileID: 4966227169226426425, guid: 529946086027549e9be95e34d446e224, type: 3}
       propertyPath: 'sideFrames.Array.data[0]'
       value: 
@@ -112,6 +152,14 @@ PrefabInstance:
       propertyPath: 'sideFrames.Array.data[1]'
       value: 
       objectReference: {fileID: -113282980, guid: 9c7c641706f034686bfc0f09d1693611, type: 3}
+    - target: {fileID: 4966227169226426425, guid: 529946086027549e9be95e34d446e224, type: 3}
+      propertyPath: 'sideFrames.Array.data[2]'
+      value: 
+      objectReference: {fileID: -1966990660, guid: 9c7c641706f034686bfc0f09d1693611, type: 3}
+    - target: {fileID: 4966227169226426425, guid: 529946086027549e9be95e34d446e224, type: 3}
+      propertyPath: 'sideFrames.Array.data[3]'
+      value: 
+      objectReference: {fileID: -1239096259, guid: 9c7c641706f034686bfc0f09d1693611, type: 3}
     - target: {fileID: 6215537555088257980, guid: 529946086027549e9be95e34d446e224, type: 3}
       propertyPath: m_Name
       value: Enemy_Scared
