@@ -156,11 +156,18 @@ MonoBehaviour:
   sideFrames:
   - {fileID: 1732863656, guid: 7b0b360f57d564153b2219da7acfcec4, type: 3}
   - {fileID: -1843408623, guid: 7b0b360f57d564153b2219da7acfcec4, type: 3}
+  - {fileID: -1749946257, guid: 7b0b360f57d564153b2219da7acfcec4, type: 3}
+  - {fileID: -342772639, guid: 7b0b360f57d564153b2219da7acfcec4, type: 3}
   upFrames:
   - {fileID: -411216103, guid: dd72489ddf5fc4b70b1b27b7845a306a, type: 3}
   - {fileID: 1484149017, guid: dd72489ddf5fc4b70b1b27b7845a306a, type: 3}
+  - {fileID: -1095483240, guid: dd72489ddf5fc4b70b1b27b7845a306a, type: 3}
+  - {fileID: 761640003, guid: dd72489ddf5fc4b70b1b27b7845a306a, type: 3}
   downFrames:
   - {fileID: 1830712998, guid: 24f4325864ed9415bb6bb94a12b590ac, type: 3}
   - {fileID: 501834427, guid: 24f4325864ed9415bb6bb94a12b590ac, type: 3}
-  secondsPerFrame: 0.125
+  - {fileID: 137827796, guid: 24f4325864ed9415bb6bb94a12b590ac, type: 3}
+  - {fileID: -1197636312, guid: 24f4325864ed9415bb6bb94a12b590ac, type: 3}
+  secondsPerFrame: 0.15
   animateOnlyWhileMoving: 1
+  mirrorWhenFacingLeft: 1
