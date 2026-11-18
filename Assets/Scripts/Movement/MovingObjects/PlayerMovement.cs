@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Movement.MovingObjects
 {
@@ -12,6 +13,7 @@ namespace Movement.MovingObjects
         [SerializeField] [Range(0.01f, 0.25f)] private float swipeScreenFraction = 0.04f;
         private Vector2 swipeStart;
         private bool tracking;
+        private bool touchOnControls;
 
         /// <summary>
         /// Queues a turn for each direction key pressed this frame and for each swipe.
@@ -26,17 +28,20 @@ namespace Movement.MovingObjects
         }
 
         /// <summary>
-        /// Turns once the first finger has travelled a small share of the screen, then measures again from there so one drag can steer through several corners.
+        /// Turns once the first finger has travelled a small share of the screen, then measures again from there so one drag can steer through several corners; a touch that starts on on-screen controls, such as the D-pad, is left to them.
         /// </summary>
         private void CheckForSwipe()
         {
             if (Input.touchCount == 0)
             {
                 tracking = false;
+                touchOnControls = false;
                 return;
             }
 
             var touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began) touchOnControls = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touch.fingerId);
+            if (touchOnControls) return;
             if (touch.phase == TouchPhase.Began || !tracking)
             {
                 swipeStart = touch.position;
