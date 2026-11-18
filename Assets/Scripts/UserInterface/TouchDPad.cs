@@ -34,7 +34,7 @@ namespace UserInterface
         {
             rect = (RectTransform)transform;
             rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
-            gameObject.SetActive(showWithoutTouch || Input.touchSupported || Application.isMobilePlatform);
+            gameObject.SetActive(showWithoutTouch || TouchScreen.IsAvailable);
             ApplyScale();
         }
 
