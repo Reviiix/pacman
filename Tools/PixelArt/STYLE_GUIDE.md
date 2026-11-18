@@ -2,7 +2,7 @@
 
 An early-1980s arcade cabinet screen in blue. Solid cobalt bars, bevelled from the top-left with an ice edge, an azure band
 and a navy shade, sit on a calm near-black night. Small white-core pellets glow azure, and the score bar is ice and white.
-A green rolling ball collects the pellets while four red balls, each a different shade, chase it. Every sprite is drawn
+A green rolling ball collects the pellets while four balls, pink, orange, red and light red, chase it. Every sprite is drawn
 like a hardware sprite: no outlines and at most three colours per ball. Every shape and colour is original.
 
 This guide describes the art and how it is wired into Unity. The source of truth is `art.txt`; everything else is generated
@@ -40,11 +40,12 @@ from it. The generated files below are not committed: run `sh tools/regenerate.s
   sticks, pith and rind lines and the potion's glass.
 - **Actors are balls:** the player and every enemy are 14 px rolling balls, so no pickup may be a plain round blob: the
   cherry keeps its stem and leaf.
-- **Telling actors apart:** the enemies are four shades of one red, told apart by lightness and by their band colour. The
-  player is the only green ball and the only one with white bands, a pattern that still separates it for red-green
-  colour-blind players, for whom the body colours alone are too close (see section 15).
+- **Telling actors apart:** the enemies are pink, orange, red and light red, each with a darker band. The player is the
+  only green ball and the only one with white bands, a pattern that still separates it for red-green colour-blind players,
+  for whom green and orange or red alone are too close (see section 15).
 - **Originality (hard rule):** no yellow disc or wedge-mouthed hero. No dome-headed or wavy-skirted ghosts. No
-  red/pink/cyan/orange enemy set (the all-red balls were asked for by name and share no shape with ghosts), no blue "scared" enemy, no zigzag "frightened" mouth. No thin double-line maze outline:
+  red/pink/cyan/orange enemy set: the balls' pink, orange, red and light red were asked for by name, have no cyan, and sit on
+  behaviour roles that don't match the arcade colours (pink chases, orange cuts off, red is scared). No blue "scared" enemy, no zigzag "frightened" mouth. No thin double-line maze outline:
   walls are filled bars. No copied arcade fruit layouts (for example a cherry pair on a V stem). No READY! banner styling.
   Every sprite is an original drawing.
 
@@ -62,18 +63,18 @@ from it. The generated files below are not committed: run `sh tools/regenerate.s
 | `K` | `#020410` | Ink | Melon seeds, debug-target rim, vignette tint. Never an outline | 1.0:1 |
 | `H` | `#46d860` | Green | Player ball body | 10.5:1 |
 | `F` | `#0d5e2b` | Forest | Player ball shade crescent | 2.5:1 |
+| `I` | `#ff5cc8` | Pink | Chase ball body | 7.1:1 |
+| `Z` | `#a8226e` | Deep pink | Chase ball band | 2.9:1 |
 | `P` | `#ffcfc6` | Light red | Random ball body | 14.0:1 |
-| `U` | `#ff8a7a` | Coral | Scared ball body, Random ball band | 8.6:1 |
-| `R` | `#ff3b3b` | Scarlet | Chase ball body, Scared ball band; cherry, strawberry, apple, melon flesh, bell bow | 5.6:1 |
-| `C` | `#b3122b` | Crimson | CutOff ball body, Chase ball band | 2.8:1 |
-| `Q` | `#5c0a16` | Maroon | CutOff ball band | 1.4:1 |
+| `R` | `#ff3b3b` | Red | Scared ball body, CutOff and Random ball bands; cherry, strawberry, apple, melon flesh, bell bow | 5.6:1 |
+| `C` | `#b3122b` | Crimson | Scared ball band | 2.8:1 |
 | `T` | `#1fa858` | Jade | Pickup stems, leaves and melon rind | 6.4:1 |
-| `O` | `#ff8a1f` | Orange | Orange rind, toffee caramel, bell rim and clapper, key shading, potion cork | 8.3:1 |
+| `O` | `#ff8a1f` | Orange | CutOff ball body; orange rind, toffee caramel, bell rim and clapper, key shading, potion cork | 8.3:1 |
 | `A` | `#ffb347` | Tangerine | Orange flesh | 11.0:1 |
 | `Y` | `#ffcf3a` | Gold | Bell, key, strawberry seeds, caramel highlight | 13.3:1 |
 
-The four enemy reds form a lightness ladder, light red, coral, scarlet, crimson, and each ball's band is the next darker
-step (maroon below crimson), so neighbouring enemies differ by at least 14 dE. Keep that spacing if you retune them.
+The enemy colours keep every pair of enemies at least 24 dE apart in normal vision. Pink is held at a hue of about 320
+degrees so it stays clear of the arcade red on the Chase role; keep it there if you retune it.
 Nineteen colours is a style budget that keeps the hardware-sprite look, not a format limit: the build, render and check tools
 accept more single-character keys, though the contact sheet's swatch row fits only 19. Add or change a slot only after
 updating this table and re-running `tools/check.js`.
@@ -152,15 +153,14 @@ Run `sh tools/regenerate.sh`, then open `contact_sheet.png` to see all 47 number
 
 ## 6. Enemies: the red balls
 
-Every enemy is a 14 px ball of the same build as the player's, in its own shade of red, with a band in the next darker
-shade. Each has side, up and down strips, all 4 frames at 0.15 s, mirrored for Left like the player.
+Every enemy is a 14 px ball of the same build as the player's, in its own colour, with a darker band. Each has side, up and down strips, all 4 frames at 0.15 s, mirrored for Left like the player.
 
 | Behaviour (code) | Files | Body | Band |
 |---|---|---|---|
-| **Chase**: heads straight for the player | `enemy_chase.png`, `_up`, `_down` | `R` scarlet | `C` crimson |
-| **CutOff**: aims 3 tiles ahead | `enemy_cutoff.png`, `_up`, `_down` | `C` crimson | `Q` maroon |
-| **Scared**: chases until within 9 tiles, then retreats | `enemy_scared.png`, `_up`, `_down` | `U` coral | `R` scarlet |
-| **Random**: wanders at random | `enemy_random.png`, `_up`, `_down` | `P` light red | `U` coral |
+| **Chase**: heads straight for the player | `enemy_chase.png`, `_up`, `_down` | `I` pink | `Z` deep pink |
+| **CutOff**: aims 3 tiles ahead | `enemy_cutoff.png`, `_up`, `_down` | `O` orange | `R` red |
+| **Scared**: chases until within 9 tiles, then retreats | `enemy_scared.png`, `_up`, `_down` | `R` red | `C` crimson |
+| **Random**: wanders at random | `enemy_random.png`, `_up`, `_down` | `P` light red | `R` red |
 
 The balls are drawn by `tools/balls.js`, which rewrites their section of `art.txt` between its marker lines
 (`node tools/balls.js art.txt`); change a ball's colours in its `BALLS` list rather than editing the frames by hand.
@@ -282,8 +282,8 @@ moves an unrounded logical position and draws the character at it rounded to who
   `Assets/Prefabs/FX/FX_SugarBurst` and `FX_PointsPopup`, and the existing
   `Pellet` and `BonusPickUp` (all level pellets are instances).
 - **Image colours:** every art Image is white (no tint).
-- **Debug targets:** `SeekerEnemyTarget` (Chase, `#ff3b3b`), `CutOffEnemyTarget` (`#b3122b`) and `ScaredEnemyTarget`
-  (`#ff8a7a`) use `debug_target` tinted with their enemy's colour. Random has no target.
+- **Debug targets:** `SeekerEnemyTarget` (Chase, `#ff5cc8`), `CutOffEnemyTarget` (`#ff8a1f`) and `ScaredEnemyTarget`
+  (`#ff3b3b`) use `debug_target` tinted with their enemy's colour. Random has no target.
 - **`MazeSkin`** (`Assets/Art/MazeSkin.asset`): layout `Blob47`, `wallTiles` = `walls_0` … `walls_46` in order (use the
   **Fill Wall Tiles From Sheet** context menu after changing `walls.png`), `wallTint` white, `corridorColor` transparent,
   `treatOutsideAsWall` true. `GridManager` applies it at start-up; its **Apply Maze Skin** context menu previews it in edit
@@ -404,16 +404,14 @@ and `review/metrics.txt`.
 
 ## 15. Readability results (`review/metrics.txt`)
 
-- **Enemies:** the closest pair is Chase vs Scared (scarlet vs coral) at 14.0 in normal vision and 11.3 in deutan; Chase vs
-  CutOff is 13.1 in tritan; every other enemy pair is at least 14.4 in every simulation. Their bands and lightness carry
-  the rest.
-- **Player vs enemies:** 47.7 or more in normal vision, but as low as 3.7 in deutan (green vs coral), which is why the
+- **Enemies:** every pair is at least 24.4 dE apart in normal vision (orange vs red). In colour-blind simulations the
+  closest are orange vs red at 9.5 (deutan) and pink vs orange at 8.8 (tritan); their bands and lightness carry the rest.
+- **Player vs enemies:** 47.7 or more in normal vision, but as low as 8.1 in deutan (green vs orange), which is why the
   player alone has white bands.
-- **Arcade colours:** `check.js` flags Chase's scarlet as the arcade red chaser's hue and Scared's coral as near the
-  arcade orange. That follows from an all-red cast by request; the balls share no shape with the arcade ghosts.
-- **Contrast on the corridor:** player 10.5:1; enemies 14.0:1 (light red), 8.6:1 (coral), 5.6:1 (scarlet) and 2.8:1
-  (crimson, the darkest, whose white shine and maroon band keep it readable).
-- **Pellet:** 19.7:1 core; at least 43 dE from every ball.
+- **Arcade colours:** no enemy echoes the arcade colour of its own behaviour role. `check.js` notes pink as near the arcade
+  pink and orange and red as near the arcade orange and red, which follows from the requested colours.
+- **Contrast on the corridor:** player 10.5:1; enemies 14.0:1 (light red), 8.3:1 (orange), 7.1:1 (pink) and 5.6:1 (red).
+- **Pellet:** 19.7:1 core; at least 34 dE from every ball (pink is the closest).
 
 ## 16. Known limits
 
@@ -421,6 +419,6 @@ and `review/metrics.txt`.
   soft. A true bitmap pixel font (with a raster, point-filtered TMP atlas) would make them fully crisp.
 - **Debug markers:** shown whenever `ProjectSettings.DebugSettings.DebugEnemyTargets` is on, including in release builds.
 - **Spawn:** Chase, CutOff and Random start on the same tile and travel together for the first few seconds, so their balls
-  overlap until their targets diverge; the different reds and bands keep the clump legible.
+  overlap until their targets diverge; their different colours and bands keep the clump legible.
 - **Atlas:** none yet (see section 12).
 - **Testing scene:** `PacmanTesting.unity` uses the new maze but keeps its original placeholder characters, and it cannot enter Play mode: it predates the current managers (it has no PelletManager or ScoreManager, and stale enemy data). Open it on its own rather than alongside `Pacman.unity`.
