@@ -432,7 +432,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2135734285358698928}
   m_Enabled: 1
-  m_Alpha: 0.8
+  m_Alpha: 0.3
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
