@@ -20,6 +20,11 @@ namespace Movement
         private readonly Dictionary<GridItem, GridItem> mirroredWalkableItems = new();
 
         /// <summary>
+        /// The player's character.
+        /// </summary>
+        public PlayerMovement Player => player;
+
+        /// <summary>
         /// The player followed by every enemy.
         /// </summary>
         public IEnumerable<MovingObject> MovingObjects
@@ -60,6 +65,14 @@ namespace Movement
         public void ResumeMoving()
         {
             canMove = true;
+        }
+
+        /// <summary>
+        /// Turns the player as a key or swipe would, but only while the characters can move, so on-screen controls do nothing while paused or after the game ends.
+        /// </summary>
+        public void TurnPlayer(Direction direction)
+        {
+            if (canMove) player.DetermineDirectionChange(direction);
         }
 
         private void Update()

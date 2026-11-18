@@ -1,12 +1,13 @@
 using System.Collections;
 using GameStates;
 using GridSystem.GridItems;
+using Movement;
 using UnityEngine;
 
 namespace GameAudio
 {
     /// <summary>
-    /// Plays the game's sound effects: a rising trickle for pellets, a chime for bonus pickups, pause and resume tones, and jingles for the level start and the win.
+    /// Plays the game's sound effects: a rising trickle for pellets, a chime for bonus pickups, pause and resume tones, and jingles for the level start, the win and game over.
     /// </summary>
     public class SoundEffects : MonoBehaviour
     {
@@ -18,9 +19,10 @@ namespace GameAudio
         [SerializeField] private AudioClip resumeClip;
         [SerializeField] private AudioClip startClip;
         [SerializeField] private AudioClip winClip;
+        [SerializeField] private AudioClip loseClip;
         [SerializeField] [Min(0f)] private float startJingleWindowSeconds = 4f;
         private int nextPellet;
-        private bool gameWon;
+        private bool gameOver;
 
         /// <summary>
         /// Plays the level-start jingle as soon as it can be heard.
@@ -28,6 +30,14 @@ namespace GameAudio
         public void Initialise()
         {
             StartCoroutine(PlayStartJingleWhenAudible());
+        }
+
+        /// <summary>
+        /// Cuts any playing effects and jingle and plays the game-over sound.
+        /// </summary>
+        public void PlayLose()
+        {
+            EndWith(loseClip);
         }
 
         /// <summary>
@@ -39,23 +49,25 @@ namespace GameAudio
         }
 
         /// <summary>
-        /// Listens for eaten pellets, collected pickups and the win.
+        /// Listens for eaten pellets, collected pickups, the win and the player being caught.
         /// </summary>
         private void OnEnable()
         {
             Pellet.Eaten += OnPelletEaten;
             BonusItem.Collected += OnBonusCollected;
             ScoreManager.OnGameWon += OnGameWon;
+            EnemyContact.PlayerCaught += PlayLose;
         }
 
         /// <summary>
-        /// Stops listening for eaten pellets, collected pickups and the win.
+        /// Stops listening for eaten pellets, collected pickups, the win and the player being caught.
         /// </summary>
         private void OnDisable()
         {
             Pellet.Eaten -= OnPelletEaten;
             BonusItem.Collected -= OnBonusCollected;
             ScoreManager.OnGameWon -= OnGameWon;
+            EnemyContact.PlayerCaught -= PlayLose;
         }
 
         /// <summary>
@@ -63,7 +75,7 @@ namespace GameAudio
         /// </summary>
         private void OnPelletEaten(Vector3 position)
         {
-            if (gameWon || pelletClips == null || pelletClips.Length == 0) return;
+            if (gameOver || pelletClips == null || pelletClips.Length == 0) return;
             PlayEffect(pelletClips[nextPellet]);
             nextPellet = (nextPellet + 1) % pelletClips.Length;
         }
@@ -81,9 +93,18 @@ namespace GameAudio
         /// </summary>
         private void OnGameWon()
         {
-            gameWon = true;
+            EndWith(winClip);
+        }
+
+        /// <summary>
+        /// Ends the game's sound once (a second ending, such as two enemies catching the player together, is ignored): no more pellet notes or start jingle, any playing effects cut, and the closing jingle played.
+        /// </summary>
+        private void EndWith(AudioClip clip)
+        {
+            if (gameOver) return;
+            gameOver = true;
             if (effectsSource != null) effectsSource.Stop();
-            PlayJingle(winClip);
+            PlayJingle(clip);
         }
 
         /// <summary>
@@ -97,7 +118,7 @@ namespace GameAudio
                 if (Time.unscaledTime > deadline) yield break;
                 yield return null;
             }
-            if (!gameWon) PlayJingle(startClip);
+            if (!gameOver) PlayJingle(startClip);
         }
 
         /// <summary>

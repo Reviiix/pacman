@@ -351,6 +351,7 @@ are unchanged from the previous look, so every Unity reference survives a copy-o
 | `fx_sugar_burst.png` | 32x16 | 2 | `fx_sugar_burst_0..1` | `PickupEffects` burst frames (`FX_SugarBurst` prefab) | Drawn |
 | `debug_target.png` | 16x16 | 1 | single | The three `*EnemyTarget` markers, tinted per enemy | Drawn |
 | `ui_sound.png` | 32x16 | 2 | `ui_sound_0..1` | `UI_MuteButton` icon: speaker with waves (sound on) / with an X (muted) | Drawn |
+| `ui_dpad.png` | 64x16 | 4 | `ui_dpad_0..3` | `UI_TouchDPad`: button, pressed button, centre hub, white arrow (rotated per arm; the buttons are never rotated so their light stays top-left) | Drawn |
 | Scanline overlay tile | 1 x scale | – | – | `ScanlineOverlay` (generated at runtime, darkness 0.15) | No file needed |
 | Vignette | 68x88 | – | – | `VignetteOverlay` (generated at runtime, bilinear, tint `K #020410`) | No file needed |
 | HUD text, `+NN` popup | – | – | – | The project TTF with the colours in sections 9 and 10 | No sprite |

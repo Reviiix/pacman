@@ -7,9 +7,9 @@ using UnityEngine.UI;
 namespace UserInterface
 {
     /// <summary>
-    /// Shows the game-complete message over the maze and reloads the level when the player presses it.
+    /// Shows an end-of-game message (level complete or game over) over the maze and reloads the level when the player presses it.
     /// </summary>
-    public class GameCompleteDialog : MonoBehaviour
+    public class EndGameDialog : MonoBehaviour
     {
         [SerializeField] private Button restartButton;
         [SerializeField] private GameObject restartPrompt;
