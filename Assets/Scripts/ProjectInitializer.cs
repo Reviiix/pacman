@@ -21,6 +21,7 @@ namespace Core
         [SerializeField] private PauseController pauseController;
         [SerializeField] private SoundEffects soundEffects;
         [SerializeField] private MuteButton muteButton;
+        [SerializeField] private TouchDPad touchDPad;
         private bool gameOver;
 
         /// <summary>
@@ -41,6 +42,7 @@ namespace Core
             if (gameOverDialog != null) gameOverDialog.Initialise();
             if (pauseController != null) pauseController.Initialise();
             if (muteButton != null) muteButton.Initialise();
+            if (touchDPad != null) touchDPad.Initialise();
             ConnectSoundEffects();
             ScoreManager.OnGameWon += WinGame;
             EnemyContact.PlayerCaught += LoseGame;
