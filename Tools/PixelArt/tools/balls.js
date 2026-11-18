@@ -10,10 +10,10 @@ const BEGIN = '// --------------------------------------------------------------
 const END = '// ---------------------------------------------------------------- end of generated balls';
 const BALLS = [
   { name: 'hero_side', up: 'hero_up', down: 'hero_down', body: 'H', band: 'W', shade: 'F', note: 'player: bright green ball, white bands (a pattern no enemy shares, so red-green colour-blind players can still pick it out)' },
-  { name: 'enemy_chase', up: 'enemy_chase_up', down: 'enemy_chase_down', body: 'R', band: 'C', note: 'Chase: scarlet ball, crimson band' },
-  { name: 'enemy_cutoff', up: 'enemy_cutoff_up', down: 'enemy_cutoff_down', body: 'C', band: 'Q', note: 'CutOff: deep crimson ball, maroon band' },
-  { name: 'enemy_scared', up: 'enemy_scared_up', down: 'enemy_scared_down', body: 'U', band: 'R', note: 'Scared: coral red ball, scarlet band' },
-  { name: 'enemy_random', up: 'enemy_random_up', down: 'enemy_random_down', body: 'P', band: 'U', note: 'Random: light red ball, coral band' },
+  { name: 'enemy_chase', up: 'enemy_chase_up', down: 'enemy_chase_down', body: 'I', band: 'Z', note: 'Chase: pink ball, deep pink band' },
+  { name: 'enemy_cutoff', up: 'enemy_cutoff_up', down: 'enemy_cutoff_down', body: 'O', band: 'R', note: 'CutOff: orange ball, red band' },
+  { name: 'enemy_scared', up: 'enemy_scared_up', down: 'enemy_scared_down', body: 'R', band: 'C', note: 'Scared: red ball, crimson band' },
+  { name: 'enemy_random', up: 'enemy_random_up', down: 'enemy_random_down', body: 'P', band: 'R', note: 'Random: light red ball, red band' },
 ];
 const SIZE = 16, CENTRE = 7.5, RADIUS = 7;
 const BAND_STEPS = [0, 2, 4, 6];
