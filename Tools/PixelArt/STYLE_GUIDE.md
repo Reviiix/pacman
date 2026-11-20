@@ -184,6 +184,10 @@ The balls are drawn by `tools/balls.js`, which rewrites their section of `art.tx
   prefab's powered frames) and the player shows the red ball (the `Player` prefab's powered frames). In the last second
   the looks flash back and forth every 0.15 s as a warning. A defeated enemy vanishes in the pellet burst.
 
+- `transport_pad.png` / `transport_pad_gold.png`: a 16x16 ring lit from the top-left (`L` over `S`, or `Y` over `O` for the
+  gold pair) round an inner ring lit the other way, so it reads as a hole, with a 2x2 `W` spark in the middle. Static, as
+  it sits on the maze's static canvas (`GRP_Grid`). The `TransportPad` prefabs show them on transport tiles.
+
 ## 8. Bonus pickups
 
 Static and faceless, drawn from scratch as flat shapes with no outline. Each is 13-16 px in its longest dimension (the
@@ -349,6 +353,8 @@ are unchanged from the previous look, so every Unity reference survives a copy-o
 | `enemy_<role>.png`, `enemy_<role>_up.png`, `enemy_<role>_down.png` for chase, cutoff, scared, random | 64x16 each | 4 | `enemy_chase_0..3` and so on | `Enemy_<Role>` prefab `sideFrames`, `upFrames`, `downFrames` | Generated (`balls.js`) |
 | `pellet.png` | 32x16 | 2 | `pellet_0..1` | Pellet prefab (frame 0), twinkle driver (frame 1), HUD twinkles | Drawn |
 | `power_pellet.png` | 32x16 | 2 | `power_pellet_0..1` | PowerPellet prefab (pulse) | Drawn |
+| `transport_pad.png` | 16x16 | 1 | single | TransportPad prefab | Drawn |
+| `transport_pad_gold.png` | 16x16 | 1 | single | TransportPad_Gold prefab | Drawn |
 | `pickup_cherry.png` | 16x16 | 1 | single | `bonusPickUpSprites[0]` | Drawn |
 | `pickup_strawberry.png` | 16x16 | 1 | single | `bonusPickUpSprites[1]` | Drawn |
 | `pickup_orange.png` | 16x16 | 1 | single | `bonusPickUpSprites[2]` | Drawn |

@@ -10,6 +10,8 @@ MovementManager moves the player and enemies every frame. Each MovingObject adva
 Game over
 Each enemy has a small trigger collider (EnemyContact); when one touches the player the game ends with a GAME OVER, tap to retry dialog, which reloads the level.
 
+Transport tiles
+A TransportPad prefab (or its TransportPad_Gold variant, for a second pair) placed as the first child of a grid tile turns that tile into a transport tile; set each pad's Partner to the other pad of its pair. At start-up ProjectInitializer links them (TransportLinks, plain C# in GridSystem.Transport.Logic) and hands the links to the player's movement: arriving on a pad's tile from another tile moves the player onto its partner's tile, still heading the same way. Enemies walk over pads. In ClassicPacMan the pair sits at the two ends of the side corridor, (1,10) and (15,10). The linking rules are unit tested in Assets/Tests/EditMode (Window > General > Test Runner, or `unity command test run --mode editor`).
 Power pellets
 The four corner pellets are power pellets (the PowerPellet prefab, a Pellet variant). Eating one starts PowerMode (in GRP_GameManagers) for 5 seconds: the player and enemies swap colours (each CharacterAnimator's powered frames) and an enemy that touches the player is defeated instead. A defeated enemy leaves the board and MovementManager brings it back on its start tile 5 seconds later. The looks flash for the last second, then return to normal. The durations are on PowerMode and MovementManager.
 
