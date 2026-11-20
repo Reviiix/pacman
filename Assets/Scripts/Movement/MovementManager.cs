@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Abstractions;
 using GridSystem;
 using GridSystem.GridItems;
+using GridSystem.Transport.Logic;
 using Movement.MovingObjects;
 using UnityEngine;
 
@@ -45,11 +46,12 @@ namespace Movement
         }
 
         /// <summary>
-        /// Caches the mirrored targets, places every character on its start tile and starts movement.
+        /// Caches the mirrored targets, gives the player the level's transport tiles, places every character on its start tile and starts movement.
         /// </summary>
-        public void Initialise()
+        public void Initialise(TransportLinks transportLinks, GridManager grid)
         {
             CacheMirroredWalkableItems();
+            player.UseTransportLinks(transportLinks, grid);
             respawnWait = new WaitForSeconds(enemyRespawnSeconds);
             player.Initialise(this);
             foreach (var seeker in seekerEnemy)

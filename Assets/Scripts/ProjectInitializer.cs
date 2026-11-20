@@ -3,6 +3,8 @@ using GameAudio;
 using GameStates;
 using GridSystem;
 using GridSystem.GridItems;
+using GridSystem.Transport;
+using GridSystem.Transport.Logic;
 using Movement;
 using PowerUps;
 using UnityEngine;
@@ -36,7 +38,7 @@ namespace Core
             var pellets = FindObjectsByType<Pellet>(FindObjectsSortMode.None);
             GridManager.Instance.Initialise();
             Canvas.ForceUpdateCanvases();
-            MovementManager.Instance.Initialise();
+            MovementManager.Instance.Initialise(BuildTransportLinks(GridManager.Instance.gridItems), GridManager.Instance);
             PelletManager.Instance.Initialise(pellets);
             ScoreManager.Instance.Initialise();
             MovePickupsToTheirLayer(pellets);
@@ -98,6 +100,23 @@ namespace Core
             if (pauseController != null) pauseController.Lock();
             MovementManager.Instance.StopMoving();
             if (dialog != null) dialog.Show();
+        }
+
+        /// <summary>
+        /// Links the tile of every transport pad to its partner pad's tile, warning about any pad that cannot be linked.
+        /// </summary>
+        private static TransportLinks BuildTransportLinks(IEnumerable<GridItem> tiles)
+        {
+            var links = new TransportLinks();
+            foreach (var tile in tiles)
+            {
+                var pad = tile.GetComponentInChildren<TransportPad>(true);
+                if (pad == null) continue;
+                var partnerTile = pad.Partner != null ? pad.Partner.GetComponentInParent<GridItem>() : null;
+                if (partnerTile != null && links.TryLink(tile.Cell, partnerTile.Cell)) continue;
+                Debug.LogWarning($"The transport pad on tile {tile.Cell} has no partner it can link to, so it does nothing.", pad);
+            }
+            return links;
         }
 
         /// <summary>

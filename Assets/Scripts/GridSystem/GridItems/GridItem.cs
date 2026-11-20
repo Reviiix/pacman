@@ -15,6 +15,11 @@ namespace GridSystem.GridItems
     public abstract class GridItem : MonoBehaviour
     {
         public KeyValuePair<int, int> Indices { get; private set; } //Key = X, Value = Y
+
+        /// <summary>
+        /// The tile's column and row as a cell, as the plain C# grid logic uses them.
+        /// </summary>
+        public Vector2Int Cell => new(Indices.Key, Indices.Value);
         protected Image Display;
         public GridItem[] Neighbors { get; private set; }
         #if UNITY_EDITOR

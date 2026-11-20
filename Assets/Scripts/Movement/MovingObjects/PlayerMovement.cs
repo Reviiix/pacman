@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
+using GridSystem;
+using GridSystem.Transport.Logic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Movement.MovingObjects
 {
     /// <summary>
-    /// The player's character, turned by the arrow keys, WASD or a swipe on a touch screen.
+    /// The player's character, turned by the arrow keys, WASD or a swipe on a touch screen, and carried between linked transport tiles.
     /// </summary>
     [Serializable]
     public class PlayerMovement : MovingObject
@@ -14,6 +17,30 @@ namespace Movement.MovingObjects
         private Vector2 swipeStart;
         private bool tracking;
         private bool touchOnControls;
+        private TransportLinks transportLinks;
+        private GridManager grid;
+
+        /// <summary>
+        /// Lets the player use the level's transport tiles, looking their exits up on the given grid.
+        /// </summary>
+        public void UseTransportLinks(TransportLinks links, GridManager gridManager)
+        {
+            transportLinks = links;
+            grid = gridManager;
+        }
+
+        /// <summary>
+        /// Arrives on the next tile and, if it is a transport tile reached from another tile, carries on from its partner.
+        /// </summary>
+        protected override void OnDestinationReached()
+        {
+            var arrivedFrom = current;
+            base.OnDestinationReached();
+            if (transportLinks == null || grid == null || arrivedFrom == null) return;
+            if (!transportLinks.TryGetExitOnArrival(arrivedFrom.Cell, current.Cell, out var exit)) return;
+            var exitTile = grid.GetItem(new KeyValuePair<int, int>(exit.x, exit.y));
+            if (exitTile != null) TransportTo(exitTile);
+        }
 
         /// <summary>
         /// Queues a turn for each direction key pressed this frame and for each swipe.
