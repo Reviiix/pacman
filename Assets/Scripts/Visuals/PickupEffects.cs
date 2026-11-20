@@ -1,5 +1,6 @@
 using System.Collections;
 using GridSystem.GridItems;
+using Movement;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -65,27 +66,37 @@ namespace Visuals
         }
 
         /// <summary>
-        /// Listens for eaten pellets and collected pickups.
+        /// Listens for eaten pellets, collected pickups and defeated enemies.
         /// </summary>
         private void OnEnable()
         {
             Pellet.Eaten += OnPelletEaten;
             BonusItem.Collected += OnBonusCollected;
+            MovementManager.EnemyDefeated += OnEnemyDefeated;
         }
 
         /// <summary>
-        /// Stops listening for eaten pellets and collected pickups.
+        /// Stops listening for eaten pellets, collected pickups and defeated enemies.
         /// </summary>
         private void OnDisable()
         {
             Pellet.Eaten -= OnPelletEaten;
             BonusItem.Collected -= OnBonusCollected;
+            MovementManager.EnemyDefeated -= OnEnemyDefeated;
         }
 
         /// <summary>
         /// Flashes a burst where a pellet was eaten.
         /// </summary>
         private void OnPelletEaten(Vector3 position)
+        {
+            PlayBurst(position);
+        }
+
+        /// <summary>
+        /// Flashes a burst where an enemy was defeated.
+        /// </summary>
+        private void OnEnemyDefeated(Vector3 position)
         {
             PlayBurst(position);
         }

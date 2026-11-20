@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Abstractions;
 using GridSystem;
@@ -9,15 +10,22 @@ using UnityEngine;
 namespace Movement
 {
     /// <summary>
-    /// Moves the player and enemies every frame and answers questions about the player for the enemies.
+    /// Moves the player and enemies every frame, takes defeated enemies off the board until they respawn, and answers questions about the player for the enemies.
     /// </summary>
     public class MovementManager : Singleton<MovementManager>
     {
         public static readonly Direction[] Directions = { Direction.Up, Direction.Down, Direction.Left, Direction.Right };
         [SerializeField] private PlayerMovement player;
         [SerializeField] private SeekerEnemyMovement[] seekerEnemy;
+        [SerializeField] [Min(0f)] private float enemyRespawnSeconds = 5f;
         private bool canMove;
+        private WaitForSeconds respawnWait;
         private readonly Dictionary<GridItem, GridItem> mirroredWalkableItems = new();
+
+        /// <summary>
+        /// Raised with an enemy's world position when the player defeats it.
+        /// </summary>
+        public static event Action<Vector3> EnemyDefeated;
 
         /// <summary>
         /// The player's character.
@@ -42,6 +50,7 @@ namespace Movement
         public void Initialise()
         {
             CacheMirroredWalkableItems();
+            respawnWait = new WaitForSeconds(enemyRespawnSeconds);
             player.Initialise(this);
             foreach (var seeker in seekerEnemy)
             {
@@ -75,6 +84,31 @@ namespace Movement
             if (canMove) player.DetermineDirectionChange(direction);
         }
 
+        /// <summary>
+        /// Takes the enemy with this transform off the board and brings it back on its start tile after the respawn delay.
+        /// </summary>
+        public void DefeatEnemy(Transform enemy)
+        {
+            foreach (var seeker in seekerEnemy)
+            {
+                if (seeker.transform != enemy || !seeker.transform.gameObject.activeSelf) continue;
+                EnemyDefeated?.Invoke(enemy.position);
+                seeker.transform.gameObject.SetActive(false);
+                StartCoroutine(Respawn(seeker));
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Waits out the respawn delay, then returns the enemy to its start tile and puts it back on the board.
+        /// </summary>
+        private IEnumerator Respawn(SeekerEnemyMovement seeker)
+        {
+            yield return respawnWait;
+            seeker.ReturnToStart();
+            seeker.transform.gameObject.SetActive(true);
+        }
+
         private void Update()
         {
             if (!canMove) return;
@@ -83,19 +117,19 @@ namespace Movement
         }
 
         /// <summary>
-        /// Advances every character's tile logic, then moves each one towards its next tile.
+        /// Advances every character's tile logic, then moves each one towards its next tile, skipping enemies waiting to respawn.
         /// </summary>
         private void MoveObjects()
         {
             player.CheckPosition();
             foreach (var seeker in seekerEnemy)
             {
-                seeker.CheckPosition();
+                if (seeker.transform.gameObject.activeSelf) seeker.CheckPosition();
             }
             player.ApplyPosition(player.GetDestination());
             foreach (var seeker in seekerEnemy)
             {
-                seeker.ApplyPosition(seeker.GetDestination());
+                if (seeker.transform.gameObject.activeSelf) seeker.ApplyPosition(seeker.GetDestination());
             }
         }
         

@@ -27,6 +27,8 @@ namespace Movement.MovingObjects
         private MonoBehaviour coroutiner;
         private Vector3 logicalLocalPosition;
         [SerializeField] protected Transform targetDebug;
+        private GridItem startTile;
+        private MovementManager.Direction startDirection;
 
         /// <summary>
         /// The direction the character is moving; change it through SetMovementDirection so DirectionChanged fires.
@@ -46,8 +48,28 @@ namespace Movement.MovingObjects
             coroutiner = coroutineHandler;
             waitUntilReachedCurrentTarget = new WaitUntil(() => !Moving);
             if (current == null) SetCurrentPosition(next);
+            startTile = current;
+            startDirection = currentMovementDirection;
             SnapToExactCurrentGridItem();
             SetNextPosition(GetAdjacentItem(currentMovementDirection));
+        }
+
+        /// <summary>
+        /// Puts the character back on its starting tile, facing its starting direction, dropping any queued turn, as when it respawns.
+        /// </summary>
+        public void ReturnToStart()
+        {
+            if (directionChange != null)
+            {
+                coroutiner.StopCoroutine(directionChange);
+                directionChange = null;
+            }
+            SetCurrentPosition(startTile);
+            SetNextPosition(startTile);
+            SetMovementDirection(startDirection);
+            SnapToExactCurrentGridItem();
+            SetNextPosition(GetAdjacentItem(currentMovementDirection));
+            Moving = false;
         }
         
         public virtual void CheckPosition()
