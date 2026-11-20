@@ -48,6 +48,31 @@
       "voices": [{ "wave": "square", "duty": 0.5, "env": { "a": 0.002, "d": 0.03, "s": 0.5, "r": 0.02 },
         "notes": [{ "note": "B4", "len": 0.06 }, { "note": "F#5", "len": 0.06 }, { "note": "B5", "len": 0.1 }] }]
     },
+    "sfx_power_on": {
+      "peakDb": -8, "lowpass": 6500,
+      "voices": [
+        { "wave": "square", "duty": 0.25, "env": { "a": 0.002, "d": 0.05, "s": 0.65, "r": 0.02 },
+          "notes": [
+            { "note": "C5", "to": "C6", "len": 0.16 },
+            { "note": "E6", "len": 0.05 }, { "note": "G6", "len": 0.05 },
+            { "note": "C7", "len": 0.2, "env": { "a": 0.002, "d": 0.14, "s": 0.2, "r": 0.05 } }
+          ] },
+        { "wave": "triangle", "vol": 0.6, "env": { "a": 0.003, "d": 0.06, "s": 0.8, "r": 0.04 },
+          "notes": [{ "note": "C3", "to": "C4", "len": 0.16 }, { "note": "G3", "len": 0.3, "env": { "a": 0.003, "d": 0.18, "s": 0.4, "r": 0.08 } }] }
+      ]
+    },
+    "sfx_power_off": {
+      "peakDb": -10, "lowpass": 4500,
+      "voices": [
+        { "wave": "square", "duty": 0.5, "env": { "a": 0.003, "d": 0.06, "s": 0.55, "r": 0.03 },
+          "notes": [
+            { "note": "G5", "to": "D5", "len": 0.14 },
+            { "note": "C5", "to": "G4", "len": 0.28, "env": { "a": 0.003, "d": 0.16, "s": 0.4, "r": 0.1 } }
+          ] },
+        { "wave": "triangle", "vol": 0.6, "env": { "a": 0.003, "d": 0.08, "s": 0.7, "r": 0.06 },
+          "notes": [{ "note": "G3", "to": "G2", "len": 0.42 }] }
+      ]
+    },
     "sfx_start": {
       "peakDb": -7, "lowpass": 6500,
       "voices": [
