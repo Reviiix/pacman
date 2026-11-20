@@ -55,6 +55,17 @@ namespace Movement.MovingObjects
         }
 
         /// <summary>
+        /// Moves the character straight onto another tile and carries on in the same direction, as a transport tile does.
+        /// </summary>
+        protected void TransportTo(GridItem destination)
+        {
+            SetCurrentPosition(destination);
+            SetNextPosition(destination);
+            SnapToExactCurrentGridItem();
+            SetNextPosition(GetAdjacentItem(currentMovementDirection));
+        }
+
+        /// <summary>
         /// Puts the character back on its starting tile, facing its starting direction, dropping any queued turn, as when it respawns.
         /// </summary>
         public void ReturnToStart()
