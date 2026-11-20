@@ -1208,6 +1208,46 @@
         "................"
       ]
     ] },
+    "transport_pad": { "frames": [
+      [
+        "................",
+        ".....LLLLLL.....",
+        "...LLLLLLLLLL...",
+        "..LLL......LSS..",
+        "..LL........SS..",
+        ".LL...SSSS...SS.",
+        ".LL..S....L..SS.",
+        ".LL..S.WW.L..SS.",
+        ".LL..S.WW.L..SS.",
+        ".LL..S....L..SS.",
+        ".LL...LLLL...SS.",
+        "..LL........SS..",
+        "..LSS......SSS..",
+        "...SSSSSSSSSS...",
+        ".....SSSSSS.....",
+        "................"
+      ]
+    ] },
+    "transport_pad_gold": { "frames": [
+      [
+        "................",
+        ".....YYYYYY.....",
+        "...YYYYYYYYYY...",
+        "..YYY......YOO..",
+        "..YY........OO..",
+        ".YY...OOOO...OO.",
+        ".YY..O....Y..OO.",
+        ".YY..O.WW.Y..OO.",
+        ".YY..O.WW.Y..OO.",
+        ".YY..O....Y..OO.",
+        ".YY...YYYY...OO.",
+        "..YY........OO..",
+        "..YOO......OOO..",
+        "...OOOOOOOOOO...",
+        ".....OOOOOO.....",
+        "................"
+      ]
+    ] },
     "pickup_cherry": { "frames": [
       [
         "................",

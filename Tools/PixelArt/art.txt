@@ -1183,6 +1183,47 @@ F #0d5e2b forest: player ball shade crescent
 ................
 ................
 
+// ---------------------------------------------------------------- transport pads: a ring lit from the top-left (ice over azure) round an inner
+// ring lit the other way, so it reads as a hole, with a white spark in the middle; the gold copy (gold over orange) marks a second
+// pair. Static (they sit on the maze's static canvas). Each pad sends the player to its partner
+@sprite transport_pad
+@frame
+................
+.....LLLLLL.....
+...LLLLLLLLLL...
+..LLL......LSS..
+..LL........SS..
+.LL...SSSS...SS.
+.LL..S....L..SS.
+.LL..S.WW.L..SS.
+.LL..S.WW.L..SS.
+.LL..S....L..SS.
+.LL...LLLL...SS.
+..LL........SS..
+..LSS......SSS..
+...SSSSSSSSSS...
+.....SSSSSS.....
+................
+
+@sprite transport_pad_gold
+@frame
+................
+.....YYYYYY.....
+...YYYYYYYYYY...
+..YYY......YOO..
+..YY........OO..
+.YY...OOOO...OO.
+.YY..O....Y..OO.
+.YY..O.WW.Y..OO.
+.YY..O.WW.Y..OO.
+.YY..O....Y..OO.
+.YY...YYYY...OO.
+..YY........OO..
+..YOO......OOO..
+...OOOOOOOOOO...
+.....OOOOOO.....
+................
+
 // ---------------------------------------------------------------- bonus pickups (static, faceless; order = BonusItemType enum order)
 @sprite pickup_cherry
 @frame
