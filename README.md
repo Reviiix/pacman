@@ -22,6 +22,9 @@ Sound effects are original chiptune sounds synthesised by Tools/Audio (see its R
 Project Initialiser
 Handles the order of game initialisation. Allows for better debugging of race conditions by giving granular control over order or initialisation. Also gives an easy way to inject dependencies.
 
+# Coding standards
+Every change follows the Unity coding standards in the unity-coding-standards submodule (Reviiix/unity-coding-standards). After cloning, fetch it with `git submodule update --init`. The target platform is WebGL (see Web build). Older code predates some of the rules (it uses Singleton<T> instances rather than a service locator); it is brought in line when it is changed for other reasons.
+
 # Abstractions
 Singleton
 A type singleton abstract class. Inheritors will follow the singleton pattern.
