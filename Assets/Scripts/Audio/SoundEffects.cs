@@ -2,12 +2,13 @@ using System.Collections;
 using GameStates;
 using GridSystem.GridItems;
 using Movement;
+using PowerUps;
 using UnityEngine;
 
 namespace GameAudio
 {
     /// <summary>
-    /// Plays the game's sound effects: a rising trickle for pellets, a chime for bonus pickups, pause and resume tones, and jingles for the level start, the win and game over.
+    /// Plays the game's sound effects: a rising trickle for pellets, a chime for bonus pickups, a charge-up and a wind-down for power mode, pause and resume tones, and jingles for the level start, the win and game over.
     /// </summary>
     public class SoundEffects : MonoBehaviour
     {
@@ -15,6 +16,8 @@ namespace GameAudio
         [SerializeField] private AudioSource jingleSource;
         [SerializeField] private AudioClip[] pelletClips;
         [SerializeField] private AudioClip bonusClip;
+        [SerializeField] private AudioClip powerOnClip;
+        [SerializeField] private AudioClip powerOffClip;
         [SerializeField] private AudioClip pauseClip;
         [SerializeField] private AudioClip resumeClip;
         [SerializeField] private AudioClip startClip;
@@ -49,23 +52,27 @@ namespace GameAudio
         }
 
         /// <summary>
-        /// Listens for eaten pellets, collected pickups, the win and the player being caught.
+        /// Listens for eaten pellets, collected pickups, power mode starting and ending, the win and the player being caught.
         /// </summary>
         private void OnEnable()
         {
             Pellet.Eaten += OnPelletEaten;
             BonusItem.Collected += OnBonusCollected;
+            PowerMode.Started += OnPowerStarted;
+            PowerMode.Ended += OnPowerEnded;
             ScoreManager.OnGameWon += OnGameWon;
             EnemyContact.PlayerCaught += PlayLose;
         }
 
         /// <summary>
-        /// Stops listening for eaten pellets, collected pickups, the win and the player being caught.
+        /// Stops listening for eaten pellets, collected pickups, power mode starting and ending, the win and the player being caught.
         /// </summary>
         private void OnDisable()
         {
             Pellet.Eaten -= OnPelletEaten;
             BonusItem.Collected -= OnBonusCollected;
+            PowerMode.Started -= OnPowerStarted;
+            PowerMode.Ended -= OnPowerEnded;
             ScoreManager.OnGameWon -= OnGameWon;
             EnemyContact.PlayerCaught -= PlayLose;
         }
@@ -86,6 +93,22 @@ namespace GameAudio
         private void OnBonusCollected(Vector3 position, int points)
         {
             PlayEffect(bonusClip);
+        }
+
+        /// <summary>
+        /// Plays the power-up charge when power mode starts or restarts, unless the game is over.
+        /// </summary>
+        private void OnPowerStarted()
+        {
+            if (!gameOver) PlayEffect(powerOnClip);
+        }
+
+        /// <summary>
+        /// Plays the power-down when power mode runs out, unless the game is over.
+        /// </summary>
+        private void OnPowerEnded()
+        {
+            if (!gameOver) PlayEffect(powerOffClip);
         }
 
         /// <summary>
