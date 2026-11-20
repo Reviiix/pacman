@@ -17,7 +17,7 @@ Visuals
 The pixel-art presentation (integer canvas scaling, autotiled walls, sprite flipbooks, pickup effects, CRT overlays and the stepped fade from black when a level starts) lives in Assets/Scripts/Visuals. The art source, toolchain and style guide are in Tools/PixelArt.
 
 Audio
-Sound effects are original chiptune sounds synthesised by Tools/Audio (see its README) into Assets/Audio/SFX. SoundEffects in Assets/Scripts/Audio plays them from the pellet, pickup, pause and win events and the level start.
+Sound effects are original chiptune sounds synthesised by Tools/Audio (see its README) into Assets/Audio/SFX. SoundEffects in Assets/Scripts/Audio plays them from the pellet, pickup, power-mode start and end, pause and win events and the level start.
 
 Project Initialiser
 Handles the order of game initialisation. Allows for better debugging of race conditions by giving granular control over order or initialisation. Also gives an easy way to inject dependencies.

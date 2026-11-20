@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Abstractions;
@@ -19,6 +20,16 @@ namespace PowerUps
         private WaitForSeconds steadyWait;
         private WaitForSeconds flashWait;
         private Coroutine routine;
+
+        /// <summary>
+        /// Raised when power mode starts, including when another power pellet restarts it.
+        /// </summary>
+        public static event Action Started;
+
+        /// <summary>
+        /// Raised when power mode runs out and the looks return to normal.
+        /// </summary>
+        public static event Action Ended;
 
         /// <summary>
         /// Whether power mode is on, so touching an enemy defeats it.
@@ -52,6 +63,7 @@ namespace PowerUps
         {
             if (routine != null) StopCoroutine(routine);
             routine = StartCoroutine(RunPower());
+            Started?.Invoke();
         }
 
         /// <summary>
@@ -71,6 +83,7 @@ namespace PowerUps
             ShowPoweredLooks(false);
             IsActive = false;
             routine = null;
+            Ended?.Invoke();
         }
 
         /// <summary>

@@ -2098,6 +2098,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: abb6dbf43ca5244edb1074228ce7eaaf, type: 3}
   - {fileID: 8300000, guid: 4cc9dceb2041d4a13ad35fc3047a6a9f, type: 3}
   bonusClip: {fileID: 8300000, guid: b6cc56f8ea98745b59f88b83d8a10119, type: 3}
+  powerOnClip: {fileID: 8300000, guid: 36dec8de3126841738477a60f69d0a26, type: 3}
+  powerOffClip: {fileID: 8300000, guid: 6cce78c7644964d29a8635ee20c89d3d, type: 3}
   pauseClip: {fileID: 8300000, guid: 1dbfc1a3d372d40b38f650e5032146d8, type: 3}
   resumeClip: {fileID: 8300000, guid: b865bef5141fc4e4d8e0d7eda90c14de, type: 3}
   startClip: {fileID: 8300000, guid: e8a50c6c8e97c4c19b8823bdab056954, type: 3}
