@@ -171,10 +171,18 @@ The balls are drawn by `tools/balls.js`, which rewrites their section of `art.tx
   a 3 px ice (`L`) glint on its top-left and a 5 px azure (`S`) glow round its shaded lower and right sides: 12 bright
   pixels, with the core at 19.7:1 and the glint at 14.6:1 on the corridor.
 - **Frame 1 (twinkle):** the whole dot flashes white (12 `W`) in the same 4x4 footprint. The azure-to-white jump is clearly
-  visible at 2x, and the dot is never larger than 4x4, so it never reads as a power pellet (the game has none).
+  visible at 2x, and the dot is never larger than 4x4, so it never reads as a power pellet.
 - **Twinkle behaviour (sparse):** one `PelletTwinkle` driver (not 142 animators) lights about 1 in 12 uneaten pellets (at
   least 1) on frame 1 every 0.25 s tick, re-picking at random and preferring pellets that were not lit last tick. Pellets
   live on their own sub-canvas (`GRP_Pickups`), so twinkles never rebuild the maze.
+
+- `power_pellet.png`: the big pellet, an 8x8 crystal (rows 4-11, twice a pellet's size) in the pellet's own colours: a `W`
+  body, an `L` lit edge on its upper sides and an `L` facet, and an `S` shade on its lower sides. Frame 1 swells it to a
+  10x10 all-white crystal with the same edges, and the `PowerPellet` prefab pulses between the two every 0.3 s. It is a
+  faceted crystal, not a big round dot, so it keeps its own shape. `PelletTwinkle` leaves it alone.
+- **Power mode:** eating one swaps the looks for 5 seconds: every enemy shows the player's green ball (the `Enemy` base
+  prefab's powered frames) and the player shows the red ball (the `Player` prefab's powered frames). In the last second
+  the looks flash back and forth every 0.15 s as a warning. A defeated enemy vanishes in the pellet burst.
 
 ## 8. Bonus pickups
 
@@ -318,7 +326,7 @@ moves an unrounded logical position and draws the character at it rounded to who
   |---|---|
   | `Characters/` | `hero_*` |
   | `Enemies/` | `enemy_*` |
-  | `Pickups/` | `pellet` and `pickup_*` |
+  | `Pickups/` | `pellet`, `power_pellet` and `pickup_*` |
   | `Maze/` | `walls` |
   | `FX/` | `fx_*` |
   | `Debug/` | `debug_*` |
@@ -340,6 +348,7 @@ are unchanged from the previous look, so every Unity reference survives a copy-o
 | `hero_side.png`, `hero_up.png`, `hero_down.png` | 64x16 each | 4 | `hero_side_0..3` and so on | Player `sideFrames`, `upFrames`, `downFrames` | Generated (`balls.js`) |
 | `enemy_<role>.png`, `enemy_<role>_up.png`, `enemy_<role>_down.png` for chase, cutoff, scared, random | 64x16 each | 4 | `enemy_chase_0..3` and so on | `Enemy_<Role>` prefab `sideFrames`, `upFrames`, `downFrames` | Generated (`balls.js`) |
 | `pellet.png` | 32x16 | 2 | `pellet_0..1` | Pellet prefab (frame 0), twinkle driver (frame 1), HUD twinkles | Drawn |
+| `power_pellet.png` | 32x16 | 2 | `power_pellet_0..1` | PowerPellet prefab (pulse) | Drawn |
 | `pickup_cherry.png` | 16x16 | 1 | single | `bonusPickUpSprites[0]` | Drawn |
 | `pickup_strawberry.png` | 16x16 | 1 | single | `bonusPickUpSprites[1]` | Drawn |
 | `pickup_orange.png` | 16x16 | 1 | single | `bonusPickUpSprites[2]` | Drawn |
