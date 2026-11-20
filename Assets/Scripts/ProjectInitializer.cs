@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using GameAudio;
 using GameStates;
 using GridSystem;
 using GridSystem.GridItems;
 using Movement;
+using PowerUps;
 using UnityEngine;
 using UserInterface;
 using Visuals;
@@ -38,7 +40,8 @@ namespace Core
             PelletManager.Instance.Initialise(pellets);
             ScoreManager.Instance.Initialise();
             MovePickupsToTheirLayer(pellets);
-            ConnectCharacterAnimators();
+            var characterAnimators = ConnectCharacterAnimators();
+            if (PowerMode.Instance != null) PowerMode.Instance.Initialise(characterAnimators);
             if (pelletTwinkle != null) pelletTwinkle.Initialise(pellets);
             if (gameCompleteDialog != null) gameCompleteDialog.Initialise();
             if (gameOverDialog != null) gameOverDialog.Initialise();
@@ -108,17 +111,20 @@ namespace Core
         }
 
         /// <summary>
-        /// Makes each character's animator face the way that character moves.
+        /// Makes each character's animator face the way that character moves, and returns those animators.
         /// </summary>
-        private static void ConnectCharacterAnimators()
+        private static List<CharacterAnimator> ConnectCharacterAnimators()
         {
+            var characterAnimators = new List<CharacterAnimator>();
             foreach (var movingObject in MovementManager.Instance.MovingObjects)
             {
                 if (movingObject.transform.TryGetComponent(out CharacterAnimator characterAnimator))
                 {
                     characterAnimator.Follow(movingObject);
+                    characterAnimators.Add(characterAnimator);
                 }
             }
+            return characterAnimators;
         }
     }
 }

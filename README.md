@@ -10,6 +10,9 @@ MovementManager moves the player and enemies every frame. Each MovingObject adva
 Game over
 Each enemy has a small trigger collider (EnemyContact); when one touches the player the game ends with a GAME OVER, tap to retry dialog, which reloads the level.
 
+Power pellets
+The four corner pellets are power pellets (the PowerPellet prefab, a Pellet variant). Eating one starts PowerMode (in GRP_GameManagers) for 5 seconds: the player and enemies swap colours (each CharacterAnimator's powered frames) and an enemy that touches the player is defeated instead. A defeated enemy leaves the board and MovementManager brings it back on its start tile 5 seconds later. The looks flash for the last second, then return to normal. The durations are on PowerMode and MovementManager.
+
 Visuals
 The pixel-art presentation (integer canvas scaling, autotiled walls, sprite flipbooks, pickup effects, CRT overlays and the stepped fade from black when a level starts) lives in Assets/Scripts/Visuals. The art source, toolchain and style guide are in Tools/PixelArt.
 

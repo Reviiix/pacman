@@ -168,6 +168,21 @@ MonoBehaviour:
   - {fileID: 501834427, guid: 24f4325864ed9415bb6bb94a12b590ac, type: 3}
   - {fileID: 137827796, guid: 24f4325864ed9415bb6bb94a12b590ac, type: 3}
   - {fileID: -1197636312, guid: 24f4325864ed9415bb6bb94a12b590ac, type: 3}
+  poweredSideFrames:
+  - {fileID: 390092097, guid: 9c7c641706f034686bfc0f09d1693611, type: 3}
+  - {fileID: -113282980, guid: 9c7c641706f034686bfc0f09d1693611, type: 3}
+  - {fileID: -1966990660, guid: 9c7c641706f034686bfc0f09d1693611, type: 3}
+  - {fileID: -1239096259, guid: 9c7c641706f034686bfc0f09d1693611, type: 3}
+  poweredUpFrames:
+  - {fileID: 1256444853, guid: e158be75700d44952b131c4500ed3df1, type: 3}
+  - {fileID: -213022186, guid: e158be75700d44952b131c4500ed3df1, type: 3}
+  - {fileID: 1924893233, guid: e158be75700d44952b131c4500ed3df1, type: 3}
+  - {fileID: 414549671, guid: e158be75700d44952b131c4500ed3df1, type: 3}
+  poweredDownFrames:
+  - {fileID: -1186462038, guid: 2f7105504d76b499fa3471b51f6fa895, type: 3}
+  - {fileID: 1292744525, guid: 2f7105504d76b499fa3471b51f6fa895, type: 3}
+  - {fileID: -1649582080, guid: 2f7105504d76b499fa3471b51f6fa895, type: 3}
+  - {fileID: -640739385, guid: 2f7105504d76b499fa3471b51f6fa895, type: 3}
   secondsPerFrame: 0.15
   animateOnlyWhileMoving: 1
   mirrorWhenFacingLeft: 1
