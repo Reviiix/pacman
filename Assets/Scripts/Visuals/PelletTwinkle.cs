@@ -23,7 +23,7 @@ namespace Visuals
         private Coroutine routine;
 
         /// <summary>
-        /// Collects the pellets' Images, remembers each one's own sprite to return to, and starts twinkling them.
+        /// Collects the pellets' Images (leaving out power pellets, which pulse on their own), remembers each one's own sprite to return to, and starts twinkling them.
         /// </summary>
         public void Initialise(IEnumerable<Pellet> source)
         {
@@ -34,7 +34,7 @@ namespace Visuals
             restSprites.Clear();
             foreach (var pellet in source)
             {
-                if (!pellet.TryGetComponent(out Image image)) continue;
+                if (pellet.TryGetComponent(out PowerPellet _) || !pellet.TryGetComponent(out Image image)) continue;
                 pellets.Add(image);
                 restSprites[image] = image.sprite;
             }
